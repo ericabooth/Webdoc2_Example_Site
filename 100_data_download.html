@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="format-detection" content="telephone=no">
+<title>100_data_download.html</title>
+<style>
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px; line-height: 1.428;
+  margin: 0 auto; padding: 0 15px;
+}
+h1, h2, h3, h4, h5, h6 { margin: 20px 0 10px; }
+h1 { font-size: 28px; } h2 { font-size: 24px; }
+h3 { font-size: 18px; } h4 { font-size: 16px; }
+h5 { font-size: 14px; } h6 { font-size: 12px; }
+a { color: #337AB7; text-decoration: none; }
+a:hover { text-decoration: underline; }
+img { max-width: 100%; height: auto; }
+ul, ol { padding-left: 30px; }
+pre, code, samp {
+  font-size: 13px;
+  font-family: Courier, monospace;
+}
+code, samp {
+  background-color: #F5F5F5;
+  border-radius: 3px; padding: 3px;
+}
+pre code, pre samp {
+  white-space: pre; background: transparent;
+  border: none; padding: 0;
+}
+pre {
+  line-height: 1.33; background-color: #F5F5F5;
+  border: 1px solid #CCCCCC; border-radius: 3px;
+  padding: 8px; overflow: auto;
+}
+</style>
+<!-- ═══════════════════════════════════════════════════════════════════════
+     webdoc2 default theme header
+     Injected into <head> via:  wdinit myfile, replace
+     (or manually: webdoc init myfile, replace header2(include("header.html")))
+
+     To customise: copy this file, edit freely, then point wdinit at it:
+         wdinit myfile, replace headerfile("my_custom_header.html")
+     ════════════════════════════════════════════════════════════════════════ -->
+
+<!-- Bootstrap 5.3 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+
+<!-- Google Fonts: Inter -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+<!-- Bootstrap Icons (chevron for back-to-top button) -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
+<style>
+/* ── Theme tokens — override here to change the colour scheme ────────────── */
+:root {
+  --wd-primary:    #1B2D55;   /* navbar / headings / accents */
+  --wd-accent:     #D44500;   /* h2 underline, hover highlights */
+  --wd-link:       #2B6CB0;   /* body link colour */
+  --wd-light-bg:   #F5F7FA;   /* code blocks, TOC, accordion bg */
+  --wd-border:     #DEE2E6;
+  --wd-text:       #1A1A2E;
+  --wd-muted:      #6C7A8D;
+  --wd-page-width: 90%;       /* default content width; override with wdwidth command */
+}
+
+/* ── Always reserve scrollbar space; offset anchors below sticky navbar ──── */
+html {
+  overflow-y: scroll;
+  scroll-behavior: smooth;
+  scroll-padding-top: 72px;   /* matches navbar height so anchors aren't hidden */
+}
+
+/* ── Base typography ──────────────────────────────────────────────────────── */
+body {
+  font-family: 'Inter', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.68;
+  color: var(--wd-text);
+  background-color: #ffffff;
+}
+
+/* ── Navbar ───────────────────────────────────────────────────────────────── */
+.navbar {
+  background-color: var(--wd-primary) !important;
+  padding: 0.55rem 1.5rem;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.18);
+}
+.navbar-brand {
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #ffffff !important;
+}
+.navbar-toggler        { border-color: rgba(255,255,255,0.4); }
+.navbar-toggler-icon   { filter: invert(1) brightness(2); }
+.navbar-nav .nav-link  {
+  font-size: 0.80rem;
+  font-weight: 500;
+  color: rgba(255,255,255,0.78) !important;
+  padding: 0.5rem 1.05rem !important;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  border-bottom: 2px solid transparent;
+  transition: color 0.16s ease, border-color 0.16s ease;
+}
+.navbar-nav .nav-link:hover {
+  color: #ffffff !important;
+  border-bottom-color: var(--wd-accent);
+}
+.navbar-nav .nav-link.active {
+  color: #ffffff !important;
+  border-bottom-color: var(--wd-accent);
+  font-weight: 600;
+}
+
+/* ── Navbar dropdowns ─────────────────────────────────────────────────────── */
+.navbar .dropdown-menu {
+  background-color: #ffffff;
+  border: 1px solid var(--wd-border);
+  border-radius: 6px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  margin-top: 0.25rem;
+  min-width: 180px;
+}
+.navbar .dropdown-item {
+  font-size: 0.85rem;
+  color: var(--wd-text);
+  padding: 0.45rem 1rem;
+}
+.navbar .dropdown-item:hover {
+  background-color: var(--wd-light-bg);
+  color: var(--wd-primary);
+}
+.navbar .dropdown-toggle::after { vertical-align: 0.1em; }
+
+/* ── Headings ─────────────────────────────────────────────────────────────── */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  color: var(--wd-primary);
+  margin-top: 1.75rem;
+  margin-bottom: 0.55rem;
+}
+h1 { font-size: 1.85rem; }
+h2 {
+  font-size: 1.35rem;
+  border-bottom: 3px solid var(--wd-accent);
+  padding-bottom: 0.28rem;
+}
+h3 { font-size: 1.12rem; }
+h4 { font-size: 1rem; color: var(--wd-muted); }
+
+/* ── Links ────────────────────────────────────────────────────────────────── */
+a       { color: var(--wd-link);   text-decoration: none; }
+a:hover { color: var(--wd-accent); text-decoration: underline; }
+
+/* ── Stata log blocks ─────────────────────────────────────────────────────── */
+pre.stlog {
+  background-color: var(--wd-light-bg);
+  border: 1px solid var(--wd-border);
+  border-left: 4px solid var(--wd-primary);
+  border-radius: 0 6px 6px 0;
+  padding: 0.9rem 1.2rem;
+  font-size: 12.5px;
+  line-height: 1.55;
+  overflow-x: auto;
+  margin-bottom: 1.1rem;
+}
+.stinp { color: var(--wd-primary); font-weight: 600; }
+.stres { color: #145A32; }
+.stcmt { font-style: italic; opacity: 0.55; }
+
+/* ── Bootstrap accordion (button.ado / graphbutton.ado) ───────────────────── */
+.accordion, .accordion-item, .accordion-body { max-width: 100%; }
+.accordion-item {
+  border: 1px solid var(--wd-border);
+  border-radius: 6px !important;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+.accordion-button {
+  font-size: 0.82rem;
+  font-weight: 500;
+  background-color: var(--wd-light-bg);
+  color: var(--wd-primary) !important;
+}
+.accordion-button:not(.collapsed) {
+  background-color: var(--wd-primary);
+  color: #ffffff !important;
+  box-shadow: none;
+}
+.accordion-button:not(.collapsed)::after { filter: invert(1) brightness(2); }
+.accordion-body { padding: 1rem 1.2rem; background-color: #ffffff; overflow-x: auto; }
+
+/* ── Lists ────────────────────────────────────────────────────────────────── */
+/* wdlist (dashed) — LaTeX-like em-dash markers via ::before. */
+ul.wd-list-dashed {
+  list-style: none;
+  padding-left: 1.2rem;
+}
+ul.wd-list-dashed > li {
+  position: relative;
+  padding-left: 1.2rem;
+  margin-bottom: 0.15rem;
+}
+ul.wd-list-dashed > li::before {
+  content: "—";
+  position: absolute;
+  left: 0;
+  color: var(--wd-primary);
+  font-weight: 600;
+}
+/* wditemize (round) and wdenumerate (numbers) use default browser markers. */
+ul:not(.wd-list-dashed) > li,
+ol > li { margin-bottom: 0.15rem; }
+
+/* ── Figures ──────────────────────────────────────────────────────────────── */
+figure { margin: 0.8rem 0; }
+figure img {
+  border-radius: 6px;
+  box-shadow: 0 2px 14px rgba(0,0,0,0.09);
+  max-width: 100%;
+  height: auto;
+}
+
+/* ── In-page Table of Contents ────────────────────────────────────────────── */
+.wd-toc-wrap {
+  background-color: var(--wd-light-bg);
+  border: 1px solid var(--wd-border);
+  border-left: 4px solid var(--wd-primary);
+  border-radius: 0 6px 6px 0;
+  padding: 0.9rem 1.25rem;
+  margin-bottom: 1.5rem;
+  display: inline-block;
+  min-width: 220px;
+  max-width: 480px;
+}
+.wd-toc-title {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--wd-primary);
+  margin-bottom: 0.45rem;
+}
+.wd-toc-list { margin: 0; padding: 0; list-style: none; }
+.wd-toc-list a {
+  display: block;
+  color: var(--wd-primary);
+  font-size: 0.87rem;
+  line-height: 1.95;
+  text-decoration: none;
+  transition: color 0.14s;
+}
+.wd-toc-list a:hover    { color: var(--wd-accent); }
+.wd-toc-h2              { padding-left: 0.8rem; }
+.wd-toc-h3              { padding-left: 1.6rem; font-size: 0.81rem; }
+.wd-toc-h4              { padding-left: 2.4rem; font-size: 0.78rem; }
+.wd-toc-h5              { padding-left: 3.2rem; font-size: 0.75rem; }
+.wd-toc-h6              { padding-left: 4.0rem; font-size: 0.72rem; }
+
+/* ── Page width — controlled by --wd-page-width; use wdwidth command to change */
+.container,
+.container-sm,
+.container-md,
+.container-lg,
+.container-xl,
+.container-xxl {
+  max-width: var(--wd-page-width) !important;
+}
+
+/* ── Misc spacing ─────────────────────────────────────────────────────────── */
+p { margin-bottom: 0.85rem; }
+.container, .container-fluid { padding-top: 0.25rem; padding-bottom: 0.25rem; }
+
+/* ── Back-to-top button ───────────────────────────────────────────────────── */
+#wd-back-to-top {
+  display: none;
+  position: fixed;
+  bottom: 2rem;  right: 2rem;
+  z-index: 9999;
+  width: 46px; height: 46px;
+  border-radius: 50%;
+  background-color: var(--wd-primary);
+  color: #ffffff;
+  border: none;
+  font-size: 1.3rem;
+  line-height: 46px;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 3px 14px rgba(0,0,0,0.22);
+  transition: background-color 0.18s;
+  padding: 0;
+}
+#wd-back-to-top:hover { background-color: var(--wd-accent); }
+</style>
+
+<!-- Bootstrap 5.3 JS Bundle — enables navbar toggler + accordion collapse -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" defer crossorigin="anonymous"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+  /* ── Back-to-top floating button ──────────────────────────────────────── */
+  var btn = document.createElement('button');
+  btn.id = 'wd-back-to-top';
+  btn.title = 'Back to top';
+  btn.setAttribute('aria-label', 'Back to top');
+  btn.innerHTML = '<i class="bi bi-chevron-up"></i>';
+  document.body.appendChild(btn);
+  window.addEventListener('scroll', function () {
+    btn.style.display = (window.scrollY > 320) ? 'block' : 'none';
+  });
+  btn.addEventListener('click', function () {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  /* ── Auto-generate in-page TOC from headings ──────────────────────────── */
+  // Finds every element with class "wd-toc-wrap" and fills it with heading links.
+  // wdtoc.ado writes the container; this script fills it in.
+  // Depth controlled per-wrap via data-wd-depth (1..6, default 3).
+  document.querySelectorAll('.wd-toc-wrap').forEach(function (wrap) {
+    var depth = parseInt(wrap.getAttribute('data-wd-depth') || '3', 10);
+    if (isNaN(depth) || depth < 1) depth = 3;
+    if (depth > 6) depth = 6;
+    var selectors = [];
+    for (var d = 1; d <= depth; d++) selectors.push('h' + d);
+
+    var headings = Array.prototype.slice.call(
+      document.querySelectorAll(selectors.join(','))
+    ).filter(function (h) {
+      // Skip headings inside navbar and accordion headers
+      return !h.closest('.navbar') && !h.classList.contains('accordion-header');
+    });
+
+    if (headings.length === 0) return;
+
+    var ul = document.createElement('ul');
+    ul.className = 'wd-toc-list';
+
+    headings.forEach(function (h, i) {
+      if (!h.id) h.id = 'wdtoc-h-' + i;
+      var li = document.createElement('li');
+      li.className = 'wd-toc-' + h.tagName.toLowerCase();
+      var a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent.trim();
+      li.appendChild(a);
+      ul.appendChild(li);
+    });
+
+    wrap.appendChild(ul);
+  });
+
+  /* ── Remove stray closing-command echoes from Stata log output ──────────── */
+  var _wdClosingCmds = ['wdclose', 'buttonclose', 'graphbuttonclose',
+                        'wdnavbarclose', 'wdnavdropdownclose'];
+  document.querySelectorAll('span.stinp').forEach(function (span) {
+    var txt = span.textContent.replace(/^\s*\.\s*/, '').trim();
+    if (_wdClosingCmds.indexOf(txt) !== -1) {
+      var pre = span.closest('pre.stlog');
+      span.remove();
+      if (pre && pre.textContent.trim() === '') pre.remove();
+    }
+  });
+
+});
+</script>
+<style>
+.stcmd .stcmt { font-style: italic; opacity: 0.5; }
+.stoom, .stcnp { font-style: italic; }
+@media screen { .stcnp { display: none; }}
+</style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-3">
+<div class="container-fluid">
+<a class="navbar-brand" href="index.html" title="THECB_accountability">Documentation</a>
+<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+<div class="collapse navbar-collapse" id="mainNavbar">
+<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+<li class="nav-item"><a class="nav-link " href="index.html">Home</a></li>
+<li class="nav-item"><a class="nav-link active" href="100_data_download.html">100 Download</a></li>
+<li class="nav-item"><a class="nav-link " href="200_data_management.html">200 Management</a></li>
+<li class="nav-item"><a class="nav-link " href="300_labels.html">300 Labels</a></li>
+<li class="nav-item"><a class="nav-link " href="400_data_profiler.html">400 Profiler</a></li>
+<li class="nav-item"><a class="nav-link " href="500_aggregation.html">500 Aggregation</a></li>
+<li class="nav-item"><a class="nav-link " href="600_analysis.html">600 Analysis</a></li>
+<li class="nav-item"><a class="nav-link " href="help.html">Help</a></li>
+</ul>
+<span class="navbar-text ms-3" title="Texas 2036"><img src="tx2036_logo.png" alt="Texas 2036" height="18" style="opacity:0.55;vertical-align:middle;" onerror="this.style.display='none'"></span>
+</div></div></nav>
+<h1 id="100-data-download">100. Data download</h1>
+<p>This page documents how the raw files for the <b>THECB_accountability</b> source are fetched into <code>01_raw/</code>.  Raw files are immutable; if you need to clean them, do it in <code>200_data_management.do</code>.</p>
+<div id="wd-toc" class="wd-toc-wrap" data-wd-depth="2"><strong class="wd-toc-title">Contents</strong></div>
+<h2 id="source">Source</h2>
+<ul class="wd-list-dashed">
+<li>Agency / vendor: <b>THECB_accountability</b></li>
+<li>Source URL: <a href="" target="_blank"></a></li>
+<li>Description: Public acountability tables</li>
+<li>Scaffolded by ericbooth on 2026-05-24</li>
+</ul>
+<h2 id="files-fetched">Files fetched</h2>
+<p>Each file below is downloaded with Stata's <code>copy</code> command (cross-OS, no shell calls).  Edit the list to match the URLs you need for this source.</p>
+<div class="mb-4"> <div class="accordion" id="accordionExample"> <div class="accordion-item"> <h2 class="accordion-header"> <button class="accordion-button collapsed text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse4" aria-expanded="false" aria-controls="collapse4"> <small>Click to view code</small> </button></h2> <div id="collapse4" class="accordion-collapse collapse" data-bs-parent="#accordionExample"><div class="accordion-body">
+<pre id="stlog-1" class="stlog"><samp><span class="stinp">. <span class="stcmt">* ───────────────────────────────────────────────────────────────────────</span></span>
+<span class="stinp">. <span class="stcmt">*  Edit this block:  add one line per file to download.</span></span>
+<span class="stinp">. <span class="stcmt">*  Files are written to 01_raw/; existing files are first moved to _archive.</span></span>
+<span class="stinp">. <span class="stcmt">*  Leave the lists empty to skip the loop until you have real URLs.</span></span>
+<span class="stinp">. <span class="stcmt">* ───────────────────────────────────────────────────────────────────────</span></span>
+<span class="stinp">. </span>
+<span class="stinp">. local urls</span>
+
+<span class="stinp">. local localnames</span>
+
+<span class="stinp">. </span>
+<span class="stinp">. <span class="stcmt">* Example (uncomment and edit):</span></span>
+<span class="stinp">. <span class="stcmt">* local urls ///</span>
+&gt; *     "https://example.com/data/file1.xlsx" <span class="stcmt">///</span>
+&gt; *     "https://example.com/data/file2.xlsx"</span>
+<span class="stinp">. <span class="stcmt">* local localnames ///</span>
+&gt; *     "THECB_accountability_file1.xlsx" <span class="stcmt">///</span>
+&gt; *     "THECB_accountability_file2.xlsx"</span>
+<span class="stinp">. </span>
+<span class="stinp">. local n  : word count `urls'</span>
+
+<span class="stinp">. local n2 : word count `localnames'</span>
+
+<span class="stinp">. </span>
+<span class="stinp">. if `n' != `n2' di as err "URL/localnames list lengths differ: `n' vs `n2'"</span>
+
+<span class="stinp">. if `n' == 0    di as txt "  (no URLs configured — edit this do-file to add some)"</span>
+  (no URLs configured — edit this do-file to add some)
+
+<span class="stinp">. </span>
+<span class="stinp">. local stamp = subinstr("`c(current_date)'", " ", "", .)</span>
+
+<span class="stinp">. cap mkdir "${raw}/_archive/`stamp'"</span>
+
+<span class="stinp">. </span>
+<span class="stinp">. forvalues i = 1/`n' {</span>
+  2<span class="stinp">.     local url  : word `i' of `urls'</span>
+  3<span class="stinp">.     local name : word `i' of `localnames'</span>
+  4<span class="stinp">. </span>
+<span class="stinp">.     <span class="stcmt">* Stage existing copy to _archive (don't erase yet — keep as fallback)</span></span>
+<span class="stinp">.     local had_existing 0</span>
+  5<span class="stinp">.     cap confirm file "${raw}/`name'"</span>
+  6<span class="stinp">.     if !_rc {</span>
+  7<span class="stinp">.         di as txt "Archiving existing `name' -&gt; _archive/`stamp'/"</span>
+  8<span class="stinp">.         cap copy "${raw}/`name'" "${raw}/_archive/`stamp'/`name'", replace</span>
+  9<span class="stinp">.         local had_existing 1</span>
+ 10<span class="stinp">.     }</span>
+ 11<span class="stinp">. </span>
+<span class="stinp">.     di as txt "Fetching: `url'"</span>
+ 12<span class="stinp">.     cap copy "`url'" "${raw}/`name'", replace</span>
+ 13<span class="stinp">.     if _rc {</span>
+ 14<span class="stinp">.         di as err "  FAILED (rc=`=_rc') -- file not retrieved."</span>
+ 15<span class="stinp">.         if `had_existing' {</span>
+ 16<span class="stinp">.             di as txt "  -&gt; previous copy in _archive/`stamp'/ still in 01_raw/"</span>
+ 17<span class="stinp">.         }</span>
+ 18<span class="stinp">.     }</span>
+ 19<span class="stinp">.     if !_rc di as txt "  -&gt; ${raw}/`name'"</span>
+ 20<span class="stinp">. }</span>
+
+
+</samp></pre>
+</div> </div> </div> </div> </div> <br>
+<h2 id="verify-the-raw-drop">Verify the raw drop</h2>
+<p>After download, confirm every expected file is present and non-empty.</p>
+<div class="mb-4"> <div class="accordion" id="accordionExample"> <div class="accordion-item"> <h2 class="accordion-header"> <button class="accordion-button collapsed text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse5" aria-expanded="false" aria-controls="collapse5"> <small>Click to view code</small> </button></h2> <div id="collapse5" class="accordion-collapse collapse" data-bs-parent="#accordionExample"><div class="accordion-body">
+<pre id="stlog-2" class="stlog"><samp><span class="stinp">. local found : dir "${raw}" files "*"</span>
+
+<span class="stinp">. local n_found : word count `found'</span>
+
+<span class="stinp">. di as txt "01_raw/ contains `n_found' file(s):"</span>
+01_raw/ contains 92 file(s):
+
+<span class="stinp">. foreach name of local found {</span>
+  2<span class="stinp">.     di as txt "  - `name'"</span>
+  3<span class="stinp">. }</span>
+  - Public_Universities_Graduates_as_a_Percent_of_Undergraduate_FTE_Enrollment.csv
+  - Community_Colleges_Graduation_Rate__Same_and_Other.csv
+  - Public_Universities_Underprepared_Prepared_Students_who_Satisfy_TSI.csv
+  - Public_Universities_Degrees_and_Certificates_Awarded___Economically_Disadvantaged.csv
+  - Community_Colleges_Persistence_Rates.csv
+  - Public_Universities_Enrollment_by_Undergraduate_Students_Taking_SCH_at_2_year_Colleges.csv
+  - Community_Colleges_Enrollment_by_Age_Groups__Annual_Unduplicated.csv
+  - Community_Colleges_Degrees_and_Certificates_Awarded_by_Curriculum_Area.csv
+  - .DS_Store
+  - Community_Colleges_Enrollment_by_Semester_Credit_Hour__SCH__Load.csv
+  - Community_Colleges_Percent_of_Graduates_with_Debt.csv
+  - Community_Colleges_Full_Time_Student_Equivalent_by_All_Hours_and_State_Funded.csv
+  - Community_Colleges_Degrees_and_Certificates_Awarded_by_Type_Major__CTC_Only.csv
+  - Public_Universities_Enrollment_by_Curriculum_Area.csv
+  - Community_Colleges_Student_Faculty_Ratio.csv
+  - Public_Universities_Percent_of_Graduates_with_Debt.csv
+  - Community_Colleges_Underprepared_Prepared_Students_Completing_a_College_Level_Course.csv
+  - Community_Colleges_Degrees_and_certificates_awarded_in_STEM__Allied_Health__Nursing_or_Associate
+&gt; _of_Art_in_Teaching.csv
+  - Community_Colleges_Enrollment_by_Type_Major.csv
+  - Public_Universities_Graduation_Rate__OOS_Peers__Non_Texas___Career.csv
+  - Public_Universities_Research_Expenditures_by_Source.csv
+  - Public_Universities_Enrollment_by_Flex_Entry.csv
+  - Community_Colleges_Underprepared_Prepared_Students_Receiving_an_Award.csv
+  - Community_Colleges_Transfer_to_a_Senior_Institution.csv
+  - Community_Colleges_Time_to_Degree.csv
+  - Public_Universities_Graduates_With_No_More_Than_3_Excess_Hours__Bachelor_s_Degrees.csv
+  - Community_Colleges_Graduation_Rate__OOS_Peers__Non_Texas___Career.csv
+  - Public_Universities_Full_Time_Student_Equivalent_by_All_Hours_and_State_Funded.csv
+  - Community_Colleges_Graduates_With_No_More_Than_3_Excess_Hours__Associate_Degrees.csv
+  - Public_Universities_Degrees_and_Certificates_Awarded_by_Curriculum_Area.csv
+  - Public_Universities_Students_in_Texas_Top_10__and_Top_25.csv
+  - Public_Universities_Graduation_Rate_Counts.csv
+  - Public_Universities_Tuition_and_fees_for_30_SCH.csv
+  - Public_Universities_Persistence_Rates.csv
+  - Community_Colleges_Graduation_Rate_Counts.csv
+  - Public_Universities_Working_or_Enrolled_within_One_Year_after_Award.csv
+  - Public_Universities_Enrollment_by_Tuition_Status.csv
+  - Community_Colleges_Students_Receiving_Pell_Grants.csv
+  - Public_Universities_Semester_Credit_Hours_to_Degree.csv
+  - Public_Universities_Research_Expenditures_per_FTE_Faculty.csv
+  - Community_Colleges_Semester_Credit_Hours_in_Excess_of_Program_Requirements.csv
+  - Public_Universities_Graduation_and_Persistence_Rate_Counts__Six_Years.csv
+  - Community_Colleges_Enrollment_by_Age_Groups.csv
+  - Public_Universities_Students_Receiving_Pell_Grants.csv
+  - Public_Universities_Expenditures_per_full_time_student_equivalent.csv
+  - Public_Universities_Faculty_Teaching_Lower_Division_SCH__Tenured_Tenure_Track.csv
+  - Public_Universities_Graduation_Rate_Counts_for_Master_s_and_Doctoral_Programs.csv
+  - Public_Universities_State_Appropriations_per_FTSE.csv
+  - Community_Colleges_Enrollment_in_Dual_Credit__Annual_Unduplicated.csv
+  - Public_Universities_Student_Loan_Debt__Average.csv
+  - Community_Colleges_Semester_Credit_Hours_by_Funding_Type.csv
+  - Community_Colleges_Faculty_Headcount__Fall.csv
+  - Public_Universities_Graduation_Rate__Same_and_Other.csv
+  - Public_Universities_Graduation_Rate_Counts_for_Two_Year_First_Time_Transfers_to_a_University.csv
+  - Community_Colleges_Student_Loan_Debt_to_First_Year_Wage__Median.csv
+  - Community_Colleges_Contact_hours_for_Continuing_Education_Students.csv
+  - Public_Universities_Percent_of_attempted_SCH_completed_successfully_completed.csv
+  - Public_Universities_Degrees_and_certificates_awarded_in_STEM__Allied_Health__Nursing_or_Associat
+&gt; e_of_Art_in_Teaching.csv
+  - Community_Colleges_Enrollment_by_FTIC__FT_PT__or_Degree_Seeking.csv
+  - Public_Universities_Enrollment_by_Average_Age.csv
+  - Public_Universities_Faculty_Headcount__Fall.csv
+  - Public_Universities_Time_to_Degree.csv
+  - Community_Colleges_Expenditures_per_full_time_student_equivalent.csv
+  - Public_Universities_FTE_Faculty_Who_are_Tenure_Tenure_Track.csv
+  - Community_Colleges_Enrollment_by_Flex_Entry.csv
+  - Community_Colleges_Degrees_and_Certificates_Awarded___Economically_Disadvantaged.csv
+  - Community_Colleges_Underprepared_Prepared_Students_who_Satisfy_TSI.csv
+  - Community_Colleges_Graduation_and_Persistence_Rate_Counts__Six_Years.csv
+  - Public_Universities_Semester_Credit_Hours_by_Instruction_Mode.csv
+  - Community_Colleges_Contact_Hours_for_Credit_Enrollment_Students.csv
+  - Community_Colleges_Enrollment_by_Curriculum_Area.csv
+  - Public_Universities_Student_Loan_Debt_to_First_Year_Wage__Median.csv
+  - Public_Universities_Underprepared_Prepared_Students_Receiving_an_Award.csv
+  - Community_Colleges_Enrollment_by_Average_Age.csv
+  - Community_Colleges_Working_or_Enrolled_within_One_Year_after_Award.csv
+  - Community_Colleges_Graduates_as_a_Percent_of_Undergraduate_FTE_Enrollment.csv
+  - Community_Colleges_Tuition_and_fees_for_30_SCH.csv
+  - Public_Universities_Semester_Credit_Hours_in_Excess_of_Program_Requirements.csv
+  - Public_Universities_Enrollment_by_Semester_Credit_Hour__SCH__Load.csv
+  - Community_Colleges_Enrollment_by_Tuition_Status.csv
+  - Public_Universities_Graduation_Rate_Counts__OOS_Peers__Non_Texas___Career.csv
+  - Community_Colleges_Enrollment_by_Tuition_Status__Annual_Unduplicated.csv
+  - Public_Universities_Student_Faculty_Ratio.csv
+  - Community_Colleges_Contact_Hours_Taught_by_FT_PT_Faculty.csv
+  - Public_Universities_Underprepared_Prepared_Students_Completing_a_College_Level_Course.csv
+  - Community_Colleges_Percent_of_attempted_SCH_completed_successfully_completed.csv
+  - Public_Universities_Semester_Credit_Hours_by_Funding_Type.csv
+  - Community_Colleges_Student_Loan_Debt__Average.csv
+  - Community_Colleges_Semester_Credit_Hours_to_Degree.csv
+  - Public_Universities_Enrollment_by_FTIC__FT_PT__or_Degree_Seeking.csv
+  - Public_Universities_Enrollment_by_Age_Groups.csv
+  - Public_Universities_Graduates_With_SCH_at_a_Two_Year_College__Bachelor_s_Degrees.csv
+
+<span class="stinp">. if `n_found' == 0 di as txt "  (nothing yet — re-run after adding URLs above)"</span>
+
+
+</samp></pre>
+</div> </div> </div> </div> </div> <br>
+<h2 id="snapshot-source-site-documentation">Snapshot source-site documentation</h2>
+<p>Any PDF codebooks, README pages, or technical notes on the source site go to <code>_documentation/_source_snapshot/</code> so the cleaning logic stays anchored to a frozen reference even if the source page changes.</p>
+<div class="mb-4"> <div class="accordion" id="accordionExample"> <div class="accordion-item"> <h2 class="accordion-header"> <button class="accordion-button collapsed text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse6" aria-expanded="false" aria-controls="collapse6"> <small>Click to view code</small> </button></h2> <div id="collapse6" class="accordion-collapse collapse" data-bs-parent="#accordionExample"><div class="accordion-body">
+<pre id="stlog-3" class="stlog"><samp><span class="stinp">. cap mkdir "${docs}/_source_snapshot"</span>
+
+<span class="stinp">. local docs_urls   ""    <span class="stcmt">// e.g.  "https://example.com/data/codebook.pdf"</span></span>
+
+<span class="stinp">. local docs_names  ""    <span class="stcmt">// e.g.  "THECB_accountability_codebook.pdf"</span></span>
+
+<span class="stinp">. </span>
+<span class="stinp">. local nd : word count `docs_urls'</span>
+
+<span class="stinp">. forvalues i = 1/`nd' {</span>
+  2<span class="stinp">.     local u : word `i' of `docs_urls'</span>
+  3<span class="stinp">.     local n : word `i' of `docs_names'</span>
+  4<span class="stinp">.     cap copy "`u'" "${docs}/_source_snapshot/`n'", replace</span>
+  5<span class="stinp">.     if !_rc di as txt "Snapshot OK: `n'"</span>
+  6<span class="stinp">.     else    di as err "Snapshot FAIL: `u'"</span>
+  7<span class="stinp">. }</span>
+
+
+</samp></pre>
+</div> </div> </div> </div> </div> <br>
+<h2 id="open-questions">Open questions</h2>
+<ul class="wd-list-dashed">
+<li>(replace this) What is the canonical update cadence for this source?</li>
+<li>(replace this) Is there an API or only file downloads?</li>
+<li>(replace this) Are historical vintages re-stated by the source, or append-only?</li>
+</ul>
+</body>
+</html>
