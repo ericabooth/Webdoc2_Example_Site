@@ -385,7 +385,7 @@ document.addEventListener('DOMContentLoaded', function () {
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-3">
 <div class="container-fluid">
-<a class="navbar-brand" href="index.html" title="THECB_accountability">Documentation</a>
+<a class="navbar-brand" href="index.html" title="Insurance_PriceTransparency_BCBSTX">Documentation</a>
 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
 <div class="collapse navbar-collapse" id="mainNavbar">
 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
@@ -400,1082 +400,183 @@ document.addEventListener('DOMContentLoaded', function () {
 </ul>
 <span class="navbar-text ms-3" title="Texas 2036"><img src="tx2036_logo.png" alt="Texas 2036" height="18" style="opacity:0.55;vertical-align:middle;" onerror="this.style.display='none'"></span>
 </div></div></nav>
+<style>pre,.stlog,samp{white-space:pre !important;overflow-x:auto;display:block;font-size:0.8rem;line-height:1.25}table.tbl{font-size:0.85rem}</style>
 <h1 id="200-data-management">200. Data management</h1>
-<p>Mechanical conversion + cleaning for <b>THECB_accountability</b>.  Raw stays in 01_raw; analytic output lands in 02_cleaned.</p>
+<p>Types the extracted CSVs, attaches the Texas 2036 service menu, stamps a snapshot id, and writes the analytic datasets to <code>02_cleaned/</code>.</p>
 <div id="wd-toc" class="wd-toc-wrap" data-wd-depth="2"><strong class="wd-toc-title">Contents</strong></div>
-<h2 id="pass-0-bulk-convert-every-raw-file-to-dta">Pass 0 — bulk convert every raw file to .dta</h2>
-<p>For every file in <code>01_raw/</code> (xlsx/xls/csv/txt/tab/dta/raw), emit one or more <code>.dta</code> files into <code>01_raw/_converted/</code> via <code>convertanything</code> in recursive mode.  Multi-sheet workbooks produce one <code>.dta</code> per sheet.  Subdirectory structure under <code>01_raw/</code> is mirrored under <code>_converted/</code>.</p>
-<p><code>_converted/</code> is wiped first so it stays in exact sync with <code>01_raw/</code> on every run.  Anything you need to keep across rebuilds belongs in <code>02_cleaned/</code>, not here.</p>
-<p>Toggle this section with <code>global ds_autoconvert "0"</code> in <code>000_controlfile.do</code> (or scaffold with <code>projectbuilder ..., noautoconvert</code>).</p>
-<div class="mb-4"> <div class="accordion" id="accordionExample"> <div class="accordion-item"> <h2 class="accordion-header"> <button class="accordion-button collapsed text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse7" aria-expanded="false" aria-controls="collapse7"> <small>Click to view code</small> </button></h2> <div id="collapse7" class="accordion-collapse collapse" data-bs-parent="#accordionExample"><div class="accordion-body">
-<pre id="stlog-1" class="stlog"><samp><span class="stinp">.     dswipe "${converted}"</span>
-<span class="stinp">.     convertanything using "${raw}", recursive saving("${converted}") <span class="stcmt">///</span>
-&gt;         skip("_converted _archive") allsheets cleannames destring compress clear replace</span>
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Graduates_as_a_Perc</span>
-    <span class="stres">&gt; ent_of_Undergraduate_FTE_Enrollment.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Graduates_as_a_Perc</span>
-    <span class="stres">&gt; ent_of_Undergraduate_FTE_Enrollment.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Graduation_Rate__Sam</span>
-    <span class="stres">&gt; e_and_Other.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Graduation_Rate__Sam</span>
-    <span class="stres">&gt; e_and_Other.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Underprepared_Prepa</span>
-    <span class="stres">&gt; red_Students_who_Satisfy_TSI.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Underprepared_Prepa</span>
-    <span class="stres">&gt; red_Students_who_Satisfy_TSI.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Degrees_and_Certifi</span>
-    <span class="stres">&gt; cates_Awarded___Economically_Disadvantaged.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Degrees_and_Certifi</span>
-    <span class="stres">&gt; cates_Awarded___Economically_Disadvantaged.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Persistence_Rates.dt</span>
-    <span class="stres">&gt; a</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Persistence_Rates.dt</span>
-    <span class="stres">&gt; a</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Enrollment_by_Under</span>
-    <span class="stres">&gt; graduate_Students_Taking_SCH_at_2_year_Colleges.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Enrollment_by_Under</span>
-    <span class="stres">&gt; graduate_Students_Taking_SCH_at_2_year_Colleges.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Enrollment_by_Age_Gr</span>
-    <span class="stres">&gt; oups__Annual_Unduplicated.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Enrollment_by_Age_Gr</span>
-    <span class="stres">&gt; oups__Annual_Unduplicated.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Degrees_and_Certific</span>
-    <span class="stres">&gt; ates_Awarded_by_Curriculum_Area.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Degrees_and_Certific</span>
-    <span class="stres">&gt; ates_Awarded_by_Curriculum_Area.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Enrollment_by_Semest</span>
-    <span class="stres">&gt; er_Credit_Hour__SCH__Load.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Enrollment_by_Semest</span>
-    <span class="stres">&gt; er_Credit_Hour__SCH__Load.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Percent_of_Graduates</span>
-    <span class="stres">&gt; _with_Debt.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Percent_of_Graduates</span>
-    <span class="stres">&gt; _with_Debt.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Full_Time_Student_Eq</span>
-    <span class="stres">&gt; uivalent_by_All_Hours_and_State_Funded.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Full_Time_Student_Eq</span>
-    <span class="stres">&gt; uivalent_by_All_Hours_and_State_Funded.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Degrees_and_Certific</span>
-    <span class="stres">&gt; ates_Awarded_by_Type_Major__CTC_Only.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Degrees_and_Certific</span>
-    <span class="stres">&gt; ates_Awarded_by_Type_Major__CTC_Only.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Enrollment_by_Curri</span>
-    <span class="stres">&gt; culum_Area.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Enrollment_by_Curri</span>
-    <span class="stres">&gt; culum_Area.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Student_Faculty_Rati</span>
-    <span class="stres">&gt; o.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Student_Faculty_Rati</span>
-    <span class="stres">&gt; o.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Percent_of_Graduate</span>
-    <span class="stres">&gt; s_with_Debt.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Percent_of_Graduate</span>
-    <span class="stres">&gt; s_with_Debt.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Underprepared_Prepar</span>
-    <span class="stres">&gt; ed_Students_Completing_a_College_Level_Course.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Underprepared_Prepar</span>
-    <span class="stres">&gt; ed_Students_Completing_a_College_Level_Course.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Degrees_and_certific</span>
-    <span class="stres">&gt; ates_awarded_in_STEM__Allied_Health__Nursing_or_Associate_of_Art_in_Teaching.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Degrees_and_certific</span>
-    <span class="stres">&gt; ates_awarded_in_STEM__Allied_Health__Nursing_or_Associate_of_Art_in_Teaching.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Enrollment_by_Type_M</span>
-    <span class="stres">&gt; ajor.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Enrollment_by_Type_M</span>
-    <span class="stres">&gt; ajor.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Graduation_Rate__OO</span>
-    <span class="stres">&gt; S_Peers__Non_Texas___Career.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Graduation_Rate__OO</span>
-    <span class="stres">&gt; S_Peers__Non_Texas___Career.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Research_Expenditur</span>
-    <span class="stres">&gt; es_by_Source.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Research_Expenditur</span>
-    <span class="stres">&gt; es_by_Source.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Enrollment_by_Flex_</span>
-    <span class="stres">&gt; Entry.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Enrollment_by_Flex_</span>
-    <span class="stres">&gt; Entry.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Underprepared_Prepar</span>
-    <span class="stres">&gt; ed_Students_Receiving_an_Award.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Underprepared_Prepar</span>
-    <span class="stres">&gt; ed_Students_Receiving_an_Award.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Transfer_to_a_Senior</span>
-    <span class="stres">&gt; _Institution.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Transfer_to_a_Senior</span>
-    <span class="stres">&gt; _Institution.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Time_to_Degree.dta</span>
-    not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Time_to_Degree.dta</span>
-    saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Graduates_With_No_M</span>
-    <span class="stres">&gt; ore_Than_3_Excess_Hours__Bachelor_s_Degrees.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Graduates_With_No_M</span>
-    <span class="stres">&gt; ore_Than_3_Excess_Hours__Bachelor_s_Degrees.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Graduation_Rate__OOS</span>
-    <span class="stres">&gt; _Peers__Non_Texas___Career.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Graduation_Rate__OOS</span>
-    <span class="stres">&gt; _Peers__Non_Texas___Career.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Full_Time_Student_E</span>
-    <span class="stres">&gt; quivalent_by_All_Hours_and_State_Funded.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Full_Time_Student_E</span>
-    <span class="stres">&gt; quivalent_by_All_Hours_and_State_Funded.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Graduates_With_No_Mo</span>
-    <span class="stres">&gt; re_Than_3_Excess_Hours__Associate_Degrees.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Graduates_With_No_Mo</span>
-    <span class="stres">&gt; re_Than_3_Excess_Hours__Associate_Degrees.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Degrees_and_Certifi</span>
-    <span class="stres">&gt; cates_Awarded_by_Curriculum_Area.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Degrees_and_Certifi</span>
-    <span class="stres">&gt; cates_Awarded_by_Curriculum_Area.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Students_in_Texas_T</span>
-    <span class="stres">&gt; op_10__and_Top_25.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Students_in_Texas_T</span>
-    <span class="stres">&gt; op_10__and_Top_25.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Graduation_Rate_Cou</span>
-    <span class="stres">&gt; nts.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Graduation_Rate_Cou</span>
-    <span class="stres">&gt; nts.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Tuition_and_fees_fo</span>
-    <span class="stres">&gt; r_30_SCH.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Tuition_and_fees_fo</span>
-    <span class="stres">&gt; r_30_SCH.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Persistence_Rates.d</span>
-    <span class="stres">&gt; ta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Persistence_Rates.d</span>
-    <span class="stres">&gt; ta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Graduation_Rate_Coun</span>
-    <span class="stres">&gt; ts.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Graduation_Rate_Coun</span>
-    <span class="stres">&gt; ts.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Working_or_Enrolled</span>
-    <span class="stres">&gt; _within_One_Year_after_Award.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Working_or_Enrolled</span>
-    <span class="stres">&gt; _within_One_Year_after_Award.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Enrollment_by_Tuiti</span>
-    <span class="stres">&gt; on_Status.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Enrollment_by_Tuiti</span>
-    <span class="stres">&gt; on_Status.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Students_Receiving_P</span>
-    <span class="stres">&gt; ell_Grants.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Students_Receiving_P</span>
-    <span class="stres">&gt; ell_Grants.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Semester_Credit_Hou</span>
-    <span class="stres">&gt; rs_to_Degree.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Semester_Credit_Hou</span>
-    <span class="stres">&gt; rs_to_Degree.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Research_Expenditur</span>
-    <span class="stres">&gt; es_per_FTE_Faculty.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Research_Expenditur</span>
-    <span class="stres">&gt; es_per_FTE_Faculty.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Semester_Credit_Hour</span>
-    <span class="stres">&gt; s_in_Excess_of_Program_Requirements.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Semester_Credit_Hour</span>
-    <span class="stres">&gt; s_in_Excess_of_Program_Requirements.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Graduation_and_Pers</span>
-    <span class="stres">&gt; istence_Rate_Counts__Six_Years.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Graduation_and_Pers</span>
-    <span class="stres">&gt; istence_Rate_Counts__Six_Years.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Enrollment_by_Age_Gr</span>
-    <span class="stres">&gt; oups.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Enrollment_by_Age_Gr</span>
-    <span class="stres">&gt; oups.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Students_Receiving_</span>
-    <span class="stres">&gt; Pell_Grants.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Students_Receiving_</span>
-    <span class="stres">&gt; Pell_Grants.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Expenditures_per_fu</span>
-    <span class="stres">&gt; ll_time_student_equivalent.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Expenditures_per_fu</span>
-    <span class="stres">&gt; ll_time_student_equivalent.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Faculty_Teaching_Lo</span>
-    <span class="stres">&gt; wer_Division_SCH__Tenured_Tenure_Track.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Faculty_Teaching_Lo</span>
-    <span class="stres">&gt; wer_Division_SCH__Tenured_Tenure_Track.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Graduation_Rate_Cou</span>
-    <span class="stres">&gt; nts_for_Master_s_and_Doctoral_Programs.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Graduation_Rate_Cou</span>
-    <span class="stres">&gt; nts_for_Master_s_and_Doctoral_Programs.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_State_Appropriation</span>
-    <span class="stres">&gt; s_per_FTSE.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_State_Appropriation</span>
-    <span class="stres">&gt; s_per_FTSE.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Enrollment_in_Dual_C</span>
-    <span class="stres">&gt; redit__Annual_Unduplicated.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Enrollment_in_Dual_C</span>
-    <span class="stres">&gt; redit__Annual_Unduplicated.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Student_Loan_Debt__</span>
-    <span class="stres">&gt; Average.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Student_Loan_Debt__</span>
-    <span class="stres">&gt; Average.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Semester_Credit_Hour</span>
-    <span class="stres">&gt; s_by_Funding_Type.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Semester_Credit_Hour</span>
-    <span class="stres">&gt; s_by_Funding_Type.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Faculty_Headcount__F</span>
-    <span class="stres">&gt; all.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Faculty_Headcount__F</span>
-    <span class="stres">&gt; all.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Graduation_Rate__Sa</span>
-    <span class="stres">&gt; me_and_Other.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Graduation_Rate__Sa</span>
-    <span class="stres">&gt; me_and_Other.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Graduation_Rate_Cou</span>
-    <span class="stres">&gt; nts_for_Two_Year_First_Time_Transfers_to_a_University.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Graduation_Rate_Cou</span>
-    <span class="stres">&gt; nts_for_Two_Year_First_Time_Transfers_to_a_University.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Student_Loan_Debt_to</span>
-    <span class="stres">&gt; _First_Year_Wage__Median.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Student_Loan_Debt_to</span>
-    <span class="stres">&gt; _First_Year_Wage__Median.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Contact_hours_for_Co</span>
-    <span class="stres">&gt; ntinuing_Education_Students.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Contact_hours_for_Co</span>
-    <span class="stres">&gt; ntinuing_Education_Students.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Percent_of_attempte</span>
-    <span class="stres">&gt; d_SCH_completed_successfully_completed.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Percent_of_attempte</span>
-    <span class="stres">&gt; d_SCH_completed_successfully_completed.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Degrees_and_certifi</span>
-    <span class="stres">&gt; cates_awarded_in_STEM__Allied_Health__Nursing_or_Associate_of_Art_in_Teaching.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Degrees_and_certifi</span>
-    <span class="stres">&gt; cates_awarded_in_STEM__Allied_Health__Nursing_or_Associate_of_Art_in_Teaching.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Enrollment_by_FTIC__</span>
-    <span class="stres">&gt; FT_PT__or_Degree_Seeking.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Enrollment_by_FTIC__</span>
-    <span class="stres">&gt; FT_PT__or_Degree_Seeking.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Enrollment_by_Avera</span>
-    <span class="stres">&gt; ge_Age.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Enrollment_by_Avera</span>
-    <span class="stres">&gt; ge_Age.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Faculty_Headcount__</span>
-    <span class="stres">&gt; Fall.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Faculty_Headcount__</span>
-    <span class="stres">&gt; Fall.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Time_to_Degree.dta</span>
-    not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Time_to_Degree.dta</span>
-    saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Expenditures_per_ful</span>
-    <span class="stres">&gt; l_time_student_equivalent.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Expenditures_per_ful</span>
-    <span class="stres">&gt; l_time_student_equivalent.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_FTE_Faculty_Who_are</span>
-    <span class="stres">&gt; _Tenure_Tenure_Track.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_FTE_Faculty_Who_are</span>
-    <span class="stres">&gt; _Tenure_Tenure_Track.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Enrollment_by_Flex_E</span>
-    <span class="stres">&gt; ntry.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Enrollment_by_Flex_E</span>
-    <span class="stres">&gt; ntry.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Degrees_and_Certific</span>
-    <span class="stres">&gt; ates_Awarded___Economically_Disadvantaged.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Degrees_and_Certific</span>
-    <span class="stres">&gt; ates_Awarded___Economically_Disadvantaged.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Underprepared_Prepar</span>
-    <span class="stres">&gt; ed_Students_who_Satisfy_TSI.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Underprepared_Prepar</span>
-    <span class="stres">&gt; ed_Students_who_Satisfy_TSI.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Graduation_and_Persi</span>
-    <span class="stres">&gt; stence_Rate_Counts__Six_Years.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Graduation_and_Persi</span>
-    <span class="stres">&gt; stence_Rate_Counts__Six_Years.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Semester_Credit_Hou</span>
-    <span class="stres">&gt; rs_by_Instruction_Mode.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Semester_Credit_Hou</span>
-    <span class="stres">&gt; rs_by_Instruction_Mode.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Contact_Hours_for_Cr</span>
-    <span class="stres">&gt; edit_Enrollment_Students.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Contact_Hours_for_Cr</span>
-    <span class="stres">&gt; edit_Enrollment_Students.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Enrollment_by_Curric</span>
-    <span class="stres">&gt; ulum_Area.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Enrollment_by_Curric</span>
-    <span class="stres">&gt; ulum_Area.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Student_Loan_Debt_t</span>
-    <span class="stres">&gt; o_First_Year_Wage__Median.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Student_Loan_Debt_t</span>
-    <span class="stres">&gt; o_First_Year_Wage__Median.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Underprepared_Prepa</span>
-    <span class="stres">&gt; red_Students_Receiving_an_Award.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Underprepared_Prepa</span>
-    <span class="stres">&gt; red_Students_Receiving_an_Award.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Enrollment_by_Averag</span>
-    <span class="stres">&gt; e_Age.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Enrollment_by_Averag</span>
-    <span class="stres">&gt; e_Age.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Working_or_Enrolled_</span>
-    <span class="stres">&gt; within_One_Year_after_Award.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Working_or_Enrolled_</span>
-    <span class="stres">&gt; within_One_Year_after_Award.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Graduates_as_a_Perce</span>
-    <span class="stres">&gt; nt_of_Undergraduate_FTE_Enrollment.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Graduates_as_a_Perce</span>
-    <span class="stres">&gt; nt_of_Undergraduate_FTE_Enrollment.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Tuition_and_fees_for</span>
-    <span class="stres">&gt; _30_SCH.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Tuition_and_fees_for</span>
-    <span class="stres">&gt; _30_SCH.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Semester_Credit_Hou</span>
-    <span class="stres">&gt; rs_in_Excess_of_Program_Requirements.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Semester_Credit_Hou</span>
-    <span class="stres">&gt; rs_in_Excess_of_Program_Requirements.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Enrollment_by_Semes</span>
-    <span class="stres">&gt; ter_Credit_Hour__SCH__Load.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Enrollment_by_Semes</span>
-    <span class="stres">&gt; ter_Credit_Hour__SCH__Load.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Enrollment_by_Tuitio</span>
-    <span class="stres">&gt; n_Status.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Enrollment_by_Tuitio</span>
-    <span class="stres">&gt; n_Status.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Graduation_Rate_Cou</span>
-    <span class="stres">&gt; nts__OOS_Peers__Non_Texas___Career.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Graduation_Rate_Cou</span>
-    <span class="stres">&gt; nts__OOS_Peers__Non_Texas___Career.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Enrollment_by_Tuitio</span>
-    <span class="stres">&gt; n_Status__Annual_Unduplicated.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Enrollment_by_Tuitio</span>
-    <span class="stres">&gt; n_Status__Annual_Unduplicated.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Student_Faculty_Rat</span>
-    <span class="stres">&gt; io.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Student_Faculty_Rat</span>
-    <span class="stres">&gt; io.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Contact_Hours_Taught</span>
-    <span class="stres">&gt; _by_FT_PT_Faculty.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Contact_Hours_Taught</span>
-    <span class="stres">&gt; _by_FT_PT_Faculty.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Underprepared_Prepa</span>
-    <span class="stres">&gt; red_Students_Completing_a_College_Level_Course.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Underprepared_Prepa</span>
-    <span class="stres">&gt; red_Students_Completing_a_College_Level_Course.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Percent_of_attempted</span>
-    <span class="stres">&gt; _SCH_completed_successfully_completed.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Percent_of_attempted</span>
-    <span class="stres">&gt; _SCH_completed_successfully_completed.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Semester_Credit_Hou</span>
-    <span class="stres">&gt; rs_by_Funding_Type.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Semester_Credit_Hou</span>
-    <span class="stres">&gt; rs_by_Funding_Type.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Student_Loan_Debt__A</span>
-    <span class="stres">&gt; verage.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Student_Loan_Debt__A</span>
-    <span class="stres">&gt; verage.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Semester_Credit_Hour</span>
-    <span class="stres">&gt; s_to_Degree.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Semester_Credit_Hour</span>
-    <span class="stres">&gt; s_to_Degree.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Enrollment_by_FTIC_</span>
-    <span class="stres">&gt; _FT_PT__or_Degree_Seeking.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Enrollment_by_FTIC_</span>
-    <span class="stres">&gt; _FT_PT__or_Degree_Seeking.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Enrollment_by_Age_G</span>
-    <span class="stres">&gt; roups.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Enrollment_by_Age_G</span>
-    <span class="stres">&gt; roups.dta</span> saved
-(file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared</span>
-    <span class="stres">drives/Data and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Graduates_With_SCH_</span>
-    <span class="stres">&gt; at_a_Two_Year_College__Bachelor_s_Degrees.dta</span> not found)
-file<span class="stres"> /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data</span>
-    <span class="stres">and Research</span>
-    <span class="stres">Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Graduates_With_SCH_</span>
-    <span class="stres">&gt; at_a_Two_Year_College__Bachelor_s_Degrees.dta</span> saved
+<h2 id="medical-prices-table-the-main-analytic-file">Medical prices table (the main analytic file)</h2>
+<p>One row = one distinct negotiated price for a procedure in a network, with provider counts. <code>run_date</code> is the monthly-snapshot key (use it to stack months); <code>file_vintage</code> is the source file&#39;s production date (provenance only).</p>
+<p>What this step produced: we read the extracted price file as text (so leading zeros in codes survive), turned the price and count columns into numbers, attached the Texas 2036 service menu (so a bare code like 99214 reads as "Office visit est pt 30-39min"), rolled each price&#39;s county up to a Public Health Region with a clean sort order, and flagged the prices that are comparable as dollars. The panel below shows the result: how many distinct prices we have, how many matched the menu and a Texas region, the comparable-price split, and five example rows.</p>
+<div class="mb-4"> <div class="accordion" id="accordionExample"> <div class="accordion-item"> <h2 class="accordion-header"> <button class="accordion-button collapsed text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2" aria-expanded="false" aria-controls="collapse2"> <small>Click to view code</small> </button></h2> <div id="collapse2" class="accordion-collapse collapse" data-bs-parent="#accordionExample"><div class="accordion-body">
+<pre id="stlog-1" class="stlog"><samp><span class="stinp">.     count</span>
+  <span class="stres">2,097,564</span>
 
-</samp></pre>
-</div> </div> </div> </div> </div> <br>
-<h2 id="pass-0-output-inventory">Pass 0 output inventory</h2>
-<p>Flat list of every <code>.dta</code> file Pass 0 wrote under <code>/Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and Research Team/_datashare/THECB_accountability/01_raw/_converted/</code>, including subdirectories.  Detailed per-file profiling (codebook, missingness, samples) happens on the 400 Profiler page.</p>
-<div class="mb-4"> <div class="accordion" id="accordionExample"> <div class="accordion-item"> <h2 class="accordion-header"> <button class="accordion-button collapsed text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse8" aria-expanded="false" aria-controls="collapse8"> <small>Click to view code</small> </button></h2> <div id="collapse8" class="accordion-collapse collapse" data-bs-parent="#accordionExample"><div class="accordion-body">
-<pre id="stlog-2" class="stlog"><samp><span class="stinp">. capture program drop _ds_list_dta</span>
+<span class="stinp">.     di as txt "Distinct medical prices in this snapshot: " %12.0fc r(N)</span>
+Distinct medical prices in this snapshot:    2,097,564
 
-<span class="stinp">. program define _ds_list_dta</span>
-  1<span class="stinp">.     args dir</span>
-  2<span class="stinp">.     local files : dir "`dir'" files "*.dta"</span>
-  3<span class="stinp">.     foreach f of local files {</span>
-  4<span class="stinp">.         di as txt "  `dir'/`f'"</span>
-  5<span class="stinp">.     }</span>
-  6<span class="stinp">.     local subs : dir "`dir'" dirs "*"</span>
-  7<span class="stinp">.     foreach s of local subs {</span>
-  8<span class="stinp">.         _ds_list_dta "`dir'/`s'"</span>
-  9<span class="stinp">.     }</span>
- 10<span class="stinp">. end</span>
+<span class="stinp">.     count if !missing(service_label)</span>
+  <span class="stres">2,097,564</span>
 
-<span class="stinp">. _ds_list_dta "${converted}"</span>
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Percent_of_att
-&gt; empted_SCH_completed_successfully_completed.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Degrees_and_ce
-&gt; rtificates_awarded_in_STEM__Allied_Health__Nursing_or_Associate_of_Art_in_Teaching.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Enrollment_by_F
-&gt; TIC__FT_PT__or_Degree_Seeking.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Enrollment_by_
-&gt; Average_Age.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Faculty_Headco
-&gt; unt__Fall.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_FTE_Faculty_Wh
-&gt; o_are_Tenure_Tenure_Track.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Time_to_Degree
-&gt; .dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Expenditures_pe
-&gt; r_full_time_student_equivalent.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Enrollment_by_F
-&gt; lex_Entry.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Degrees_and_Cer
-&gt; tificates_Awarded___Economically_Disadvantaged.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Underprepared_P
-&gt; repared_Students_who_Satisfy_TSI.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_State_Appropri
-&gt; ations_per_FTSE.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Enrollment_in_D
-&gt; ual_Credit__Annual_Unduplicated.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Student_Loan_D
-&gt; ebt__Average.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Semester_Credit
-&gt; _Hours_by_Funding_Type.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Faculty_Headcou
-&gt; nt__Fall.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Graduation_Rat
-&gt; e__Same_and_Other.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Graduation_Rat
-&gt; e_Counts_for_Two_Year_First_Time_Transfers_to_a_University.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Student_Loan_De
-&gt; bt_to_First_Year_Wage__Median.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Contact_hours_f
-&gt; or_Continuing_Education_Students.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Semester_Credi
-&gt; t_Hours_in_Excess_of_Program_Requirements.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Enrollment_by_
-&gt; Semester_Credit_Hour__SCH__Load.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Graduation_Rat
-&gt; e_Counts__OOS_Peers__Non_Texas___Career.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Enrollment_by_T
-&gt; uition_Status.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Enrollment_by_T
-&gt; uition_Status__Annual_Unduplicated.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Student_Facult
-&gt; y_Ratio.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Contact_Hours_T
-&gt; aught_by_FT_PT_Faculty.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Underprepared_
-&gt; Prepared_Students_Completing_a_College_Level_Course.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Percent_of_atte
-&gt; mpted_SCH_completed_successfully_completed.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Semester_Credi
-&gt; t_Hours_by_Funding_Type.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Student_Loan_De
-&gt; bt__Average.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Semester_Credit
-&gt; _Hours_to_Degree.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Enrollment_by_
-&gt; Age_Groups.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Graduates_With
-&gt; _SCH_at_a_Two_Year_College__Bachelor_s_Degrees.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Enrollment_by_
-&gt; FTIC__FT_PT__or_Degree_Seeking.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Graduation_and_
-&gt; Persistence_Rate_Counts__Six_Years.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Semester_Credi
-&gt; t_Hours_by_Instruction_Mode.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Contact_Hours_f
-&gt; or_Credit_Enrollment_Students.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Enrollment_by_C
-&gt; urriculum_Area.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Student_Loan_D
-&gt; ebt_to_First_Year_Wage__Median.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Underprepared_
-&gt; Prepared_Students_Receiving_an_Award.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Enrollment_by_A
-&gt; verage_Age.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Working_or_Enro
-&gt; lled_within_One_Year_after_Award.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Graduates_as_a_
-&gt; Percent_of_Undergraduate_FTE_Enrollment.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Tuition_and_fee
-&gt; s_for_30_SCH.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Degrees_and_Cer
-&gt; tificates_Awarded_by_Curriculum_Area.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Enrollment_by_S
-&gt; emester_Credit_Hour__SCH__Load.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Percent_of_Grad
-&gt; uates_with_Debt.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Full_Time_Stude
-&gt; nt_Equivalent_by_All_Hours_and_State_Funded.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Degrees_and_Cer
-&gt; tificates_Awarded_by_Type_Major__CTC_Only.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Enrollment_by_
-&gt; Curriculum_Area.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Student_Faculty
-&gt; _Ratio.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Percent_of_Gra
-&gt; duates_with_Debt.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Underprepared_P
-&gt; repared_Students_Completing_a_College_Level_Course.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Degrees_and_cer
-&gt; tificates_awarded_in_STEM__Allied_Health__Nursing_or_Associate_of_Art_in_Teaching.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Enrollment_by_T
-&gt; ype_Major.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Graduation_Rat
-&gt; e__OOS_Peers__Non_Texas___Career.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Research_Expen
-&gt; ditures_by_Source.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Enrollment_by_
-&gt; Flex_Entry.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Underprepared_P
-&gt; repared_Students_Receiving_an_Award.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Graduation_Rate
-&gt; __Same_and_Other.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Graduates_as_a
-&gt; _Percent_of_Undergraduate_FTE_Enrollment.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Underprepared_
-&gt; Prepared_Students_who_Satisfy_TSI.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Degrees_and_Ce
-&gt; rtificates_Awarded___Economically_Disadvantaged.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Persistence_Rat
-&gt; es.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Enrollment_by_
-&gt; Undergraduate_Students_Taking_SCH_at_2_year_Colleges.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Enrollment_by_A
-&gt; ge_Groups__Annual_Unduplicated.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Tuition_and_fe
-&gt; es_for_30_SCH.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Persistence_Ra
-&gt; tes.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Graduation_Rate
-&gt; _Counts.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Working_or_Enr
-&gt; olled_within_One_Year_after_Award.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Enrollment_by_
-&gt; Tuition_Status.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Students_Receiv
-&gt; ing_Pell_Grants.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Semester_Credi
-&gt; t_Hours_to_Degree.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Research_Expen
-&gt; ditures_per_FTE_Faculty.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Semester_Credit
-&gt; _Hours_in_Excess_of_Program_Requirements.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Enrollment_by_A
-&gt; ge_Groups.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Students_Recei
-&gt; ving_Pell_Grants.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Graduation_and
-&gt; _Persistence_Rate_Counts__Six_Years.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Expenditures_p
-&gt; er_full_time_student_equivalent.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Faculty_Teachi
-&gt; ng_Lower_Division_SCH__Tenured_Tenure_Track.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Graduation_Rat
-&gt; e_Counts_for_Master_s_and_Doctoral_Programs.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Transfer_to_a_S
-&gt; enior_Institution.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Time_to_Degree.
-&gt; dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Graduates_With
-&gt; _No_More_Than_3_Excess_Hours__Bachelor_s_Degrees.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Graduation_Rate
-&gt; __OOS_Peers__Non_Texas___Career.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Full_Time_Stud
-&gt; ent_Equivalent_by_All_Hours_and_State_Funded.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Graduates_With_
-&gt; No_More_Than_3_Excess_Hours__Associate_Degrees.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Degrees_and_Ce
-&gt; rtificates_Awarded_by_Curriculum_Area.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Students_in_Te
-&gt; xas_Top_10__and_Top_25.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Graduation_Rat
-&gt; e_Counts.dta
+<span class="stinp">.     di as txt "  ... matched to the Texas 2036 service menu:  " %12.0fc r(N)</span>
+  ... matched to the Texas 2036 service menu:     2,097,564
+
+<span class="stinp">.     count if !missing(region)</span>
+  <span class="stres">2,082,378</span>
+
+<span class="stinp">.     di as txt "  ... tagged with a Texas county / Public Health Region:  " %12.0fc r(N)</span>
+  ... tagged with a Texas county / Public Health Region:     2,082,378
+
+<span class="stinp">.     di as txt _n "Comparable fee-for-service dollar prices (dollar_ffs flag): 1 = yes"</span>
+
+Comparable fee-for-service dollar prices (dollar_ffs flag): 1 = yes
+
+<span class="stinp">.     tab dollar_ffs, missing</span>
+
+ Comparable |
+ unit price |
+      (ffs, |
+     dollar |
+   basis) — |
+   use this |
+ filter for |
+ $ analysis |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |<span class="stres">    195,354        9.31        9.31</span>
+          1 |<span class="stres">  1,902,210       90.69      100.00</span>
+------------+-----------------------------------
+      Total |<span class="stres">  2,097,564      100.00</span>
+
+<span class="stinp">.     di as txt _n "Five example rows (one distinct price each):"</span>
+
+Five example rows (one distinct price each):
+
+<span class="stinp">.     list service_label procedure_code provider_type negotiated_amount region in 1/5, noobs abbreviate(24)</span>
+
+  +-----------------------------------------------------------------------------------------------------+
+  | <span class="stres">                        service_label   procedure_code   provider_type   negotiated_amount   region </span>|
+  |-----------------------------------------------------------------------------------------------------|
+  | <span class="stres">        Upper GI endoscopy diagnostic            43235    professional              423.16          </span>|
+  | <span class="stres">                           Cystoscopy            52000    professional               85.04          </span>|
+  | <span class="stres">         Office visit est pt 30-39min            99214    professional               68.11          </span>|
+  | <span class="stres">Simple pneumonia &amp; pleurisy wo CC/MCC              195   institutional                   0          </span>|
+  | <span class="stres">         Office visit new pt 45-59min            99204    professional              108.69          </span>|
+  +-----------------------------------------------------------------------------------------------------+
 
 
 </samp></pre>
 </div> </div> </div> </div> </div> <br>
-<h2 id="clean-reshape-merge">Clean / reshape / merge</h2>
-<p>Build the analytic table(s) here.  Save each finished table to <code>02_cleaned/</code> using the naming conventions documented in <code>_datashare/_documentation/README_NamingConventions.txt</code>.</p>
-<div class="mb-4"> <div class="accordion" id="accordionExample"> <div class="accordion-item"> <h2 class="accordion-header"> <button class="accordion-button collapsed text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse9" aria-expanded="false" aria-controls="collapse9"> <small>Click to view code</small> </button></h2> <div id="collapse9" class="accordion-collapse collapse" data-bs-parent="#accordionExample"><div class="accordion-body">
-<pre id="stlog-3" class="stlog"><samp><span class="stinp">. <span class="stcmt">* ── EDIT THIS BLOCK ────────────────────────────────────────────────────</span></span>
-<span class="stinp">. <span class="stcmt">*  Typical pattern:</span></span>
-<span class="stinp">. <span class="stcmt">*</span></span>
-<span class="stinp">. <span class="stcmt">*    use "${converted}/&lt;file&gt;", clear</span></span>
-<span class="stinp">. <span class="stcmt">*    rename (oldA oldB) (newA newB)</span></span>
-<span class="stinp">. <span class="stcmt">*    keep if year &gt;= 2010</span></span>
-<span class="stinp">. <span class="stcmt">*    duplicates report</span></span>
-<span class="stinp">. <span class="stcmt">*    duplicates drop</span></span>
-<span class="stinp">. <span class="stcmt">*    label data "THECB_accountability cleaned — see 300_labels.do for variable labels"</span></span>
-<span class="stinp">. <span class="stcmt">*    save "${clean}/THECB_accountability_clean.dta", replace</span></span>
-<span class="stinp">. <span class="stcmt">* ───────────────────────────────────────────────────────────────────────</span></span>
-<span class="stinp">. </span>
-<span class="stinp">. di as txt "TODO: implement cleaning for ${ds_project}"</span>
-TODO: implement cleaning for THECB_accountability
+<h2 id="prescription-drug-prices-table">Prescription-drug prices table</h2>
+<p>One row = one distinct drug price (NDC level), with pharmacy counts. Rx prices are PBM/plan-level (effectively national); pharmacies are not geographically filtered.</p>
+<p>What this step produced: the same typing applied to the prescription-drug file (one row = one distinct drug price at the NDC level, with the dispensing/administrative fees alongside). Because drug pricing is set at the plan/PBM level it is effectively statewide, so there is no Texas geography column here. The panel shows the row count and the brand/generic/specialty split.</p>
+<div class="mb-4"> <div class="accordion" id="accordionExample"> <div class="accordion-item"> <h2 class="accordion-header"> <button class="accordion-button collapsed text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse3" aria-expanded="false" aria-controls="collapse3"> <small>Click to view code</small> </button></h2> <div id="collapse3" class="accordion-collapse collapse" data-bs-parent="#accordionExample"><div class="accordion-body">
+<pre id="stlog-2" class="stlog"><samp><span class="stinp">.     count</span>
+  <span class="stres">1,198,555</span>
 
+<span class="stinp">.     di as txt "Distinct drug prices in this snapshot: " %12.0fc r(N)</span>
+Distinct drug prices in this snapshot:    1,198,555
+
+<span class="stinp">.     di as txt _n "By drug type:"</span>
+
+By drug type:
+
+<span class="stinp">.     capture confirm variable drug_type</span>
+
+<span class="stinp">.     if !_rc tab drug_type, missing</span>
+
+  drug_type |      Freq.     Percent        Cum.
+------------+-----------------------------------
+      Brand |<span class="stres">    686,771       57.30       57.30</span>
+    Generic |<span class="stres">    511,784       42.70      100.00</span>
+------------+-----------------------------------
+      Total |<span class="stres">  1,198,555      100.00</span>
+
+<span class="stinp">.     di as txt _n "Three example rows:"</span>
+
+Three example rows:
+
+<span class="stinp">.     capture list drug_name drug_type negotiated_rate dispensing_fee in 1/3, noobs abbreviate(22)</span>
+
+
+</samp></pre>
+</div> </div> </div> </div> </div> <br>
+<h2 id="texas-provider-organization-directory">Texas provider organization directory</h2>
+<p>Which organizations appear in each network (raw and noisy — insurers sometimes file individual clinicians as their own tax ID). The full per-group directory is the large gzipped <code>providers.csv.gz</code>; decompress it only for named-provider attribution work.</p>
+<p>What this step produced: a lookup of which organizations appear in each Texas network. It is intentionally raw — insurers sometimes file an individual clinician as their own tax ID — so treat it as a directory, not a clean provider count. The panel shows the row count and a few examples.</p>
+<div class="mb-4"> <div class="accordion" id="accordionExample"> <div class="accordion-item"> <h2 class="accordion-header"> <button class="accordion-button collapsed text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse4" aria-expanded="false" aria-controls="collapse4"> <small>Click to view code</small> </button></h2> <div id="collapse4" class="accordion-collapse collapse" data-bs-parent="#accordionExample"><div class="accordion-body">
+<pre id="stlog-3" class="stlog"><samp><span class="stinp">.     count</span>
+  <span class="stres">192,438</span>
+
+<span class="stinp">.     di as txt "Network-organization rows: " %12.0fc r(N)</span>
+Network-organization rows:      192,438
+
+<span class="stinp">.     di as txt _n "Three example rows:"</span>
+
+Three example rows:
+
+<span class="stinp">.     capture list network_name provider_org_name n_group_entries in 1/3, noobs abbreviate(28)</span>
+
+
+</samp></pre>
+</div> </div> </div> </div> </div> <br>
+<h2 id="medicare-benchmark-for-percent-of-medicare-analysis">Medicare benchmark (for percent-of-Medicare analysis)</h2>
+<p>A national Medicare allowed-amount per code, built by <code>build_medicare_benchmark.py</code> from CMS fee schedules (MPFS for professional, OPPS for outpatient facility, IPPS for inpatient DRGs). A code can have more than one benchmark (e.g., a professional MPFS amount AND an outpatient-facility OPPS amount); <code>applies_to</code> says which to use. National figures with all geographic indices set to 1.0 (first-pass simplification).</p>
+<p>What this step produced: a national Medicare allowed amount per code, so Section 5 of the analysis can express each BCBS Texas price as a percent of Medicare. A code can carry more than one benchmark (e.g., a professional MPFS amount and an outpatient-facility OPPS amount); the <code>applies_to</code> column says which to use. The panel shows how many benchmark rows we built, by fee schedule.</p>
+<div class="mb-4"> <div class="accordion" id="accordionExample"> <div class="accordion-item"> <h2 class="accordion-header"> <button class="accordion-button collapsed text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse5" aria-expanded="false" aria-controls="collapse5"> <small>Click to view code</small> </button></h2> <div id="collapse5" class="accordion-collapse collapse" data-bs-parent="#accordionExample"><div class="accordion-body">
+<pre id="stlog-4" class="stlog"><samp><span class="stinp">.         count</span>
+  <span class="stres">121</span>
+<span class="stinp">.         di as txt "Benchmark rows: " %6.0fc r(N)</span>
+Benchmark rows:    121
+<span class="stinp">.         di as txt _n "By Medicare fee schedule:"</span>
+
+By Medicare fee schedule:
+<span class="stinp">.         capture confirm variable fee_schedule</span>
+<span class="stinp">.         if !_rc tab fee_schedule</span>
+
+fee_schedul |
+          e |      Freq.     Percent        Cum.
+------------+-----------------------------------
+       IPPS |<span class="stres">         17       14.05       14.05</span>
+       MPFS |<span class="stres">         62       51.24       65.29</span>
+       OPPS |<span class="stres">         42       34.71      100.00</span>
+------------+-----------------------------------
+      Total |<span class="stres">        121      100.00</span>
+<span class="stinp">.         di as txt _n "Three example rows:"</span>
+
+Three example rows:
+<span class="stinp">.         capture list procedure_code fee_schedule applies_to medicare_allowed in 1/3, noobs abbreviate(26)</span>
 
 </samp></pre>
 </div> </div> </div> </div> </div> <br>
 <h2 id="final-cleaned-tables">Final cleaned tables</h2>
-<p>Inventory of <code>02_cleaned/</code> after this do-file runs.</p>
-<pre id="stlog-4" class="stlog"><samp><span class="stinp">. local cl : dir "${clean}" files "*.dta"</span>
-
-<span class="stinp">. foreach f of local cl {</span>
-  2<span class="stinp">.     use "${clean}/`f'", clear</span>
-  3<span class="stinp">.     di as txt "{hline}"</span>
-  4<span class="stinp">.     di as txt "FILE: `f'  (rows=`=_N'  vars=`=c(k)')"</span>
-  5<span class="stinp">.     describe, short</span>
+<p>The three analytic tables this step writes to <code>02_cleaned/</code>, with their row and variable counts. Click to view the structure of each.</p>
+<div class="mb-4"> <div class="accordion" id="accordionExample"> <div class="accordion-item"> <h2 class="accordion-header"> <button class="accordion-button collapsed text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse6" aria-expanded="false" aria-controls="collapse6"> <small>Click to view code</small> </button></h2> <div id="collapse6" class="accordion-collapse collapse" data-bs-parent="#accordionExample"><div class="accordion-body">
+<pre id="stlog-5" class="stlog"><samp><span class="stinp">. foreach f in bcbstx_prices bcbstx_rx_prices bcbstx_provider_org_directory {</span>
+  2<span class="stinp">.     use "${clean}/`f'.dta", clear</span>
+  3<span class="stinp">.     di as txt "{hline 60}"</span>
+  4<span class="stinp">.     di as txt "FILE: `f'.dta  (rows=`=_N'  vars=`=c(k)')"</span>
+  5<span class="stinp">.     describe, simple</span>
   6<span class="stinp">. }</span>
+(BCBS Texas negotiated prices (1 row = 1 distinct price). See 300_labels.do.)
+------------------------------------------------------------
+FILE: bcbstx_prices.dta  (rows=2097564  vars=33)
+source_file   payer_name    code_syste~r  negotiated~t  rate_expir~n  file_vinta~d  region
+network_name  payer_type    procedure_~e  provider_t~e  is_evergreen  run_date_d    region_id
+market_seg~t  schema_ver~n  procedure_~c  care_setting  n_provider~s  service_la~l  dollar_ffs
+county_fips   file_vintage  arrangement   place_of_s~e  n_npi_memb~s  service_ca~y
+run_date      code_system   rate_basis    code_modif~r  n_tax_ids     county_name
+(BCBS Texas prescription-drug negotiated prices (1 row = 1 distinct NDC price).)
+------------------------------------------------------------
+FILE: bcbstx_rx_prices.dta  (rows=1198555  vars=17)
+source_file   payer_type    ndc           administra~e  service_code  n_pharmac~ps
+run_date      drug_name     negotiated~e  transactio~e  n_price_re~s  run_date_d
+payer_name    drug_type     dispensing~e  historical~e  n_pharmac~ns
+(BCBS Texas — Texas organizations by network (network-membership directory; raw).)
+------------------------------------------------------------
+FILE: bcbstx_provider_org_directory.dta  (rows=192438  vars=5)
+network_name  tax_id_type   tax_id        provider_o~e  n_group_en~s
 
 
 </samp></pre>
-<h2 id="open-questions">Open questions</h2>
-<ul class="wd-list-dashed">
-<li>(replace this) Are duplicates expected — and on what key?</li>
-<li>(replace this) Any variables to drop for PII or confidentiality reasons?</li>
-<li>(replace this) Are units of measurement consistent across vintages?</li>
-</ul>
+</div> </div> </div> </div> </div> <br>
 </body>
 </html>

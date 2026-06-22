@@ -385,7 +385,7 @@ document.addEventListener('DOMContentLoaded', function () {
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-3">
 <div class="container-fluid">
-<a class="navbar-brand" href="index.html" title="THECB_accountability">Documentation</a>
+<a class="navbar-brand" href="index.html" title="Insurance_PriceTransparency_BCBSTX">Documentation</a>
 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
 <div class="collapse navbar-collapse" id="mainNavbar">
 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
@@ -400,6 +400,7 @@ document.addEventListener('DOMContentLoaded', function () {
 </ul>
 <span class="navbar-text ms-3" title="Texas 2036"><img src="tx2036_logo.png" alt="Texas 2036" height="18" style="opacity:0.55;vertical-align:middle;" onerror="this.style.display='none'"></span>
 </div></div></nav>
+<style>pre,.stlog,samp{white-space:pre !important;overflow-x:auto;display:block;font-size:0.8rem;line-height:1.25}table.tbl{font-size:0.85rem}</style>
 <h1 id="how-this-archive-works">How this archive works</h1>
 <div id="wd-toc" class="wd-toc-wrap" data-wd-depth="2"><strong class="wd-toc-title">Contents</strong></div>
 <h2 id="the-30-second-tour">The 30-second tour</h2>
@@ -442,12 +443,12 @@ document.addEventListener('DOMContentLoaded', function () {
 <p>Each project carries a small metadata block, set at scaffold time and editable any time:</p>
 <div class="table-responsive"><table class="table table-sm table-striped">
 <thead><tr><th>Global</th><th>Meaning</th><th>This project</th></tr></thead><tbody>
-<tr><td><code>THECB_accountability</code></td><td>folder name (CamelCase, underscored)</td><td>THECB_accountability</td></tr>
-<tr><td><code>Public acountability tables</code></td><td>one-line description</td><td>Public acountability tables</td></tr>
-<tr><td><code></code></td><td>source agency URL</td><td></td></tr>
-<tr><td><code></code></td><td>topic tag(s)</td><td></td></tr>
-<tr><td><code>yes</code></td><td>yes / no / unsure</td><td>yes</td></tr>
-<tr><td><code></code></td><td>refresh cadence</td><td></td></tr>
+<tr><td><code>Insurance_PriceTransparency_BCBSTX</code></td><td>folder name (CamelCase, underscored)</td><td>Insurance_PriceTransparency_BCBSTX</td></tr>
+<tr><td><code>Transparency-in-Coverage machine-readable files (in-network negotiated rates + prescription drugs) published by Blue Cross and Blue Shield of Texas (HCSC).</code></td><td>one-line description</td><td>Transparency-in-Coverage machine-readable files (in-network negotiated rates + prescription drugs) published by Blue Cross and Blue Shield of Texas (HCSC).</td></tr>
+<tr><td><code>https://www.bcbstx.com/member/machine-readable-files</code></td><td>source agency URL</td><td>https://www.bcbstx.com/member/machine-readable-files</td></tr>
+<tr><td><code>health care, insurance, prices</code></td><td>topic tag(s)</td><td>health care, insurance, prices</td></tr>
+<tr><td><code></code></td><td>yes / no / unsure</td><td></td></tr>
+<tr><td><code>monthly refresh (source files restated ~monthly)</code></td><td>refresh cadence</td><td>monthly refresh (source files restated ~monthly)</td></tr>
 <tr><td><code></code></td><td>free-text caveats</td><td></td></tr>
 <tr><td><code></code></td><td>up to 10 outcome vars for the auto-profiler</td><td></td></tr>
 <tr><td><code></code></td><td>up to 10 by-vars for the auto-profiler</td><td></td></tr>
@@ -455,10 +456,10 @@ document.addEventListener('DOMContentLoaded', function () {
 </tbody></table></div>
 <h2 id="rebuilding-everything">Rebuilding everything</h2>
 <p>After editing any do-file, rebuild the website with:</p>
-<pre class="stlog"><span class="stinp">. do "/Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and Research Team/_datashare/THECB_accountability/_documentation/_runall.do"</span></pre>
+<pre class="stlog"><span class="stinp">. do "/Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and Research Team/_datashare/Insurance_PriceTransparency/BCBSTX/_documentation/_runall.do"</span></pre>
 <p><code>_runall.do</code> calls <code>webdoc2 file.do, replace cleanup</code> for every numbered file, then builds <code>index.html</code> and <code>help.html</code> last. On Mac it opens <code>index.html</code> at the end.</p>
 <p>To rebuild ONE page only:</p>
-<pre class="stlog"><span class="stinp">. webdoc2 "/Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and Research Team/_datashare/THECB_accountability/_code/400_data_profiler.do", replace cleanup open</span></pre>
+<pre class="stlog"><span class="stinp">. webdoc2 "/Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and Research Team/_datashare/Insurance_PriceTransparency/BCBSTX/_code/400_data_profiler.do", replace cleanup open</span></pre>
 <h2 id="file-naming-conventions-cheatsheet">File-naming conventions (cheatsheet)</h2>
 <ul class="wd-list-dashed">
 <li>Folder names are <b>source agencies</b> — <code>TEA_AEIS</code>, <code>THECB</code>, <code>TDI</code> — not topics or dates.</li>
@@ -470,7 +471,7 @@ document.addEventListener('DOMContentLoaded', function () {
 <p>Full conventions: <code>_datashare/_documentation/README_NamingConventions.txt</code></p>
 <h2 id="extending-r-python-gis-javascript">Extending: R, Python, GIS, JavaScript</h2>
 <p>The Stata pipeline is canonical. To add work in another language, drop parallel files into <code>_code/</code> using the same numeric step + a language-appropriate extension:</p>
-<div class="mb-4"> <div class="accordion" id="accordionExample"> <div class="accordion-item"> <h2 class="accordion-header"> <button class="accordion-button collapsed text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse20" aria-expanded="false" aria-controls="collapse20"> <small>Click to view code</small> </button></h2> <div id="collapse20" class="accordion-collapse collapse" data-bs-parent="#accordionExample"><div class="accordion-body">
+<div class="mb-4"> <div class="accordion" id="accordionExample"> <div class="accordion-item"> <h2 class="accordion-header"> <button class="accordion-button collapsed text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse10" aria-expanded="false" aria-controls="collapse10"> <small>Click to view code</small> </button></h2> <div id="collapse10" class="accordion-collapse collapse" data-bs-parent="#accordionExample"><div class="accordion-body">
 <pre id="stlog-1" class="stlog"><samp><span class="stinp">. <span class="stcmt">* Equivalent steps in different languages</span></span>
 <span class="stinp">. <span class="stcmt">* 100_data_download.do        Stata (canonical)</span></span>
 <span class="stinp">. <span class="stcmt">* 100_data_download.R         R alternative</span></span>
@@ -488,12 +489,12 @@ document.addEventListener('DOMContentLoaded', function () {
 <tr><td><code>/Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and Research Team</code></td><td>Google Drive root (Shared drives/Data and Research Team)</td></tr>
 <tr><td><code>/Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and Research Team/_codeshare</code></td><td>Shared drives/Data and Research Team/_codeshare</td></tr>
 <tr><td><code>/Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and Research Team/_datashare</code></td><td>Shared drives/Data and Research Team/_datashare</td></tr>
-<tr><td><code>/Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and Research Team/_datashare/THECB_accountability</code></td><td>this project folder</td></tr>
-<tr><td><code>/Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and Research Team/_datashare/THECB_accountability/01_raw</code> / <code>/Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and Research Team/_datashare/THECB_accountability/01_raw/_converted</code></td><td>raw files / machine-converted copies</td></tr>
-<tr><td><code>/Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and Research Team/_datashare/THECB_accountability/02_cleaned</code></td><td>cleaned analytic tables</td></tr>
-<tr><td><code>/Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and Research Team/_datashare/THECB_accountability/03_output</code></td><td>output deliverables</td></tr>
-<tr><td><code>/Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and Research Team/_datashare/THECB_accountability/_code</code></td><td>do-files</td></tr>
-<tr><td><code>/Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and Research Team/_datashare/THECB_accountability/_documentation</code> / <code>/Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and Research Team/_datashare/THECB_accountability/_documentation/website</code></td><td>documentation / built website</td></tr>
+<tr><td><code>/Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and Research Team/_datashare/Insurance_PriceTransparency/BCBSTX</code></td><td>this project folder</td></tr>
+<tr><td><code>/Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and Research Team/_datashare/Insurance_PriceTransparency/BCBSTX/01_raw</code> / <code>/Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and Research Team/_datashare/Insurance_PriceTransparency/BCBSTX/01_raw/_converted</code></td><td>raw files / machine-converted copies</td></tr>
+<tr><td><code>/Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and Research Team/_datashare/Insurance_PriceTransparency/BCBSTX/02_cleaned</code></td><td>cleaned analytic tables</td></tr>
+<tr><td><code>/Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and Research Team/_datashare/Insurance_PriceTransparency/BCBSTX/03_output</code></td><td>output deliverables</td></tr>
+<tr><td><code>/Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and Research Team/_datashare/Insurance_PriceTransparency/BCBSTX/_code</code></td><td>do-files</td></tr>
+<tr><td><code>/Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and Research Team/_datashare/Insurance_PriceTransparency/BCBSTX/_documentation</code> / <code>/Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and Research Team/_datashare/Insurance_PriceTransparency/BCBSTX/_documentation/website</code></td><td>documentation / built website</td></tr>
 </tbody></table></div>
 <h2 id="creating-a-new-datashare-project">Creating a new datashare project</h2>
 <p>From any Stata session:</p>

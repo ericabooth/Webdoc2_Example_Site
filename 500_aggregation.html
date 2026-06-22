@@ -385,7 +385,7 @@ document.addEventListener('DOMContentLoaded', function () {
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-3">
 <div class="container-fluid">
-<a class="navbar-brand" href="index.html" title="THECB_accountability">Documentation</a>
+<a class="navbar-brand" href="index.html" title="Insurance_PriceTransparency_BCBSTX">Documentation</a>
 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
 <div class="collapse navbar-collapse" id="mainNavbar">
 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
@@ -394,49 +394,55 @@ document.addEventListener('DOMContentLoaded', function () {
 <li class="nav-item"><a class="nav-link " href="200_data_management.html">200 Management</a></li>
 <li class="nav-item"><a class="nav-link " href="300_labels.html">300 Labels</a></li>
 <li class="nav-item"><a class="nav-link " href="400_data_profiler.html">400 Profiler</a></li>
-<li class="nav-item"><a class="nav-link active" href="500_aggregation.html">500 Aggregation</a></li>
+<li class="nav-item"><a class="nav-link " href="500_aggregation.html">500 Aggregation</a></li>
 <li class="nav-item"><a class="nav-link " href="600_analysis.html">600 Analysis</a></li>
 <li class="nav-item"><a class="nav-link " href="help.html">Help</a></li>
 </ul>
 <span class="navbar-text ms-3" title="Texas 2036"><img src="tx2036_logo.png" alt="Texas 2036" height="18" style="opacity:0.55;vertical-align:middle;" onerror="this.style.display='none'"></span>
 </div></div></nav>
+<style>pre,.stlog,samp{white-space:pre !important;overflow-x:auto;display:block;font-size:0.8rem;line-height:1.25}table.tbl{font-size:0.85rem}</style>
 <h1 id="500-aggregation">500. Aggregation</h1>
-<p>Collapse / contract / reshape to higher-order analytic tables.</p>
+<p>Price summaries per shoppable service, by network and by professional/facility, restricted to comparable fee-for-service dollar prices.</p>
+<div style="border-left:4px solid #E8A33D;background:#fff8ec;padding:.6rem .9rem;margin:.6rem 0;font-size:.9rem"><b>Read medians, not means.</b> These summaries still include <b>"ghost rates"</b> &mdash; placeholder prices for services a provider never actually bills (often a tiny fraction of Medicare). They drag the lower tail and the mean down but barely move the median. We do not hard-drop them (any cutoff is a judgement call); the analysis page flags prices below 25% of Medicare. See the guide section on ghost rates.</div>
 <div id="wd-toc" class="wd-toc-wrap" data-wd-depth="2"><strong class="wd-toc-title">Contents</strong></div>
-<h2 id="targets">Targets</h2>
-<ul class="wd-list-dashed">
-<li>(replace this) county-year totals</li>
-<li>(replace this) annual statewide rollup</li>
-<li>(replace this) any panel form needed for 600_analysis.do</li>
-</ul>
-<h2 id="build-aggregates">Build aggregates</h2>
-<div class="mb-4"> <div class="accordion" id="accordionExample"> <div class="accordion-item"> <h2 class="accordion-header"> <button class="accordion-button collapsed text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse16" aria-expanded="false" aria-controls="collapse16"> <small>Click to view code</small> </button></h2> <div id="collapse16" class="accordion-collapse collapse" data-bs-parent="#accordionExample"><div class="accordion-body">
-<pre id="stlog-1" class="stlog"><samp><span class="stinp">. <span class="stcmt">* ── EDIT THIS BLOCK ────────────────────────────────────────────────────</span></span>
-<span class="stinp">. <span class="stcmt">*  Example: collapse to county-year totals</span></span>
-<span class="stinp">. <span class="stcmt">*</span></span>
-<span class="stinp">. <span class="stcmt">*    use "${clean}/THECB_accountability_clean.dta", clear</span></span>
-<span class="stinp">. <span class="stcmt">*    collapse (sum) n_events=event_id (mean) avg_dollars=dollars, by(county year)</span></span>
-<span class="stinp">. <span class="stcmt">*    label data "THECB_accountability — county-year roll-up"</span></span>
-<span class="stinp">. <span class="stcmt">*    save "${clean}/THECB_accountability_county_year.dta", replace</span></span>
-<span class="stinp">. <span class="stcmt">* ───────────────────────────────────────────────────────────────────────</span></span>
-<span class="stinp">. </span>
-<span class="stinp">. di as txt "TODO: aggregate"</span>
-TODO: aggregate
+<h2 id="summary-by-procedure-x-provider-type-x-network-x-snapshot">Summary by procedure x provider-type x network x snapshot</h2>
+<pre id="stlog-1" class="stlog"><samp><span class="stinp">.     di as result "saved price summary by network: `=_N' rows"</span>
+<span class="stres">saved price summary by network: 1703 rows</span>
 
 
 </samp></pre>
-</div> </div> </div> </div> </div> <br>
-<h2 id="aggregate-inventory">Aggregate inventory</h2>
-<pre id="stlog-2" class="stlog"><samp><span class="stinp">. local agg : dir "${clean}" files "*county_year*.dta"</span>
+<h2 id="summary-by-procedure-x-provider-type-across-networks">Summary by procedure x provider-type (across networks)</h2>
+<pre id="stlog-2" class="stlog"><samp><span class="stinp">.     di as result "saved overall price summary: `=_N' rows"</span>
+<span class="stres">saved overall price summary: 167 rows</span>
 
-<span class="stinp">. local agg2 : dir "${clean}" files "*statewide*.dta"</span>
+<span class="stinp">.     di as txt _n "Most price-dispersed services (top 15 by p90/p10, n&gt;=20 prices):"</span>
 
-<span class="stinp">. foreach f in `agg' `agg2' {</span>
-  2<span class="stinp">.     use "${clean}/`f'", clear</span>
-  3<span class="stinp">.     di as txt "{hline}"</span>
-  4<span class="stinp">.     di as txt "FILE: `f'"</span>
-  5<span class="stinp">.     describe, short</span>
-  6<span class="stinp">. }</span>
+Most price-dispersed services (top 15 by p90/p10, n&gt;=20 prices):
+
+
+</samp></pre>
+<pre id="stlog-3" class="stlog"><samp><span class="stinp">.     list service_label provider_type p50 p10 p90 p9010 n_prices <span class="stcmt">///</span>
+&gt;         if n_prices&gt;=20 in 1/`=min(_N,15)', noobs sep(0) abbreviate(26)</span>
+
+  +---------------------------------------------------------------------------------------------------------+
+  | <span class="stres">                    service_label   provider_type        p50       p10        p90      p9010   n_prices </span>|
+  |---------------------------------------------------------------------------------------------------------|
+  | <span class="stres">      Total shoulder arthroplasty   institutional    3248.91   1375.12   28807.94    20.9494       3717 </span>|
+  | <span class="stres">           Total hip arthroplasty   institutional   12539.82   1428.88   29751.77   20.82174       3558 </span>|
+  | <span class="stres">                 ED visit level 5   institutional     572.94    260.43       5080    19.5062       3686 </span>|
+  | <span class="stres">          Total knee arthroplasty   institutional    13159.8   1540.34   29751.77   19.31507       3549 </span>|
+  | <span class="stres">                 ED visit level 4   institutional     386.97    177.76       3040   17.10171       3846 </span>|
+  | <span class="stres">                 ED visit level 3   institutional     245.67    111.67       1456   13.03842       3831 </span>|
+  | <span class="stres">        CT head/brain wo contrast    professional      80.61     30.46      326.6   10.72226      24258 </span>|
+  | <span class="stres">      Polysomnography sleep study    professional     337.83     94.28     863.57   9.159631      27628 </span>|
+  | <span class="stres">     Office visit new pt 15-29min   institutional      66.72     25.77     221.62   8.599922       3217 </span>|
+  | <span class="stres">     Office visit est pt 30-39min   institutional     108.01     40.01     342.44    8.55886       3148 </span>|
+  | <span class="stres">     Office visit new pt 45-59min   institutional     178.14     65.59     557.51   8.499924       3113 </span>|
+  | <span class="stres">          MRI brain w/wo contrast   institutional     492.88    252.78    2046.72   8.096843       3652 </span>|
+  | <span class="stres">Echocardiogram complete w Doppler   institutional     152.38     69.27     548.82    7.92291       3735 </span>|
+  | <span class="stres">     Office visit est pt 10-19min   institutional      29.23     12.97     101.46   7.822668       4076 </span>|
+  | <span class="stres">       Antepartum care 4-6 visits   institutional     617.57    378.63    2937.12    7.75723       1773 </span>|
+  +---------------------------------------------------------------------------------------------------------+
 
 
 </samp></pre>

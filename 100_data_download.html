@@ -385,7 +385,7 @@ document.addEventListener('DOMContentLoaded', function () {
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-3">
 <div class="container-fluid">
-<a class="navbar-brand" href="index.html" title="THECB_accountability">Documentation</a>
+<a class="navbar-brand" href="index.html" title="Insurance_PriceTransparency_BCBSTX">Documentation</a>
 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
 <div class="collapse navbar-collapse" id="mainNavbar">
 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
@@ -398,224 +398,86 @@ document.addEventListener('DOMContentLoaded', function () {
 <li class="nav-item"><a class="nav-link " href="600_analysis.html">600 Analysis</a></li>
 <li class="nav-item"><a class="nav-link " href="help.html">Help</a></li>
 </ul>
+<ul class="navbar-nav"><li class="nav-item"><a class="nav-link" href="https://www.bcbstx.com/member/machine-readable-files" target="_blank" rel="noopener" title="Source agency website">Source &#8599;</a></li></ul>
 <span class="navbar-text ms-3" title="Texas 2036"><img src="tx2036_logo.png" alt="Texas 2036" height="18" style="opacity:0.55;vertical-align:middle;" onerror="this.style.display='none'"></span>
 </div></div></nav>
+<style>pre,.stlog,samp{white-space:pre !important;overflow-x:auto;display:block;font-size:0.8rem;line-height:1.25}table.tbl{font-size:0.85rem}</style>
 <h1 id="100-data-download">100. Data download</h1>
-<p>This page documents how the raw files for the <b>THECB_accountability</b> source are fetched into <code>01_raw/</code>.  Raw files are immutable; if you need to clean them, do it in <code>200_data_management.do</code>.</p>
+<p>Downloads the BCBS Texas machine-readable files and extracts a Texas-only, menu-only table of negotiated prices into <code>01_raw/_extracted/</code>. Raw compressed files stream through a local scratch folder and are deleted — never stored on Google Drive.</p>
 <div id="wd-toc" class="wd-toc-wrap" data-wd-depth="2"><strong class="wd-toc-title">Contents</strong></div>
-<h2 id="source">Source</h2>
+<h2 id="how-the-download-works-overview-with-examples">How the download works (overview with examples)</h2>
+<p>The BCBS Texas machine-readable files are compressed JSON, tens to hundreds of gigabytes when uncompressed. The pipeline never opens a whole file; it STREAMS each one (reads a little at a time), keeps only our menu procedures and Texas providers, and writes small CSVs. Three Python stages run automatically (Stata calls them in Step 1):</p>
+<ol>
+<li><b>Discover</b> (01_discover.py) — read the published index, list the Texas-network files, and de-duplicate their web addresses.</li>
+<li><b>Extract</b> (02_extract.py) — stream each unique file; keep target codes and Texas providers; collapse to one row per distinct price (see the PDF guide, section "unit of analysis").</li>
+<li><b>Orchestrate</b> (run_all.py) — loop discover then extract over both coverage segments and combine the results.</li>
+</ol>
+<p>Why de-duplication matters: for two sample employers the index listed 255 in-network file references, but those pointed to only a handful of distinct national files. After Texas scoping the whole state is about 35 unique files (~12 GB compressed).</p>
+<p>One entry in the published index looks like this (a single network file; the link is time-limited):</p>
+<pre class="stlog"><span class="stinp">{"description": "Blue Choice PPO in-network file 0001 of 30", "location": "https://bcbstx.mrf.bcbs.com/2026-06_..._in-network-rates_0001_of_30.json.gz?Expires=..."}</span></pre>
+<p>After extraction, one row of the resulting prices.csv looks like this (one distinct price, with provider counts):</p>
+<pre class="stlog"><span class="stinp">network_name=Blue Choice PPO | region=2/3 | procedure_code=99214 | provider_type=professional | rate_basis=negotiated | negotiated_amount=103.14 | n_provider_groups=49 | n_tax_ids=49</span></pre>
+<h2 id="step-0-texas-provider-crosswalk-quarterly">Step 0 — Texas provider crosswalk (quarterly)</h2>
+<p>Texas providers are defined as any NPI whose NPPES practice-location state is Texas. The crosswalk is built once per quarter from the NPPES monthly file; build it before the first download if missing. Click to see whether it is present and, if not, the exact build commands.</p>
+<div class="mb-4"> <div class="accordion" id="accordionExample"> <div class="accordion-item"> <h2 class="accordion-header"> <button class="accordion-button collapsed text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse" aria-expanded="false" aria-controls="collapse"> <small>Click to view code</small> </button></h2> <div id="collapse" class="accordion-collapse collapse" data-bs-parent="#accordionExample"><div class="accordion-body">
+<pre id="stlog-1" class="stlog"><samp><span class="stinp">. capture confirm file "${xwalk}"</span>
+
+<span class="stinp">. if _rc {</span>
+<span class="stinp">.     di as err "Texas NPI crosswalk NOT found: ${xwalk}"</span>
+<span class="stinp">.     di as txt "Build it (downloads ~1.1GB NPPES monthly file to scratch, then scans):"</span>
+<span class="stinp">.     di as txt `"  cd "${pipeline}/scripts""'</span>
+<span class="stinp">.     di as txt `"  CSV=\$(${PY} 00a_fetch_nppes.py --dest "${scratch}/nppes")"'</span>
+<span class="stinp">.     di as txt `"  ${PY} 00_build_tx_npi.py --nppes "\$CSV" --out "${xwalk}" --define practice"'</span>
+<span class="stinp">. }</span>
+
+<span class="stinp">. else di as txt "Texas NPI crosswalk present: ${xwalk}"</span>
+Texas NPI crosswalk present: /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Da
+&gt; ta and Research Team/_datashare/Insurance_PriceTransparency/BCBSTX/01_raw/npi_tx_xwalk.csv
+
+
+</samp></pre>
+</div> </div> </div> </div> </div> <br>
+<h2 id="step-1-discover-download-extract-medical-rx">Step 1 — discover, download, extract (medical + Rx)</h2>
+<p>One command per file type discovers the current indexes, keeps only Texas networks, de-duplicates the shared national files, and extracts collapsed prices + a slim provider directory. GUARDED so a website rebuild does not re-pull.</p>
+<h2 id="verify-the-extract">Verify the extract</h2>
+<p>After the pipeline runs (or is skipped because the output already exists), this checks that each expected CSV landed in <code>01_raw/_extracted/</code>: the inventory of files seen, the collapsed medical <code>prices</code>, the slim per-network provider directory, and the prescription <code>rx_prices</code>. Click to see the check and the file inventory.</p>
+<div class="mb-4"> <div class="accordion" id="accordionExample"> <div class="accordion-item"> <h2 class="accordion-header"> <button class="accordion-button collapsed text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1" aria-expanded="false" aria-controls="collapse1"> <small>Click to view code</small> </button></h2> <div id="collapse1" class="accordion-collapse collapse" data-bs-parent="#accordionExample"><div class="accordion-body">
+<pre id="stlog-2" class="stlog"><samp><span class="stinp">.     di as txt "Expected extract files:"</span>
+Expected extract files:
+
+<span class="stinp">.     foreach f in inventory prices providers provider_org_directory rx_prices {</span>
+  2<span class="stinp">.         capture confirm file "${extracted}/`f'.csv"</span>
+  3<span class="stinp">.         if _rc  di as err  "  MISSING: `f'.csv"</span>
+  4<span class="stinp">.         else    di as txt  "  OK:      `f'.csv"</span>
+  5<span class="stinp">.     }</span>
+  OK:      inventory.csv
+  OK:      prices.csv
+  MISSING: providers.csv
+  OK:      provider_org_directory.csv
+  OK:      rx_prices.csv
+
+<span class="stinp">.     di as txt _n "Files now in 01_raw/_extracted/ (names only):"</span>
+
+Files now in 01_raw/_extracted/ (names only):
+
+<span class="stinp">.     local _fl : dir "${extracted}" files "*.csv"</span>
+
+<span class="stinp">.     foreach _f of local _fl {</span>
+  2<span class="stinp">.         di as txt "  `_f'"</span>
+  3<span class="stinp">.     }</span>
+  rx_prices.csv
+  prices.csv
+  provider_org_directory.csv
+  inventory.csv
+
+
+</samp></pre>
+</div> </div> </div> </div> </div> <br>
+<h2 id="open-questions-notes">Open questions / notes</h2>
 <ul class="wd-list-dashed">
-<li>Agency / vendor: <b>THECB_accountability</b></li>
-<li>Source URL: <a href="" target="_blank"></a></li>
-<li>Description: Public acountability tables</li>
-<li>Scaffolded by ericbooth on 2026-05-24</li>
-</ul>
-<h2 id="files-fetched">Files fetched</h2>
-<p>Each file below is downloaded with Stata's <code>copy</code> command (cross-OS, no shell calls).  Edit the list to match the URLs you need for this source.</p>
-<div class="mb-4"> <div class="accordion" id="accordionExample"> <div class="accordion-item"> <h2 class="accordion-header"> <button class="accordion-button collapsed text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse4" aria-expanded="false" aria-controls="collapse4"> <small>Click to view code</small> </button></h2> <div id="collapse4" class="accordion-collapse collapse" data-bs-parent="#accordionExample"><div class="accordion-body">
-<pre id="stlog-1" class="stlog"><samp><span class="stinp">. <span class="stcmt">* ───────────────────────────────────────────────────────────────────────</span></span>
-<span class="stinp">. <span class="stcmt">*  Edit this block:  add one line per file to download.</span></span>
-<span class="stinp">. <span class="stcmt">*  Files are written to 01_raw/; existing files are first moved to _archive.</span></span>
-<span class="stinp">. <span class="stcmt">*  Leave the lists empty to skip the loop until you have real URLs.</span></span>
-<span class="stinp">. <span class="stcmt">* ───────────────────────────────────────────────────────────────────────</span></span>
-<span class="stinp">. </span>
-<span class="stinp">. local urls</span>
-
-<span class="stinp">. local localnames</span>
-
-<span class="stinp">. </span>
-<span class="stinp">. <span class="stcmt">* Example (uncomment and edit):</span></span>
-<span class="stinp">. <span class="stcmt">* local urls ///</span>
-&gt; *     "https://example.com/data/file1.xlsx" <span class="stcmt">///</span>
-&gt; *     "https://example.com/data/file2.xlsx"</span>
-<span class="stinp">. <span class="stcmt">* local localnames ///</span>
-&gt; *     "THECB_accountability_file1.xlsx" <span class="stcmt">///</span>
-&gt; *     "THECB_accountability_file2.xlsx"</span>
-<span class="stinp">. </span>
-<span class="stinp">. local n  : word count `urls'</span>
-
-<span class="stinp">. local n2 : word count `localnames'</span>
-
-<span class="stinp">. </span>
-<span class="stinp">. if `n' != `n2' di as err "URL/localnames list lengths differ: `n' vs `n2'"</span>
-
-<span class="stinp">. if `n' == 0    di as txt "  (no URLs configured — edit this do-file to add some)"</span>
-  (no URLs configured — edit this do-file to add some)
-
-<span class="stinp">. </span>
-<span class="stinp">. local stamp = subinstr("`c(current_date)'", " ", "", .)</span>
-
-<span class="stinp">. cap mkdir "${raw}/_archive/`stamp'"</span>
-
-<span class="stinp">. </span>
-<span class="stinp">. forvalues i = 1/`n' {</span>
-  2<span class="stinp">.     local url  : word `i' of `urls'</span>
-  3<span class="stinp">.     local name : word `i' of `localnames'</span>
-  4<span class="stinp">. </span>
-<span class="stinp">.     <span class="stcmt">* Stage existing copy to _archive (don't erase yet — keep as fallback)</span></span>
-<span class="stinp">.     local had_existing 0</span>
-  5<span class="stinp">.     cap confirm file "${raw}/`name'"</span>
-  6<span class="stinp">.     if !_rc {</span>
-  7<span class="stinp">.         di as txt "Archiving existing `name' -&gt; _archive/`stamp'/"</span>
-  8<span class="stinp">.         cap copy "${raw}/`name'" "${raw}/_archive/`stamp'/`name'", replace</span>
-  9<span class="stinp">.         local had_existing 1</span>
- 10<span class="stinp">.     }</span>
- 11<span class="stinp">. </span>
-<span class="stinp">.     di as txt "Fetching: `url'"</span>
- 12<span class="stinp">.     cap copy "`url'" "${raw}/`name'", replace</span>
- 13<span class="stinp">.     if _rc {</span>
- 14<span class="stinp">.         di as err "  FAILED (rc=`=_rc') -- file not retrieved."</span>
- 15<span class="stinp">.         if `had_existing' {</span>
- 16<span class="stinp">.             di as txt "  -&gt; previous copy in _archive/`stamp'/ still in 01_raw/"</span>
- 17<span class="stinp">.         }</span>
- 18<span class="stinp">.     }</span>
- 19<span class="stinp">.     if !_rc di as txt "  -&gt; ${raw}/`name'"</span>
- 20<span class="stinp">. }</span>
-
-
-</samp></pre>
-</div> </div> </div> </div> </div> <br>
-<h2 id="verify-the-raw-drop">Verify the raw drop</h2>
-<p>After download, confirm every expected file is present and non-empty.</p>
-<div class="mb-4"> <div class="accordion" id="accordionExample"> <div class="accordion-item"> <h2 class="accordion-header"> <button class="accordion-button collapsed text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse5" aria-expanded="false" aria-controls="collapse5"> <small>Click to view code</small> </button></h2> <div id="collapse5" class="accordion-collapse collapse" data-bs-parent="#accordionExample"><div class="accordion-body">
-<pre id="stlog-2" class="stlog"><samp><span class="stinp">. local found : dir "${raw}" files "*"</span>
-
-<span class="stinp">. local n_found : word count `found'</span>
-
-<span class="stinp">. di as txt "01_raw/ contains `n_found' file(s):"</span>
-01_raw/ contains 92 file(s):
-
-<span class="stinp">. foreach name of local found {</span>
-  2<span class="stinp">.     di as txt "  - `name'"</span>
-  3<span class="stinp">. }</span>
-  - Public_Universities_Graduates_as_a_Percent_of_Undergraduate_FTE_Enrollment.csv
-  - Community_Colleges_Graduation_Rate__Same_and_Other.csv
-  - Public_Universities_Underprepared_Prepared_Students_who_Satisfy_TSI.csv
-  - Public_Universities_Degrees_and_Certificates_Awarded___Economically_Disadvantaged.csv
-  - Community_Colleges_Persistence_Rates.csv
-  - Public_Universities_Enrollment_by_Undergraduate_Students_Taking_SCH_at_2_year_Colleges.csv
-  - Community_Colleges_Enrollment_by_Age_Groups__Annual_Unduplicated.csv
-  - Community_Colleges_Degrees_and_Certificates_Awarded_by_Curriculum_Area.csv
-  - .DS_Store
-  - Community_Colleges_Enrollment_by_Semester_Credit_Hour__SCH__Load.csv
-  - Community_Colleges_Percent_of_Graduates_with_Debt.csv
-  - Community_Colleges_Full_Time_Student_Equivalent_by_All_Hours_and_State_Funded.csv
-  - Community_Colleges_Degrees_and_Certificates_Awarded_by_Type_Major__CTC_Only.csv
-  - Public_Universities_Enrollment_by_Curriculum_Area.csv
-  - Community_Colleges_Student_Faculty_Ratio.csv
-  - Public_Universities_Percent_of_Graduates_with_Debt.csv
-  - Community_Colleges_Underprepared_Prepared_Students_Completing_a_College_Level_Course.csv
-  - Community_Colleges_Degrees_and_certificates_awarded_in_STEM__Allied_Health__Nursing_or_Associate
-&gt; _of_Art_in_Teaching.csv
-  - Community_Colleges_Enrollment_by_Type_Major.csv
-  - Public_Universities_Graduation_Rate__OOS_Peers__Non_Texas___Career.csv
-  - Public_Universities_Research_Expenditures_by_Source.csv
-  - Public_Universities_Enrollment_by_Flex_Entry.csv
-  - Community_Colleges_Underprepared_Prepared_Students_Receiving_an_Award.csv
-  - Community_Colleges_Transfer_to_a_Senior_Institution.csv
-  - Community_Colleges_Time_to_Degree.csv
-  - Public_Universities_Graduates_With_No_More_Than_3_Excess_Hours__Bachelor_s_Degrees.csv
-  - Community_Colleges_Graduation_Rate__OOS_Peers__Non_Texas___Career.csv
-  - Public_Universities_Full_Time_Student_Equivalent_by_All_Hours_and_State_Funded.csv
-  - Community_Colleges_Graduates_With_No_More_Than_3_Excess_Hours__Associate_Degrees.csv
-  - Public_Universities_Degrees_and_Certificates_Awarded_by_Curriculum_Area.csv
-  - Public_Universities_Students_in_Texas_Top_10__and_Top_25.csv
-  - Public_Universities_Graduation_Rate_Counts.csv
-  - Public_Universities_Tuition_and_fees_for_30_SCH.csv
-  - Public_Universities_Persistence_Rates.csv
-  - Community_Colleges_Graduation_Rate_Counts.csv
-  - Public_Universities_Working_or_Enrolled_within_One_Year_after_Award.csv
-  - Public_Universities_Enrollment_by_Tuition_Status.csv
-  - Community_Colleges_Students_Receiving_Pell_Grants.csv
-  - Public_Universities_Semester_Credit_Hours_to_Degree.csv
-  - Public_Universities_Research_Expenditures_per_FTE_Faculty.csv
-  - Community_Colleges_Semester_Credit_Hours_in_Excess_of_Program_Requirements.csv
-  - Public_Universities_Graduation_and_Persistence_Rate_Counts__Six_Years.csv
-  - Community_Colleges_Enrollment_by_Age_Groups.csv
-  - Public_Universities_Students_Receiving_Pell_Grants.csv
-  - Public_Universities_Expenditures_per_full_time_student_equivalent.csv
-  - Public_Universities_Faculty_Teaching_Lower_Division_SCH__Tenured_Tenure_Track.csv
-  - Public_Universities_Graduation_Rate_Counts_for_Master_s_and_Doctoral_Programs.csv
-  - Public_Universities_State_Appropriations_per_FTSE.csv
-  - Community_Colleges_Enrollment_in_Dual_Credit__Annual_Unduplicated.csv
-  - Public_Universities_Student_Loan_Debt__Average.csv
-  - Community_Colleges_Semester_Credit_Hours_by_Funding_Type.csv
-  - Community_Colleges_Faculty_Headcount__Fall.csv
-  - Public_Universities_Graduation_Rate__Same_and_Other.csv
-  - Public_Universities_Graduation_Rate_Counts_for_Two_Year_First_Time_Transfers_to_a_University.csv
-  - Community_Colleges_Student_Loan_Debt_to_First_Year_Wage__Median.csv
-  - Community_Colleges_Contact_hours_for_Continuing_Education_Students.csv
-  - Public_Universities_Percent_of_attempted_SCH_completed_successfully_completed.csv
-  - Public_Universities_Degrees_and_certificates_awarded_in_STEM__Allied_Health__Nursing_or_Associat
-&gt; e_of_Art_in_Teaching.csv
-  - Community_Colleges_Enrollment_by_FTIC__FT_PT__or_Degree_Seeking.csv
-  - Public_Universities_Enrollment_by_Average_Age.csv
-  - Public_Universities_Faculty_Headcount__Fall.csv
-  - Public_Universities_Time_to_Degree.csv
-  - Community_Colleges_Expenditures_per_full_time_student_equivalent.csv
-  - Public_Universities_FTE_Faculty_Who_are_Tenure_Tenure_Track.csv
-  - Community_Colleges_Enrollment_by_Flex_Entry.csv
-  - Community_Colleges_Degrees_and_Certificates_Awarded___Economically_Disadvantaged.csv
-  - Community_Colleges_Underprepared_Prepared_Students_who_Satisfy_TSI.csv
-  - Community_Colleges_Graduation_and_Persistence_Rate_Counts__Six_Years.csv
-  - Public_Universities_Semester_Credit_Hours_by_Instruction_Mode.csv
-  - Community_Colleges_Contact_Hours_for_Credit_Enrollment_Students.csv
-  - Community_Colleges_Enrollment_by_Curriculum_Area.csv
-  - Public_Universities_Student_Loan_Debt_to_First_Year_Wage__Median.csv
-  - Public_Universities_Underprepared_Prepared_Students_Receiving_an_Award.csv
-  - Community_Colleges_Enrollment_by_Average_Age.csv
-  - Community_Colleges_Working_or_Enrolled_within_One_Year_after_Award.csv
-  - Community_Colleges_Graduates_as_a_Percent_of_Undergraduate_FTE_Enrollment.csv
-  - Community_Colleges_Tuition_and_fees_for_30_SCH.csv
-  - Public_Universities_Semester_Credit_Hours_in_Excess_of_Program_Requirements.csv
-  - Public_Universities_Enrollment_by_Semester_Credit_Hour__SCH__Load.csv
-  - Community_Colleges_Enrollment_by_Tuition_Status.csv
-  - Public_Universities_Graduation_Rate_Counts__OOS_Peers__Non_Texas___Career.csv
-  - Community_Colleges_Enrollment_by_Tuition_Status__Annual_Unduplicated.csv
-  - Public_Universities_Student_Faculty_Ratio.csv
-  - Community_Colleges_Contact_Hours_Taught_by_FT_PT_Faculty.csv
-  - Public_Universities_Underprepared_Prepared_Students_Completing_a_College_Level_Course.csv
-  - Community_Colleges_Percent_of_attempted_SCH_completed_successfully_completed.csv
-  - Public_Universities_Semester_Credit_Hours_by_Funding_Type.csv
-  - Community_Colleges_Student_Loan_Debt__Average.csv
-  - Community_Colleges_Semester_Credit_Hours_to_Degree.csv
-  - Public_Universities_Enrollment_by_FTIC__FT_PT__or_Degree_Seeking.csv
-  - Public_Universities_Enrollment_by_Age_Groups.csv
-  - Public_Universities_Graduates_With_SCH_at_a_Two_Year_College__Bachelor_s_Degrees.csv
-
-<span class="stinp">. if `n_found' == 0 di as txt "  (nothing yet — re-run after adding URLs above)"</span>
-
-
-</samp></pre>
-</div> </div> </div> </div> </div> <br>
-<h2 id="snapshot-source-site-documentation">Snapshot source-site documentation</h2>
-<p>Any PDF codebooks, README pages, or technical notes on the source site go to <code>_documentation/_source_snapshot/</code> so the cleaning logic stays anchored to a frozen reference even if the source page changes.</p>
-<div class="mb-4"> <div class="accordion" id="accordionExample"> <div class="accordion-item"> <h2 class="accordion-header"> <button class="accordion-button collapsed text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse6" aria-expanded="false" aria-controls="collapse6"> <small>Click to view code</small> </button></h2> <div id="collapse6" class="accordion-collapse collapse" data-bs-parent="#accordionExample"><div class="accordion-body">
-<pre id="stlog-3" class="stlog"><samp><span class="stinp">. cap mkdir "${docs}/_source_snapshot"</span>
-
-<span class="stinp">. local docs_urls   ""    <span class="stcmt">// e.g.  "https://example.com/data/codebook.pdf"</span></span>
-
-<span class="stinp">. local docs_names  ""    <span class="stcmt">// e.g.  "THECB_accountability_codebook.pdf"</span></span>
-
-<span class="stinp">. </span>
-<span class="stinp">. local nd : word count `docs_urls'</span>
-
-<span class="stinp">. forvalues i = 1/`nd' {</span>
-  2<span class="stinp">.     local u : word `i' of `docs_urls'</span>
-  3<span class="stinp">.     local n : word `i' of `docs_names'</span>
-  4<span class="stinp">.     cap copy "`u'" "${docs}/_source_snapshot/`n'", replace</span>
-  5<span class="stinp">.     if !_rc di as txt "Snapshot OK: `n'"</span>
-  6<span class="stinp">.     else    di as err "Snapshot FAIL: `u'"</span>
-  7<span class="stinp">. }</span>
-
-
-</samp></pre>
-</div> </div> </div> </div> </div> <br>
-<h2 id="open-questions">Open questions</h2>
-<ul class="wd-list-dashed">
-<li>(replace this) What is the canonical update cadence for this source?</li>
-<li>(replace this) Is there an API or only file downloads?</li>
-<li>(replace this) Are historical vintages re-stated by the source, or append-only?</li>
+<li>Source files refresh ~monthly; the index date rolls — the pipeline scrapes the current link, so no date is hardcoded.</li>
+<li>In-network rate-file URLs are time-limited (signed); the pipeline re-resolves them each run.</li>
+<li>The large per-group provider directory is gzipped (providers.csv.gz); decompress only for named-provider attribution.</li>
 </ul>
 </body>
 </html>

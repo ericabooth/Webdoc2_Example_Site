@@ -385,7 +385,7 @@ document.addEventListener('DOMContentLoaded', function () {
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-3">
 <div class="container-fluid">
-<a class="navbar-brand" href="index.html" title="THECB_accountability">Documentation</a>
+<a class="navbar-brand" href="index.html" title="Insurance_PriceTransparency_BCBSTX">Documentation</a>
 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
 <div class="collapse navbar-collapse" id="mainNavbar">
 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
@@ -400,1724 +400,256 @@ document.addEventListener('DOMContentLoaded', function () {
 </ul>
 <span class="navbar-text ms-3" title="Texas 2036"><img src="tx2036_logo.png" alt="Texas 2036" height="18" style="opacity:0.55;vertical-align:middle;" onerror="this.style.display='none'"></span>
 </div></div></nav>
+<style>pre,.stlog,samp{white-space:pre !important;overflow-x:auto;display:block;font-size:0.8rem;line-height:1.25}table.tbl{font-size:0.85rem}</style>
 <h1 id="400-data-profiler">400. Data profiler</h1>
-<p>Onboarding-friendly tour of every analytic table.</p>
+<p>Coverage, data-quality, and descriptive profiling. Built to run on one snapshot now and on a stacked multi-month panel later (keyed on <code>run_date</code>).</p>
 <div id="wd-toc" class="wd-toc-wrap" data-wd-depth="2"><strong class="wd-toc-title">Contents</strong></div>
-<h2 id="raw-conversions-pass-0-output">Raw conversions (Pass 0 output)</h2>
-<p>Every <code>.dta</code> Pass 0 wrote under <code>/Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and Research Team/_datashare/THECB_accountability/01_raw/_converted/</code>, including subdirectories.  These are 1:1 mechanical translations of the raw files — no cleaning applied.  Useful for seeing what is in each sheet before deciding which to clean further.</p>
-<div class="mb-4"> <div class="accordion" id="accordionExample"> <div class="accordion-item"> <h2 class="accordion-header"> <button class="accordion-button collapsed text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse14" aria-expanded="false" aria-controls="collapse14"> <small>Click to view code</small> </button></h2> <div id="collapse14" class="accordion-collapse collapse" data-bs-parent="#accordionExample"><div class="accordion-body">
-<pre id="stlog-1" class="stlog"><samp><span class="stinp">. <span class="stcmt">* Two-level walk of ${converted}/:  files directly under it, plus files in</span></span>
-<span class="stinp">. <span class="stcmt">* one level of subdirectories.  Handles current TDI projects (flat + per-year</span></span>
-<span class="stinp">. <span class="stcmt">* subfolders).  Deeper trees would need a proper recursive helper.</span></span>
-<span class="stinp">. </span>
-<span class="stinp">. local TOPDIR `"${converted}"'</span>
+<h2 id="snapshot-scope">Snapshot scope</h2>
+<pre id="stlog-1" class="stlog"><samp><span class="stinp">. di as txt "Monthly snapshots (run_date) in this file : `nsnap'  (`snaps')"</span>
+Monthly snapshots (run_date) in this file : 1  (2026-05-30)
 
-<span class="stinp">. </span>
-<span class="stinp">. local n_top = 0</span>
-
-<span class="stinp">. local n_sub = 0</span>
-
-<span class="stinp">. </span>
-<span class="stinp">. <span class="stcmt">* Level 0 — direct .dta files</span></span>
-<span class="stinp">. local files0 : dir `"`TOPDIR'"' files "*.dta"</span>
-
-<span class="stinp">. foreach f of local files0 {</span>
-  2<span class="stinp">.     di as txt "  `TOPDIR'/`f'"</span>
-  3<span class="stinp">.     local ++n_top</span>
-  4<span class="stinp">. }</span>
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Percent_of_att
-&gt; empted_SCH_completed_successfully_completed.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Degrees_and_ce
-&gt; rtificates_awarded_in_STEM__Allied_Health__Nursing_or_Associate_of_Art_in_Teaching.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Enrollment_by_F
-&gt; TIC__FT_PT__or_Degree_Seeking.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Enrollment_by_
-&gt; Average_Age.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Faculty_Headco
-&gt; unt__Fall.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_FTE_Faculty_Wh
-&gt; o_are_Tenure_Tenure_Track.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Time_to_Degree
-&gt; .dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Expenditures_pe
-&gt; r_full_time_student_equivalent.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Enrollment_by_F
-&gt; lex_Entry.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Degrees_and_Cer
-&gt; tificates_Awarded___Economically_Disadvantaged.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Underprepared_P
-&gt; repared_Students_who_Satisfy_TSI.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_State_Appropri
-&gt; ations_per_FTSE.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Enrollment_in_D
-&gt; ual_Credit__Annual_Unduplicated.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Student_Loan_D
-&gt; ebt__Average.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Semester_Credit
-&gt; _Hours_by_Funding_Type.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Faculty_Headcou
-&gt; nt__Fall.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Graduation_Rat
-&gt; e__Same_and_Other.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Graduation_Rat
-&gt; e_Counts_for_Two_Year_First_Time_Transfers_to_a_University.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Student_Loan_De
-&gt; bt_to_First_Year_Wage__Median.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Contact_hours_f
-&gt; or_Continuing_Education_Students.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Semester_Credi
-&gt; t_Hours_in_Excess_of_Program_Requirements.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Enrollment_by_
-&gt; Semester_Credit_Hour__SCH__Load.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Graduation_Rat
-&gt; e_Counts__OOS_Peers__Non_Texas___Career.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Enrollment_by_T
-&gt; uition_Status.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Enrollment_by_T
-&gt; uition_Status__Annual_Unduplicated.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Student_Facult
-&gt; y_Ratio.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Contact_Hours_T
-&gt; aught_by_FT_PT_Faculty.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Underprepared_
-&gt; Prepared_Students_Completing_a_College_Level_Course.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Percent_of_atte
-&gt; mpted_SCH_completed_successfully_completed.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Semester_Credi
-&gt; t_Hours_by_Funding_Type.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Student_Loan_De
-&gt; bt__Average.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Semester_Credit
-&gt; _Hours_to_Degree.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Enrollment_by_
-&gt; Age_Groups.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Graduates_With
-&gt; _SCH_at_a_Two_Year_College__Bachelor_s_Degrees.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Enrollment_by_
-&gt; FTIC__FT_PT__or_Degree_Seeking.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Graduation_and_
-&gt; Persistence_Rate_Counts__Six_Years.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Semester_Credi
-&gt; t_Hours_by_Instruction_Mode.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Contact_Hours_f
-&gt; or_Credit_Enrollment_Students.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Enrollment_by_C
-&gt; urriculum_Area.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Student_Loan_D
-&gt; ebt_to_First_Year_Wage__Median.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Underprepared_
-&gt; Prepared_Students_Receiving_an_Award.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Enrollment_by_A
-&gt; verage_Age.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Working_or_Enro
-&gt; lled_within_One_Year_after_Award.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Graduates_as_a_
-&gt; Percent_of_Undergraduate_FTE_Enrollment.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Tuition_and_fee
-&gt; s_for_30_SCH.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Degrees_and_Cer
-&gt; tificates_Awarded_by_Curriculum_Area.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Enrollment_by_S
-&gt; emester_Credit_Hour__SCH__Load.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Percent_of_Grad
-&gt; uates_with_Debt.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Full_Time_Stude
-&gt; nt_Equivalent_by_All_Hours_and_State_Funded.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Degrees_and_Cer
-&gt; tificates_Awarded_by_Type_Major__CTC_Only.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Enrollment_by_
-&gt; Curriculum_Area.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Student_Faculty
-&gt; _Ratio.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Percent_of_Gra
-&gt; duates_with_Debt.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Underprepared_P
-&gt; repared_Students_Completing_a_College_Level_Course.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Degrees_and_cer
-&gt; tificates_awarded_in_STEM__Allied_Health__Nursing_or_Associate_of_Art_in_Teaching.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Enrollment_by_T
-&gt; ype_Major.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Graduation_Rat
-&gt; e__OOS_Peers__Non_Texas___Career.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Research_Expen
-&gt; ditures_by_Source.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Enrollment_by_
-&gt; Flex_Entry.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Underprepared_P
-&gt; repared_Students_Receiving_an_Award.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Graduation_Rate
-&gt; __Same_and_Other.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Graduates_as_a
-&gt; _Percent_of_Undergraduate_FTE_Enrollment.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Underprepared_
-&gt; Prepared_Students_who_Satisfy_TSI.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Degrees_and_Ce
-&gt; rtificates_Awarded___Economically_Disadvantaged.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Persistence_Rat
-&gt; es.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Enrollment_by_
-&gt; Undergraduate_Students_Taking_SCH_at_2_year_Colleges.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Enrollment_by_A
-&gt; ge_Groups__Annual_Unduplicated.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Tuition_and_fe
-&gt; es_for_30_SCH.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Persistence_Ra
-&gt; tes.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Graduation_Rate
-&gt; _Counts.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Working_or_Enr
-&gt; olled_within_One_Year_after_Award.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Enrollment_by_
-&gt; Tuition_Status.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Students_Receiv
-&gt; ing_Pell_Grants.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Semester_Credi
-&gt; t_Hours_to_Degree.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Research_Expen
-&gt; ditures_per_FTE_Faculty.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Semester_Credit
-&gt; _Hours_in_Excess_of_Program_Requirements.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Enrollment_by_A
-&gt; ge_Groups.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Students_Recei
-&gt; ving_Pell_Grants.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Graduation_and
-&gt; _Persistence_Rate_Counts__Six_Years.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Expenditures_p
-&gt; er_full_time_student_equivalent.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Faculty_Teachi
-&gt; ng_Lower_Division_SCH__Tenured_Tenure_Track.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Graduation_Rat
-&gt; e_Counts_for_Master_s_and_Doctoral_Programs.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Transfer_to_a_S
-&gt; enior_Institution.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Time_to_Degree.
-&gt; dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Graduates_With
-&gt; _No_More_Than_3_Excess_Hours__Bachelor_s_Degrees.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Graduation_Rate
-&gt; __OOS_Peers__Non_Texas___Career.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Full_Time_Stud
-&gt; ent_Equivalent_by_All_Hours_and_State_Funded.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Graduates_With_
-&gt; No_More_Than_3_Excess_Hours__Associate_Degrees.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Degrees_and_Ce
-&gt; rtificates_Awarded_by_Curriculum_Area.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Students_in_Te
-&gt; xas_Top_10__and_Top_25.dta
-  /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and 
-&gt; Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Graduation_Rat
-&gt; e_Counts.dta
-
-<span class="stinp">. </span>
-<span class="stinp">. <span class="stcmt">* Level 1 — files in each immediate subdirectory</span></span>
-<span class="stinp">. local subs : dir `"`TOPDIR'"' dirs "*"</span>
-
-<span class="stinp">. foreach d of local subs {</span>
-  2<span class="stinp">.     local files1 : dir `"`TOPDIR'/`d'"' files "*.dta"</span>
-  3<span class="stinp">.     foreach f of local files1 {</span>
-  4<span class="stinp">.         di as txt "  `TOPDIR'/`d'/`f'"</span>
-  5<span class="stinp">.         local ++n_sub</span>
-  6<span class="stinp">.     }</span>
-  7<span class="stinp">. }</span>
-
-<span class="stinp">. </span>
-<span class="stinp">. local n_raw = `n_top' + `n_sub'</span>
-
-<span class="stinp">. di as txt _n "Found `n_raw' .dta file(s) under ${converted}/  (`n_top' direct + `n_sub' in subdirs
-&gt; )"</span>
-
-Found 91 .dta file(s) under /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.o
-&gt; rg/Shared drives/Data and Research Team/_datashare/THECB_accountability/01_raw/_converted/  (91 di
-&gt; rect + 0 in subdirs)
-
-<span class="stinp">. if `n_raw' == 0  di as txt "  (empty — re-run 200_data_management.do with ds_autoconvert=1)"</span>
+<span class="stinp">. di as txt "Distinct medical price rows               : `=_N'"</span>
+Distinct medical price rows               : 2097564
 
 
 </samp></pre>
-</div> </div> </div> </div> </div> <br>
-<div class="mb-4"> <div class="accordion" id="accordionExample"> <div class="accordion-item"> <h2 class="accordion-header"> <button class="accordion-button collapsed text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse15" aria-expanded="false" aria-controls="collapse15"> <small>Click to view code</small> </button></h2> <div id="collapse15" class="accordion-collapse collapse" data-bs-parent="#accordionExample"><div class="accordion-body">
-<pre id="stlog-2" class="stlog"><samp><span class="stinp">. <span class="stcmt">* Two-level walk, profile each .dta up to PART_A_MAX.</span></span>
-<span class="stinp">. local TOPDIR `"${converted}"'</span>
-
-<span class="stinp">. </span>
-<span class="stinp">. local k = 0</span>
-
-<span class="stinp">. local files0 : dir `"`TOPDIR'"' files "*.dta"</span>
-
-<span class="stinp">. foreach f of local files0 {</span>
-  2<span class="stinp">.     local ++k</span>
-  3<span class="stinp">.     if `k' &gt; `PART_A_MAX' continue</span>
-  4<span class="stinp">.     di as txt _n "{hline}"</span>
-  5<span class="stinp">.     di as txt "FILE: `TOPDIR'/`f'"</span>
-  6<span class="stinp">.     cap use `"`TOPDIR'/`f'"', clear</span>
-  7<span class="stinp">.     if _rc {</span>
-  8<span class="stinp">.         di as err "  (failed to load)"</span>
-  9<span class="stinp">.         continue</span>
- 10<span class="stinp">.     }</span>
- 11<span class="stinp">.     qui describe, short</span>
- 12<span class="stinp">.     di as txt "  rows=`=_N'  vars=`=c(k)'"</span>
- 13<span class="stinp">.     cap codebook, compact</span>
- 14<span class="stinp">.     if _N &gt; 0  list in 1/`=min(_N, 5)', abbreviate(15) noobs</span>
- 15<span class="stinp">. }</span>
-
-----------------------------------------------------------------------------------------------------
-FILE: /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data 
-&gt; and Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Percent_of
-&gt; _attempted_SCH_completed_successfully_completed.dta
-  rows=818  vars=6
-
-  +---------------------------------------------------------------------------------+
-  |                                                        v1 |                  v2 |
-  | <span class="stres">Percent of attempted SCH completed/successfully completed </span>| <span class="stres">                    </span>|
-  |-----------------------------------------------------------+---------------------|
-  |                         v3   |                       v4   |       v5   |   v6   |
-  |  <span class="stres">                            </span>|   <span class="stres">                         </span>|   <span class="stres">         </span>|   <span class="stres"> .   </span>|
-  +---------------------------------------------------------------------------------+
-
-  +---------------------------------------------------------------------------------+
-  |                                                        v1 |                  v2 |
-  | <span class="stres">                                                  DimYear </span>| <span class="stres">       InstTypeList </span>|
-  |-----------------------------------------------------------+---------------------|
-  |                         v3   |                       v4   |       v5   |   v6   |
-  |  <span class="stres">                 InstList   </span>|   <span class="stres">           CompSCHDesc   </span>|   <span class="stres">   Pct   </span>|   <span class="stres"> .   </span>|
-  +---------------------------------------------------------------------------------+
-
-  +---------------------------------------------------------------------------------+
-  |                                                        v1 |                  v2 |
-  | <span class="stres">                                                     2014 </span>| <span class="stres">Public Universities </span>|
-  |-----------------------------------------------------------+---------------------|
-  |                         v3   |                       v4   |       v5   |   v6   |
-  |  <span class="stres">  Angelo State University   </span>|   <span class="stres">             Completed   </span>|   <span class="stres">0.9307   </span>|   <span class="stres"> .   </span>|
-  +---------------------------------------------------------------------------------+
-
-  +---------------------------------------------------------------------------------+
-  |                                                        v1 |                  v2 |
-  | <span class="stres">                                                     2014 </span>| <span class="stres">Public Universities </span>|
-  |-----------------------------------------------------------+---------------------|
-  |                         v3   |                       v4   |       v5   |   v6   |
-  |  <span class="stres">  Angelo State University   </span>|   <span class="stres">Successfully completed   </span>|   <span class="stres">0.8278   </span>|   <span class="stres"> .   </span>|
-  +---------------------------------------------------------------------------------+
-
-  +---------------------------------------------------------------------------------+
-  |                                                        v1 |                  v2 |
-  | <span class="stres">                                                     2014 </span>| <span class="stres">Public Universities </span>|
-  |-----------------------------------------------------------+---------------------|
-  |                         v3   |                       v4   |       v5   |   v6   |
-  |  <span class="stres">East Texas A&amp;M University   </span>|   <span class="stres">             Completed   </span>|   <span class="stres">0.9563   </span>|   <span class="stres"> .   </span>|
-  +---------------------------------------------------------------------------------+
-
-----------------------------------------------------------------------------------------------------
-FILE: /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data 
-&gt; and Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Degrees_an
-&gt; d_certificates_awarded_in_STEM__Allied_Health__Nursing_or_Associate_of_Art_in_Teaching.dta
-  rows=4787  vars=10
-
-  +-------------------------------------------------------------------------------+
-  |                                          v1     |                      v2     |
-  |    <span class="stres">Degrees and certificates awarded in STEM     </span>|     <span class="stres">      Allied Health     </span>|
-  |-------------------------------------------------------------------------------|
-  |                                       v3 |              v4 |               v5 |
-  | <span class="stres"> Nursing or Associate of Art in Teaching </span>| <span class="stres">                </span>| <span class="stres">                 </span>|
-  |-------------------------------------------------------------------------------|
-  |                 v6   |           v7   |            v8   |      v9   |   v10   |
-  |  <span class="stres">                    </span>|  <span class="stres">              </span>|   <span class="stres">              </span>|   <span class="stres">        </span>|   <span class="stres">  .   </span>|
-  +-------------------------------------------------------------------------------+
-
-  +-------------------------------------------------------------------------------+
-  |                                          v1     |                      v2     |
-  |    <span class="stres">                                 DimYear     </span>|     <span class="stres">       InstTypeList     </span>|
-  |-------------------------------------------------------------------------------|
-  |                                       v3 |              v4 |               v5 |
-  | <span class="stres">                                InstList </span>| <span class="stres">DegreeLevelDesc </span>| <span class="stres">        STEMDesc </span>|
-  |-------------------------------------------------------------------------------|
-  |                 v6   |           v7   |            v8   |      v9   |   v10   |
-  |  <span class="stres">       AlliedDesc   </span>|  <span class="stres">NursingDesc   </span>|   <span class="stres">AATeachDesc   </span>|   <span class="stres">Count   </span>|   <span class="stres">  .   </span>|
-  +-------------------------------------------------------------------------------+
-
-  +-------------------------------------------------------------------------------+
-  |                                          v1     |                      v2     |
-  |    <span class="stres">                                    2014     </span>|     <span class="stres">Public Universities     </span>|
-  |-------------------------------------------------------------------------------|
-  |                                       v3 |              v4 |               v5 |
-  | <span class="stres">                 Angelo State University </span>| <span class="stres">     Bachelor's </span>| <span class="stres">Computer Science </span>|
-  |-------------------------------------------------------------------------------|
-  |                 v6   |           v7   |            v8   |      v9   |   v10   |
-  |  <span class="stres">Not Allied Health   </span>|  <span class="stres">Not Nursing   </span>|   <span class="stres"> Not an AAT   </span>|   <span class="stres">   31   </span>|   <span class="stres">  .   </span>|
-  +-------------------------------------------------------------------------------+
-
-  +-------------------------------------------------------------------------------+
-  |                                          v1     |                      v2     |
-  |    <span class="stres">                                    2014     </span>|     <span class="stres">Public Universities     </span>|
-  |-------------------------------------------------------------------------------|
-  |                                       v3 |              v4 |               v5 |
-  | <span class="stres">                 Angelo State University </span>| <span class="stres">     Bachelor's </span>| <span class="stres">            Math </span>|
-  |-------------------------------------------------------------------------------|
-  |                 v6   |           v7   |            v8   |      v9   |   v10   |
-  |  <span class="stres">Not Allied Health   </span>|  <span class="stres">Not Nursing   </span>|   <span class="stres"> Not an AAT   </span>|   <span class="stres">   19   </span>|   <span class="stres">  .   </span>|
-  +-------------------------------------------------------------------------------+
-
-  +-------------------------------------------------------------------------------+
-  |                                          v1     |                      v2     |
-  |    <span class="stres">                                    2014     </span>|     <span class="stres">Public Universities     </span>|
-  |-------------------------------------------------------------------------------|
-  |                                       v3 |              v4 |               v5 |
-  | <span class="stres">                 Angelo State University </span>| <span class="stres">     Bachelor's </span>| <span class="stres">Not a STEM Award </span>|
-  |-------------------------------------------------------------------------------|
-  |                 v6   |           v7   |            v8   |      v9   |   v10   |
-  |  <span class="stres">    Allied Health   </span>|  <span class="stres">Not Nursing   </span>|   <span class="stres"> Not an AAT   </span>|   <span class="stres">    5   </span>|   <span class="stres">  .   </span>|
-  +-------------------------------------------------------------------------------+
-
-----------------------------------------------------------------------------------------------------
-FILE: /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data 
-&gt; and Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Enrollment_
-&gt; by_FTIC__FT_PT__or_Degree_Seeking.dta
-  rows=4923  vars=9
-
-  +------------------------------------------------------------------------------------------------+
-  |                 v1 |                 v2 |                                    v3 |           v4 |
-  | <span class="stres">Enrollment by FTIC </span>| <span class="stres">             FT/PT </span>| <span class="stres">                    or Degree-Seeking </span>| <span class="stres">             </span>|
-  |-----------------------------------------+------------------------------------------------------|
-  |                v5     |          v6     |                    v7     |       v8     |    v9     |
-  |    <span class="stres">                   </span>|    <span class="stres">             </span>|    <span class="stres">                       </span>|    <span class="stres">          </span>|    <span class="stres"> .     </span>|
-  +------------------------------------------------------------------------------------------------+
-
-  +------------------------------------------------------------------------------------------------+
-  |                 v1 |                 v2 |                                    v3 |           v4 |
-  | <span class="stres">           DimYear </span>| <span class="stres">      InstTypeList </span>| <span class="stres">                             InstList </span>| <span class="stres">SemesterDesc </span>|
-  |-----------------------------------------+------------------------------------------------------|
-  |                v5     |          v6     |                    v7     |       v8     |    v9     |
-  |    <span class="stres">FTPTStatusDesc     </span>|    <span class="stres">FTUGDesc     </span>|    <span class="stres">       DegSeekDesc     </span>|    <span class="stres">Count     </span>|    <span class="stres"> .     </span>|
-  +------------------------------------------------------------------------------------------------+
-
-  +------------------------------------------------------------------------------------------------+
-  |                 v1 |                 v2 |                                    v3 |           v4 |
-  | <span class="stres">              2016 </span>| <span class="stres">Community Colleges </span>| <span class="stres">Alamo CCD-Northeast Lakeview College  </span>| <span class="stres">        Fall </span>|
-  |-----------------------------------------+------------------------------------------------------|
-  |                v5     |          v6     |                    v7     |       v8     |    v9     |
-  |    <span class="stres">     Full-time     </span>|    <span class="stres">    FTUG     </span>|    <span class="stres">    Degree Seeking     </span>|    <span class="stres">  199     </span>|    <span class="stres"> .     </span>|
-  +------------------------------------------------------------------------------------------------+
-
-  +------------------------------------------------------------------------------------------------+
-  |                 v1 |                 v2 |                                    v3 |           v4 |
-  | <span class="stres">              2016 </span>| <span class="stres">Community Colleges </span>| <span class="stres">Alamo CCD-Northeast Lakeview College  </span>| <span class="stres">        Fall </span>|
-  |-----------------------------------------+------------------------------------------------------|
-  |                v5     |          v6     |                    v7     |       v8     |    v9     |
-  |    <span class="stres">     Full-time     </span>|    <span class="stres">Not FTUG     </span>|    <span class="stres">    Degree Seeking     </span>|    <span class="stres">  317     </span>|    <span class="stres"> .     </span>|
-  +------------------------------------------------------------------------------------------------+
-
-  +------------------------------------------------------------------------------------------------+
-  |                 v1 |                 v2 |                                    v3 |           v4 |
-  | <span class="stres">              2016 </span>| <span class="stres">Community Colleges </span>| <span class="stres">Alamo CCD-Northeast Lakeview College  </span>| <span class="stres">        Fall </span>|
-  |-----------------------------------------+------------------------------------------------------|
-  |                v5     |          v6     |                    v7     |       v8     |    v9     |
-  |    <span class="stres">     Full-time     </span>|    <span class="stres">Not FTUG     </span>|    <span class="stres">Non-Degree Seeking     </span>|    <span class="stres">    2     </span>|    <span class="stres"> .     </span>|
-  +------------------------------------------------------------------------------------------------+
-
-----------------------------------------------------------------------------------------------------
-FILE: /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data 
-&gt; and Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Enrollment
-&gt; _by_Average_Age.dta
-  rows=1266  vars=6
-
-  +--------------------------------------------------------------------------------------------+
-  |                        v1 |                  v2 |                        v3 |           v4 |
-  | <span class="stres">Enrollment by Average Age </span>| <span class="stres">                    </span>| <span class="stres">                          </span>| <span class="stres">             </span>|
-  |--------------------------------------------------------------------------------------------|
-  |                      v5                      |                     v6                      |
-  |                     <span class="stres">                         </span>|                     <span class="stres"> .                      </span>|
-  +--------------------------------------------------------------------------------------------+
-
-  +--------------------------------------------------------------------------------------------+
-  |                        v1 |                  v2 |                        v3 |           v4 |
-  | <span class="stres">                  DimYear </span>| <span class="stres">       InstTypeList </span>| <span class="stres">                 InstList </span>| <span class="stres">SemesterDesc </span>|
-  |--------------------------------------------------------------------------------------------|
-  |                      v5                      |                     v6                      |
-  |                     <span class="stres">Age                      </span>|                     <span class="stres"> .                      </span>|
-  +--------------------------------------------------------------------------------------------+
-
-  +--------------------------------------------------------------------------------------------+
-  |                        v1 |                  v2 |                        v3 |           v4 |
-  | <span class="stres">                     2014 </span>| <span class="stres">Public Universities </span>| <span class="stres">  Angelo State University </span>| <span class="stres">        Fall </span>|
-  |--------------------------------------------------------------------------------------------|
-  |                      v5                      |                     v6                      |
-  |                     <span class="stres"> 24                      </span>|                     <span class="stres"> .                      </span>|
-  +--------------------------------------------------------------------------------------------+
-
-  +--------------------------------------------------------------------------------------------+
-  |                        v1 |                  v2 |                        v3 |           v4 |
-  | <span class="stres">                     2014 </span>| <span class="stres">Public Universities </span>| <span class="stres">East Texas A&amp;M University </span>| <span class="stres">        Fall </span>|
-  |--------------------------------------------------------------------------------------------|
-  |                      v5                      |                     v6                      |
-  |                     <span class="stres"> 29                      </span>|                     <span class="stres"> .                      </span>|
-  +--------------------------------------------------------------------------------------------+
-
-  +--------------------------------------------------------------------------------------------+
-  |                        v1 |                  v2 |                        v3 |           v4 |
-  | <span class="stres">                     2014 </span>| <span class="stres">Public Universities </span>| <span class="stres">         Lamar University </span>| <span class="stres">        Fall </span>|
-  |--------------------------------------------------------------------------------------------|
-  |                      v5                      |                     v6                      |
-  |                     <span class="stres"> 28                      </span>|                     <span class="stres"> .                      </span>|
-  +--------------------------------------------------------------------------------------------+
-
-----------------------------------------------------------------------------------------------------
-FILE: /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data 
-&gt; and Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Faculty_He
-&gt; adcount__Fall.dta
-  rows=20170  vars=8
-
-  +---------------------------------------------------------------------------------------+
-  |                       v1 |                  v2 |                      v3 |         v4 |
-  | <span class="stres">Faculty Headcount (Fall) </span>| <span class="stres">                    </span>| <span class="stres">                        </span>| <span class="stres">           </span>|
-  |--------------------------+------------------------------------------------------------|
-  |                   v5     |                      v6     |        v7      |     v8      |
-  |     <span class="stres">                     </span>|     <span class="stres">                        </span>|     <span class="stres">           </span>|     <span class="stres"> .      </span>|
-  +---------------------------------------------------------------------------------------+
-
-  +---------------------------------------------------------------------------------------+
-  |                       v1 |                  v2 |                      v3 |         v4 |
-  | <span class="stres">                 DimYear </span>| <span class="stres">       InstTypeList </span>| <span class="stres">               InstList </span>| <span class="stres">GenderDesc </span>|
-  |--------------------------+------------------------------------------------------------|
-  |                   v5     |                      v6     |        v7      |     v8      |
-  |     <span class="stres">   EthnicityDesc     </span>|     <span class="stres">    FacultyRankDesc     </span>|     <span class="stres">Count      </span>|     <span class="stres"> .      </span>|
-  +---------------------------------------------------------------------------------------+
-
-  +---------------------------------------------------------------------------------------+
-  |                       v1 |                  v2 |                      v3 |         v4 |
-  | <span class="stres">                    2013 </span>| <span class="stres">Public Universities </span>| <span class="stres">Angelo State University </span>| <span class="stres">    Female </span>|
-  |--------------------------+------------------------------------------------------------|
-  |                   v5     |                      v6     |        v7      |     v8      |
-  |     <span class="stres">African American     </span>|     <span class="stres">Assistant Professor     </span>|     <span class="stres">    2      </span>|     <span class="stres"> .      </span>|
-  +---------------------------------------------------------------------------------------+
-
-  +---------------------------------------------------------------------------------------+
-  |                       v1 |                  v2 |                      v3 |         v4 |
-  | <span class="stres">                    2013 </span>| <span class="stres">Public Universities </span>| <span class="stres">Angelo State University </span>| <span class="stres">    Female </span>|
-  |--------------------------+------------------------------------------------------------|
-  |                   v5     |                      v6     |        v7      |     v8      |
-  |     <span class="stres">African American     </span>|     <span class="stres">      Other Faculty     </span>|     <span class="stres">    1      </span>|     <span class="stres"> .      </span>|
-  +---------------------------------------------------------------------------------------+
-
-  +---------------------------------------------------------------------------------------+
-  |                       v1 |                  v2 |                      v3 |         v4 |
-  | <span class="stres">                    2013 </span>| <span class="stres">Public Universities </span>| <span class="stres">Angelo State University </span>| <span class="stres">    Female </span>|
-  |--------------------------+------------------------------------------------------------|
-  |                   v5     |                      v6     |        v7      |     v8      |
-  |     <span class="stres">           Asian     </span>|     <span class="stres">Assistant Professor     </span>|     <span class="stres">    2      </span>|     <span class="stres"> .      </span>|
-  +---------------------------------------------------------------------------------------+
-
-----------------------------------------------------------------------------------------------------
-FILE: /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data 
-&gt; and Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_FTE_Facult
-&gt; y_Who_are_Tenure_Tenure_Track.dta
-  rows=896  vars=6
-
-  +-------------------------------------------------------------------------------------------+
-  |                                      v1 |                  v2 |                        v3 |
-  | <span class="stres">FTE Faculty Who are Tenure/Tenure-Track </span>| <span class="stres">                    </span>| <span class="stres">                          </span>|
-  |-------------------------------------------------------------------------------------------|
-  |                         v4          |                  v5          |          v6          |
-  |         <span class="stres">                            </span>|          <span class="stres">                    </span>|          <span class="stres"> .          </span>|
-  +-------------------------------------------------------------------------------------------+
-
-  +-------------------------------------------------------------------------------------------+
-  |                                      v1 |                  v2 |                        v3 |
-  | <span class="stres">                                DimYear </span>| <span class="stres">       InstTypeList </span>| <span class="stres">                 InstList </span>|
-  |-------------------------------------------------------------------------------------------|
-  |                         v4          |                  v5          |          v6          |
-  |         <span class="stres">        TenureDesc          </span>|          <span class="stres">TotalCount          </span>|          <span class="stres"> .          </span>|
-  +-------------------------------------------------------------------------------------------+
-
-  +-------------------------------------------------------------------------------------------+
-  |                                      v1 |                  v2 |                        v3 |
-  | <span class="stres">                                   2013 </span>| <span class="stres">Public Universities </span>| <span class="stres">  Angelo State University </span>|
-  |-------------------------------------------------------------------------------------------|
-  |                         v4          |                  v5          |          v6          |
-  |         <span class="stres">Not Tenure Faculty          </span>|          <span class="stres">       102          </span>|          <span class="stres"> .          </span>|
-  +-------------------------------------------------------------------------------------------+
-
-  +-------------------------------------------------------------------------------------------+
-  |                                      v1 |                  v2 |                        v3 |
-  | <span class="stres">                                   2013 </span>| <span class="stres">Public Universities </span>| <span class="stres">  Angelo State University </span>|
-  |-------------------------------------------------------------------------------------------|
-  |                         v4          |                  v5          |          v6          |
-  |         <span class="stres">    Tenure Faculty          </span>|          <span class="stres">       187          </span>|          <span class="stres"> .          </span>|
-  +-------------------------------------------------------------------------------------------+
-
-  +-------------------------------------------------------------------------------------------+
-  |                                      v1 |                  v2 |                        v3 |
-  | <span class="stres">                                   2013 </span>| <span class="stres">Public Universities </span>| <span class="stres">East Texas A&amp;M University </span>|
-  |-------------------------------------------------------------------------------------------|
-  |                         v4          |                  v5          |          v6          |
-  |         <span class="stres">Not Tenure Faculty          </span>|          <span class="stres">       179          </span>|          <span class="stres"> .          </span>|
-  +-------------------------------------------------------------------------------------------+
-
-----------------------------------------------------------------------------------------------------
-FILE: /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data 
-&gt; and Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Time_to_De
-&gt; gree.dta
-  rows=410  vars=5
-
-  +-------------------------------------------------------------------------------------+
-  | <span class="stres">            v1                    v2                          v3            v4   v5 </span>|
-  |-------------------------------------------------------------------------------------|
-  | <span class="stres">Time to Degree                                                                    . </span>|
-  | <span class="stres">       DimYear          InstTypeList                    InstList   TotalCount1    . </span>|
-  | <span class="stres">          2015   Public Universities     Angelo State University           4.6    . </span>|
-  | <span class="stres">          2015   Public Universities   East Texas A&amp;M University           5.3    . </span>|
-  | <span class="stres">          2015   Public Universities            Lamar University           5.3    . </span>|
-  +-------------------------------------------------------------------------------------+
-
-----------------------------------------------------------------------------------------------------
-FILE: /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data 
-&gt; and Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Expenditure
-&gt; s_per_full_time_student_equivalent.dta
-  rows=3214  vars=6
-
-  +--------------------------------------------------------------------------------------+
-  |                                                v1      |                     v2      |
-  |     <span class="stres">Expenditures per full-time student equivalent      </span>|     <span class="stres">                        </span>|
-  |--------------------------------------------------------------------------------------|
-  |                                    v3 |                             v4 |     v5 | v6 |
-  | <span class="stres">                                      </span>| <span class="stres">                               </span>| <span class="stres">       </span>| <span class="stres"> . </span>|
-  +--------------------------------------------------------------------------------------+
-
-  +--------------------------------------------------------------------------------------+
-  |                                                v1      |                     v2      |
-  |     <span class="stres">                                      DimYear      </span>|     <span class="stres">      InstTypeList      </span>|
-  |--------------------------------------------------------------------------------------|
-  |                                    v3 |                             v4 |     v5 | v6 |
-  | <span class="stres">                             InstList </span>| <span class="stres">                ExpendTypeDesc </span>| <span class="stres">Amount </span>| <span class="stres"> . </span>|
-  +--------------------------------------------------------------------------------------+
-
-  +--------------------------------------------------------------------------------------+
-  |                                                v1      |                     v2      |
-  |     <span class="stres">                                         2014      </span>|     <span class="stres">Community Colleges      </span>|
-  |--------------------------------------------------------------------------------------|
-  |                                    v3 |                             v4 |     v5 | v6 |
-  | <span class="stres">Alamo CCD-Northeast Lakeview College  </span>| <span class="stres">     Academic Support Per FTSE </span>| <span class="stres">   694 </span>| <span class="stres"> . </span>|
-  +--------------------------------------------------------------------------------------+
-
-  +--------------------------------------------------------------------------------------+
-  |                                                v1      |                     v2      |
-  |     <span class="stres">                                         2014      </span>|     <span class="stres">Community Colleges      </span>|
-  |--------------------------------------------------------------------------------------|
-  |                                    v3 |                             v4 |     v5 | v6 |
-  | <span class="stres">Alamo CCD-Northeast Lakeview College  </span>| <span class="stres">Institutional Support Per FTSE </span>| <span class="stres"> 1,835 </span>| <span class="stres"> . </span>|
-  +--------------------------------------------------------------------------------------+
-
-  +--------------------------------------------------------------------------------------+
-  |                                                v1      |                     v2      |
-  |     <span class="stres">                                         2014      </span>|     <span class="stres">Community Colleges      </span>|
-  |--------------------------------------------------------------------------------------|
-  |                                    v3 |                             v4 |     v5 | v6 |
-  | <span class="stres">Alamo CCD-Northeast Lakeview College  </span>| <span class="stres">Instructional Support Per FTSE </span>| <span class="stres"> 3,541 </span>| <span class="stres"> . </span>|
-  +--------------------------------------------------------------------------------------+
-
-----------------------------------------------------------------------------------------------------
-FILE: /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data 
-&gt; and Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Enrollment_
-&gt; by_Flex_Entry.dta
-  rows=626  vars=6
-
-  +---------------------------------------------------------------------------------------+
-  |                       v1 |                 v2 |                                    v3 |
-  | <span class="stres">Enrollment by Flex Entry </span>| <span class="stres">                   </span>| <span class="stres">                                      </span>|
-  |---------------------------------------------------------------------------------------|
-  |                     v4           |              v5           |           v6           |
-  |           <span class="stres">                       </span>|           <span class="stres">                </span>|           <span class="stres"> .           </span>|
-  +---------------------------------------------------------------------------------------+
-
-  +---------------------------------------------------------------------------------------+
-  |                       v1 |                 v2 |                                    v3 |
-  | <span class="stres">                 DimYear </span>| <span class="stres">      InstTypeList </span>| <span class="stres">                             InstList </span>|
-  |---------------------------------------------------------------------------------------|
-  |                     v4           |              v5           |           v6           |
-  |           <span class="stres">SemesterDesc           </span>|           <span class="stres">Count           </span>|           <span class="stres"> .           </span>|
-  +---------------------------------------------------------------------------------------+
-
-  +---------------------------------------------------------------------------------------+
-  |                       v1 |                 v2 |                                    v3 |
-  | <span class="stres">                    2014 </span>| <span class="stres">Community Colleges </span>| <span class="stres">Alamo CCD-Northeast Lakeview College  </span>|
-  |---------------------------------------------------------------------------------------|
-  |                     v4           |              v5           |           v6           |
-  |           <span class="stres">        Fall           </span>|           <span class="stres">  352           </span>|           <span class="stres"> .           </span>|
-  +---------------------------------------------------------------------------------------+
-
-  +---------------------------------------------------------------------------------------+
-  |                       v1 |                 v2 |                                    v3 |
-  | <span class="stres">                    2014 </span>| <span class="stres">Community Colleges </span>| <span class="stres">   Alamo CCD-Northwest Vista College  </span>|
-  |---------------------------------------------------------------------------------------|
-  |                     v4           |              v5           |           v6           |
-  |           <span class="stres">        Fall           </span>|           <span class="stres">  747           </span>|           <span class="stres"> .           </span>|
-  +---------------------------------------------------------------------------------------+
-
-  +---------------------------------------------------------------------------------------+
-  |                       v1 |                 v2 |                                    v3 |
-  | <span class="stres">                    2014 </span>| <span class="stres">Community Colleges </span>| <span class="stres">          Alamo CCD-Palo Alto College </span>|
-  |---------------------------------------------------------------------------------------|
-  |                     v4           |              v5           |           v6           |
-  |           <span class="stres">        Fall           </span>|           <span class="stres">1,100           </span>|           <span class="stres"> .           </span>|
-  +---------------------------------------------------------------------------------------+
-
-----------------------------------------------------------------------------------------------------
-FILE: /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data 
-&gt; and Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Degrees_and
-&gt; _Certificates_Awarded___Economically_Disadvantaged.dta
-  rows=751  vars=6
-
-  +------------------------------------------------------------------------------------+
-  |                                                            v1 |                 v2 |
-  | <span class="stres">Degrees and Certificates Awarded - Economically Disadvantaged </span>| <span class="stres">                   </span>|
-  |------------------------------------------------------------------------------------|
-  |                                      v3   |            v4   |      v5    |   v6    |
-  |   <span class="stres">                                        </span>|   <span class="stres">              </span>|   <span class="stres">         </span>|   <span class="stres"> .    </span>|
-  +------------------------------------------------------------------------------------+
-
-  +------------------------------------------------------------------------------------+
-  |                                                            v1 |                 v2 |
-  | <span class="stres">                                                      DimYear </span>| <span class="stres">      InstTypeList </span>|
-  |------------------------------------------------------------------------------------|
-  |                                      v3   |            v4   |      v5    |   v6    |
-  |   <span class="stres">                             InstList   </span>|   <span class="stres"> RegionDesc   </span>|   <span class="stres">Count    </span>|   <span class="stres"> .    </span>|
-  +------------------------------------------------------------------------------------+
-
-  +------------------------------------------------------------------------------------+
-  |                                                            v1 |                 v2 |
-  | <span class="stres">                                                         2014 </span>| <span class="stres">Community Colleges </span>|
-  |------------------------------------------------------------------------------------|
-  |                                      v3   |            v4   |      v5    |   v6    |
-  |   <span class="stres">Alamo CCD-Northeast Lakeview College    </span>|   <span class="stres">South Texas   </span>|   <span class="stres">    3    </span>|   <span class="stres"> .    </span>|
-  +------------------------------------------------------------------------------------+
-
-  +------------------------------------------------------------------------------------+
-  |                                                            v1 |                 v2 |
-  | <span class="stres">                                                         2014 </span>| <span class="stres">Community Colleges </span>|
-  |------------------------------------------------------------------------------------|
-  |                                      v3   |            v4   |      v5    |   v6    |
-  |   <span class="stres">   Alamo CCD-Northwest Vista College    </span>|   <span class="stres">South Texas   </span>|   <span class="stres">  969    </span>|   <span class="stres"> .    </span>|
-  +------------------------------------------------------------------------------------+
-
-  +------------------------------------------------------------------------------------+
-  |                                                            v1 |                 v2 |
-  | <span class="stres">                                                         2014 </span>| <span class="stres">Community Colleges </span>|
-  |------------------------------------------------------------------------------------|
-  |                                      v3   |            v4   |      v5    |   v6    |
-  |   <span class="stres">          Alamo CCD-Palo Alto College   </span>|   <span class="stres">South Texas   </span>|   <span class="stres">  563    </span>|   <span class="stres"> .    </span>|
-  +------------------------------------------------------------------------------------+
-
-----------------------------------------------------------------------------------------------------
-FILE: /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data 
-&gt; and Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Underprepar
-&gt; ed_Prepared_Students_who_Satisfy_TSI.dta
-  rows=6659  vars=7
-
-  +-------------------------------------------------------------------------------+
-  |                                                v1   |                   v2    |
-  |   <span class="stres">Underprepared/Prepared Students who Satisfy TSI   </span>|   <span class="stres">                      </span>|
-  |-------------------------------------------------------------------------------|
-  |                                    v3 |        v4 |           v5 |    v6 | v7 |
-  | <span class="stres">                                      </span>| <span class="stres">          </span>| <span class="stres">             </span>| <span class="stres">      </span>| <span class="stres"> . </span>|
-  +-------------------------------------------------------------------------------+
-
-  +-------------------------------------------------------------------------------+
-  |                                                v1   |                   v2    |
-  |   <span class="stres">                                        DimYear   </span>|   <span class="stres">      InstTypeList    </span>|
-  |-------------------------------------------------------------------------------|
-  |                                    v3 |        v4 |           v5 |    v6 | v7 |
-  | <span class="stres">                             InstList </span>| <span class="stres">   DEDesc </span>| <span class="stres">   DETSIDesc </span>| <span class="stres">Count </span>| <span class="stres"> . </span>|
-  +-------------------------------------------------------------------------------+
-
-  +-------------------------------------------------------------------------------+
-  |                                                v1   |                   v2    |
-  |   <span class="stres">                                           2011   </span>|   <span class="stres">Community Colleges    </span>|
-  |-------------------------------------------------------------------------------|
-  |                                    v3 |        v4 |           v5 |    v6 | v7 |
-  | <span class="stres">Alamo CCD-Northeast Lakeview College  </span>| <span class="stres">All Areas </span>| <span class="stres">Did Not Meet </span>| <span class="stres">   55 </span>| <span class="stres"> . </span>|
-  +-------------------------------------------------------------------------------+
-
-  +-------------------------------------------------------------------------------+
-  |                                                v1   |                   v2    |
-  |   <span class="stres">                                           2011   </span>|   <span class="stres">Community Colleges    </span>|
-  |-------------------------------------------------------------------------------|
-  |                                    v3 |        v4 |           v5 |    v6 | v7 |
-  | <span class="stres">Alamo CCD-Northeast Lakeview College  </span>| <span class="stres">All Areas </span>| <span class="stres">         Met </span>| <span class="stres">   46 </span>| <span class="stres"> . </span>|
-  +-------------------------------------------------------------------------------+
-
-  +-------------------------------------------------------------------------------+
-  |                                                v1   |                   v2    |
-  |   <span class="stres">                                           2011   </span>|   <span class="stres">Community Colleges    </span>|
-  |-------------------------------------------------------------------------------|
-  |                                    v3 |        v4 |           v5 |    v6 | v7 |
-  | <span class="stres">Alamo CCD-Northeast Lakeview College  </span>| <span class="stres">     Math </span>| <span class="stres">Did Not Meet </span>| <span class="stres">  108 </span>| <span class="stres"> . </span>|
-  +-------------------------------------------------------------------------------+
-
-----------------------------------------------------------------------------------------------------
-FILE: /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data 
-&gt; and Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_State_Appr
-&gt; opriations_per_FTSE.dta
-  rows=404  vars=5
-
-  +-----------------------------------------------------------------------------------------------+
-  | <span class="stres">                           v1                    v2                          v3       v4   v5 </span>|
-  |-----------------------------------------------------------------------------------------------|
-  | <span class="stres">State Appropriations per FTSE                                                               . </span>|
-  | <span class="stres">                      DimYear          InstTypeList                    InstList   Amount    . </span>|
-  | <span class="stres">                         2014   Public Universities     Angelo State University    7,113    . </span>|
-  | <span class="stres">                         2014   Public Universities   East Texas A&amp;M University    5,787    . </span>|
-  | <span class="stres">                         2014   Public Universities            Lamar University    4,656    . </span>|
-  +-----------------------------------------------------------------------------------------------+
-
-----------------------------------------------------------------------------------------------------
-FILE: /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data 
-&gt; and Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Enrollment_
-&gt; in_Dual_Credit__Annual_Unduplicated.dta
-  rows=799  vars=5
-
-  +----------------------------------------------------------------------+
-  |                                              v1 |                 v2 |
-  | <span class="stres">Enrollment in Dual Credit (Annual Unduplicated) </span>| <span class="stres">                   </span>|
-  |----------------------------------------------------------------------|
-  |                                    v3     |       v4     |    v5     |
-  |    <span class="stres">                                       </span>|    <span class="stres">          </span>|    <span class="stres"> .     </span>|
-  +----------------------------------------------------------------------+
-
-  +----------------------------------------------------------------------+
-  |                                              v1 |                 v2 |
-  | <span class="stres">                                        DimYear </span>| <span class="stres">      InstTypeList </span>|
-  |----------------------------------------------------------------------|
-  |                                    v3     |       v4     |    v5     |
-  |    <span class="stres">                          InstList     </span>|    <span class="stres">Count     </span>|    <span class="stres"> .     </span>|
-  +----------------------------------------------------------------------+
-
-  +----------------------------------------------------------------------+
-  |                                              v1 |                 v2 |
-  | <span class="stres">                                           2014 </span>| <span class="stres">Community Colleges </span>|
-  |----------------------------------------------------------------------|
-  |                                    v3     |       v4     |    v5     |
-  |    <span class="stres">Alamo CCD-Northwest Vista College      </span>|    <span class="stres">2,908     </span>|    <span class="stres"> .     </span>|
-  +----------------------------------------------------------------------+
-
-  +----------------------------------------------------------------------+
-  |                                              v1 |                 v2 |
-  | <span class="stres">                                           2014 </span>| <span class="stres">Community Colleges </span>|
-  |----------------------------------------------------------------------|
-  |                                    v3     |       v4     |    v5     |
-  |    <span class="stres">       Alamo CCD-Palo Alto College     </span>|    <span class="stres">1,639     </span>|    <span class="stres"> .     </span>|
-  +----------------------------------------------------------------------+
-
-  +----------------------------------------------------------------------+
-  |                                              v1 |                 v2 |
-  | <span class="stres">                                           2014 </span>| <span class="stres">Community Colleges </span>|
-  |----------------------------------------------------------------------|
-  |                                    v3     |       v4     |    v5     |
-  |    <span class="stres">     Alamo CCD-San Antonio College     </span>|    <span class="stres">2,867     </span>|    <span class="stres"> .     </span>|
-  +----------------------------------------------------------------------+
-
-----------------------------------------------------------------------------------------------------
-FILE: /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data 
-&gt; and Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Student_Lo
-&gt; an_Debt__Average.dta
-  rows=968  vars=6
-
-  +-----------------------------------------------------------------------------------------------+
-  |                          v1 |                  v2 |                        v3 |            v4 |
-  | <span class="stres">Student Loan Debt (Average) </span>| <span class="stres">                    </span>| <span class="stres">                          </span>| <span class="stres">              </span>|
-  |-----------------------------------------------------------------------------------------------|
-  |                         v5                      |                     v6                      |
-  |                     <span class="stres">                            </span>|                     <span class="stres"> .                      </span>|
-  +-----------------------------------------------------------------------------------------------+
-
-  +-----------------------------------------------------------------------------------------------+
-  |                          v1 |                  v2 |                        v3 |            v4 |
-  | <span class="stres">                    DimYear </span>| <span class="stres">       InstTypeList </span>| <span class="stres">                 InstList </span>| <span class="stres">SameTotalDesc </span>|
-  |-----------------------------------------------------------------------------------------------|
-  |                         v5                      |                     v6                      |
-  |                     <span class="stres">Amount                      </span>|                     <span class="stres"> .                      </span>|
-  +-----------------------------------------------------------------------------------------------+
-
-  +-----------------------------------------------------------------------------------------------+
-  |                          v1 |                  v2 |                        v3 |            v4 |
-  | <span class="stres">                       2013 </span>| <span class="stres">Public Universities </span>| <span class="stres">  Angelo State University </span>| <span class="stres">        Other </span>|
-  |-----------------------------------------------------------------------------------------------|
-  |                         v5                      |                     v6                      |
-  |                     <span class="stres">24,785                      </span>|                     <span class="stres"> .                      </span>|
-  +-----------------------------------------------------------------------------------------------+
-
-  +-----------------------------------------------------------------------------------------------+
-  |                          v1 |                  v2 |                        v3 |            v4 |
-  | <span class="stres">                       2013 </span>| <span class="stres">Public Universities </span>| <span class="stres">  Angelo State University </span>| <span class="stres">         Same </span>|
-  |-----------------------------------------------------------------------------------------------|
-  |                         v5                      |                     v6                      |
-  |                     <span class="stres">25,305                      </span>|                     <span class="stres"> .                      </span>|
-  +-----------------------------------------------------------------------------------------------+
-
-  +-----------------------------------------------------------------------------------------------+
-  |                          v1 |                  v2 |                        v3 |            v4 |
-  | <span class="stres">                       2013 </span>| <span class="stres">Public Universities </span>| <span class="stres">East Texas A&amp;M University </span>| <span class="stres">        Other </span>|
-  |-----------------------------------------------------------------------------------------------|
-  |                         v5                      |                     v6                      |
-  |                     <span class="stres">26,291                      </span>|                     <span class="stres"> .                      </span>|
-  +-----------------------------------------------------------------------------------------------+
-
-----------------------------------------------------------------------------------------------------
-FILE: /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data 
-&gt; and Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Semester_Cr
-&gt; edit_Hours_by_Funding_Type.dta
-  rows=146261  vars=8
-
-  +---------------------------------------------------------------------------------+
-  |                                         v1      |                      v2       |
-  |      <span class="stres">Semester Credit Hours by Funding Type      </span>|      <span class="stres">                         </span>|
-  |---------------------------------------------------------------------------------|
-  |                                    v3 |           v4 |                       v5 |
-  | <span class="stres">                                      </span>| <span class="stres">             </span>| <span class="stres">                         </span>|
-  |---------------------------------------------------------------------------------|
-  |                                                    v6    |      v7    |   v8    |
-  |   <span class="stres">                                                       </span>|   <span class="stres">         </span>|   <span class="stres"> .    </span>|
-  +---------------------------------------------------------------------------------+
-
-  +---------------------------------------------------------------------------------+
-  |                                         v1      |                      v2       |
-  |      <span class="stres">                              DimYear      </span>|      <span class="stres">      InstTypeList       </span>|
-  |---------------------------------------------------------------------------------|
-  |                                    v3 |           v4 |                       v5 |
-  | <span class="stres">                             InstList </span>| <span class="stres">SemesterDesc </span>| <span class="stres">             SCHModeDesc </span>|
-  |---------------------------------------------------------------------------------|
-  |                                                    v6    |      v7    |   v8    |
-  |   <span class="stres">                              FundingFormulaCTCDesc    </span>|   <span class="stres">Count    </span>|   <span class="stres"> .    </span>|
-  +---------------------------------------------------------------------------------+
-
-  +---------------------------------------------------------------------------------+
-  |                                         v1      |                      v2       |
-  |      <span class="stres">                                 2014      </span>|      <span class="stres">Community Colleges       </span>|
-  |---------------------------------------------------------------------------------|
-  |                                    v3 |           v4 |                       v5 |
-  | <span class="stres">Alamo CCD-Northeast Lakeview College  </span>| <span class="stres">        Fall </span>| <span class="stres">Fully Distance Education </span>|
-  |---------------------------------------------------------------------------------|
-  |                                                    v6    |      v7    |   v8    |
-  |   <span class="stres">12 - English Lang, Lit, Philosophy, Hum &amp; Interdisc    </span>|   <span class="stres">  189    </span>|   <span class="stres"> .    </span>|
-  +---------------------------------------------------------------------------------+
-
-  +---------------------------------------------------------------------------------+
-  |                                         v1      |                      v2       |
-  |      <span class="stres">                                 2014      </span>|      <span class="stres">Community Colleges       </span>|
-  |---------------------------------------------------------------------------------|
-  |                                    v3 |           v4 |                       v5 |
-  | <span class="stres">Alamo CCD-Northeast Lakeview College  </span>| <span class="stres">        Fall </span>| <span class="stres">Fully Distance Education </span>|
-  |---------------------------------------------------------------------------------|
-  |                                                    v6    |      v7    |   v8    |
-  |   <span class="stres">                             13 - Foreign Languages    </span>|   <span class="stres">   68    </span>|   <span class="stres"> .    </span>|
-  +---------------------------------------------------------------------------------+
-
-  +---------------------------------------------------------------------------------+
-  |                                         v1      |                      v2       |
-  |      <span class="stres">                                 2014      </span>|      <span class="stres">Community Colleges       </span>|
-  |---------------------------------------------------------------------------------|
-  |                                    v3 |           v4 |                       v5 |
-  | <span class="stres">Alamo CCD-Northeast Lakeview College  </span>| <span class="stres">        Fall </span>| <span class="stres">Fully Distance Education </span>|
-  |---------------------------------------------------------------------------------|
-  |                                                    v6    |      v7    |   v8    |
-  |   <span class="stres">                    16 - Health Occupations - Other    </span>|   <span class="stres">   63    </span>|   <span class="stres"> .    </span>|
-  +---------------------------------------------------------------------------------+
-
-----------------------------------------------------------------------------------------------------
-FILE: /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data 
-&gt; and Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Faculty_Hea
-&gt; dcount__Fall.dta
-  rows=14216  vars=8
-
-  +---------------------------------------------------------------------------------------+
-  |                       v1 |                 v2 |                                    v3 |
-  | <span class="stres">Faculty Headcount (Fall) </span>| <span class="stres">                   </span>| <span class="stres">                                      </span>|
-  |---------------------------------------------------------------------------------------|
-  |           v4    |                 v5    |               v6    |      v7    |    v8    |
-  |   <span class="stres">              </span>|   <span class="stres">                    </span>|   <span class="stres">                  </span>|   <span class="stres">         </span>|    <span class="stres"> .    </span>|
-  +---------------------------------------------------------------------------------------+
-
-  +---------------------------------------------------------------------------------------+
-  |                       v1 |                 v2 |                                    v3 |
-  | <span class="stres">                 DimYear </span>| <span class="stres">      InstTypeList </span>| <span class="stres">                             InstList </span>|
-  |---------------------------------------------------------------------------------------|
-  |           v4    |                 v5    |               v6    |      v7    |    v8    |
-  |   <span class="stres">GenderDesc    </span>|   <span class="stres">   EthnicityDesc    </span>|   <span class="stres">FTPTStatusDesc    </span>|   <span class="stres">Count    </span>|    <span class="stres"> .    </span>|
-  +---------------------------------------------------------------------------------------+
-
-  +---------------------------------------------------------------------------------------+
-  |                       v1 |                 v2 |                                    v3 |
-  | <span class="stres">                    2013 </span>| <span class="stres">Community Colleges </span>| <span class="stres">Alamo CCD-Northeast Lakeview College  </span>|
-  |---------------------------------------------------------------------------------------|
-  |           v4    |                 v5    |               v6    |      v7    |    v8    |
-  |   <span class="stres">    Female    </span>|   <span class="stres">African American    </span>|   <span class="stres">     Part-time    </span>|   <span class="stres">    3    </span>|    <span class="stres"> .    </span>|
-  +---------------------------------------------------------------------------------------+
-
-  +---------------------------------------------------------------------------------------+
-  |                       v1 |                 v2 |                                    v3 |
-  | <span class="stres">                    2013 </span>| <span class="stres">Community Colleges </span>| <span class="stres">Alamo CCD-Northeast Lakeview College  </span>|
-  |---------------------------------------------------------------------------------------|
-  |           v4    |                 v5    |               v6    |      v7    |    v8    |
-  |   <span class="stres">    Female    </span>|   <span class="stres">        Hispanic    </span>|   <span class="stres">     Part-time    </span>|   <span class="stres">   13    </span>|    <span class="stres"> .    </span>|
-  +---------------------------------------------------------------------------------------+
-
-  +---------------------------------------------------------------------------------------+
-  |                       v1 |                 v2 |                                    v3 |
-  | <span class="stres">                    2013 </span>| <span class="stres">Community Colleges </span>| <span class="stres">Alamo CCD-Northeast Lakeview College  </span>|
-  |---------------------------------------------------------------------------------------|
-  |           v4    |                 v5    |               v6    |      v7    |    v8    |
-  |   <span class="stres">    Female    </span>|   <span class="stres">           Other    </span>|   <span class="stres">     Part-time    </span>|   <span class="stres">   30    </span>|    <span class="stres"> .    </span>|
-  +---------------------------------------------------------------------------------------+
-
-----------------------------------------------------------------------------------------------------
-FILE: /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data 
-&gt; and Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Graduation
-&gt; _Rate__Same_and_Other.dta
-  rows=1258  vars=7
-
-  +----------------------------------------------------------------------------------+
-  |                               v1 |                  v2 |                      v3 |
-  | <span class="stres">Graduation Rate (Same and Other) </span>| <span class="stres">                    </span>| <span class="stres">                        </span>|
-  |----------------------------------------------------------------------------------|
-  |                        v4    |                v5     |        v6     |    v7     |
-  |    <span class="stres">                          </span>|    <span class="stres">                   </span>|    <span class="stres">           </span>|    <span class="stres"> .     </span>|
-  +----------------------------------------------------------------------------------+
-
-  +----------------------------------------------------------------------------------+
-  |                               v1 |                  v2 |                      v3 |
-  | <span class="stres">                         DimYear </span>| <span class="stres">       InstTypeList </span>| <span class="stres">               InstList </span>|
-  |----------------------------------------------------------------------------------|
-  |                        v4    |                v5     |        v6     |    v7     |
-  |    <span class="stres">        ReportTypeDesc    </span>|    <span class="stres">CohortYearDesc     </span>|    <span class="stres">   Pct     </span>|    <span class="stres"> .     </span>|
-  +----------------------------------------------------------------------------------+
-
-  +----------------------------------------------------------------------------------+
-  |                               v1 |                  v2 |                      v3 |
-  | <span class="stres">                            2014 </span>| <span class="stres">Public Universities </span>| <span class="stres">Angelo State University </span>|
-  |----------------------------------------------------------------------------------|
-  |                        v4    |                v5     |        v6     |    v7     |
-  |    <span class="stres">4-Year Graduation Rate    </span>|    <span class="stres">          2010     </span>|    <span class="stres">0.2519     </span>|    <span class="stres"> .     </span>|
-  +----------------------------------------------------------------------------------+
-
-  +----------------------------------------------------------------------------------+
-  |                               v1 |                  v2 |                      v3 |
-  | <span class="stres">                            2014 </span>| <span class="stres">Public Universities </span>| <span class="stres">Angelo State University </span>|
-  |----------------------------------------------------------------------------------|
-  |                        v4    |                v5     |        v6     |    v7     |
-  |    <span class="stres">5-Year Graduation Rate    </span>|    <span class="stres">          2009     </span>|    <span class="stres">0.3826     </span>|    <span class="stres"> .     </span>|
-  +----------------------------------------------------------------------------------+
-
-  +----------------------------------------------------------------------------------+
-  |                               v1 |                  v2 |                      v3 |
-  | <span class="stres">                            2014 </span>| <span class="stres">Public Universities </span>| <span class="stres">Angelo State University </span>|
-  |----------------------------------------------------------------------------------|
-  |                        v4    |                v5     |        v6     |    v7     |
-  |    <span class="stres">6-Year Graduation Rate    </span>|    <span class="stres">          2008     </span>|    <span class="stres">0.4126     </span>|    <span class="stres"> .     </span>|
-  +----------------------------------------------------------------------------------+
-
-----------------------------------------------------------------------------------------------------
-FILE: /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data 
-&gt; and Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Graduation
-&gt; _Rate_Counts_for_Two_Year_First_Time_Transfers_to_a_University.dta
-  rows=1798  vars=7
-
-  +------------------------------------------------------------------------------------------------+
-  |                                                                       v1 |                  v2 |
-  | <span class="stres">Graduation Rate Counts for Two-Year First-Time Transfers to a University </span>| <span class="stres">                    </span>|
-  |------------------------------------------------------------------------------------------------|
-  |                       v3   |                v4   |                   v5   |      v6   |   v7   |
-  |  <span class="stres">                          </span>|  <span class="stres">                   </span>|  <span class="stres">                      </span>|   <span class="stres">        </span>|   <span class="stres"> .   </span>|
-  +------------------------------------------------------------------------------------------------+
-
-  +------------------------------------------------------------------------------------------------+
-  |                                                                       v1 |                  v2 |
-  | <span class="stres">                                                                 DimYear </span>| <span class="stres">       InstTypeList </span>|
-  |------------------------------------------------------------------------------------------------|
-  |                       v3   |                v4   |                   v5   |      v6   |   v7   |
-  |  <span class="stres">               InstList   </span>|  <span class="stres">  TwoYearSCHDesc   </span>|  <span class="stres">     GraduationDesc   </span>|   <span class="stres">Count   </span>|   <span class="stres"> .   </span>|
-  +------------------------------------------------------------------------------------------------+
-
-  +------------------------------------------------------------------------------------------------+
-  |                                                                       v1 |                  v2 |
-  | <span class="stres">                                                                    2014 </span>| <span class="stres">Public Universities </span>|
-  |------------------------------------------------------------------------------------------------|
-  |                       v3   |                v4   |                   v5   |      v6   |   v7   |
-  |  <span class="stres">Angelo State University   </span>|  <span class="stres">  30 or More SCH   </span>|  <span class="stres">    Graduation Rate   </span>|   <span class="stres">   98   </span>|   <span class="stres"> .   </span>|
-  +------------------------------------------------------------------------------------------------+
-
-  +------------------------------------------------------------------------------------------------+
-  |                                                                       v1 |                  v2 |
-  | <span class="stres">                                                                    2014 </span>| <span class="stres">Public Universities </span>|
-  |------------------------------------------------------------------------------------------------|
-  |                       v3   |                v4   |                   v5   |      v6   |   v7   |
-  |  <span class="stres">Angelo State University   </span>|  <span class="stres">  30 or More SCH   </span>|  <span class="stres">Not Found Graduated   </span>|   <span class="stres">  146   </span>|   <span class="stres"> .   </span>|
-  +------------------------------------------------------------------------------------------------+
-
-  +------------------------------------------------------------------------------------------------+
-  |                                                                       v1 |                  v2 |
-  | <span class="stres">                                                                    2014 </span>| <span class="stres">Public Universities </span>|
-  |------------------------------------------------------------------------------------------------|
-  |                       v3   |                v4   |                   v5   |      v6   |   v7   |
-  |  <span class="stres">Angelo State University   </span>|  <span class="stres">Less than 30 SCH   </span>|  <span class="stres">    Graduation Rate   </span>|   <span class="stres">   52   </span>|   <span class="stres"> .   </span>|
-  +------------------------------------------------------------------------------------------------+
-
-----------------------------------------------------------------------------------------------------
-FILE: /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data 
-&gt; and Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Student_Loa
-&gt; n_Debt_to_First_Year_Wage__Median.dta
-  rows=578  vars=5
-
-  +--------------------------------------------------------------------+
-  |                                            v1 |                 v2 |
-  | <span class="stres">Student Loan Debt to First Year Wage (Median) </span>| <span class="stres">                   </span>|
-  |--------------------------------------------------------------------|
-  |                                    v3    |        v4    |    v5    |
-  |    <span class="stres">                                      </span>|    <span class="stres">          </span>|    <span class="stres"> .    </span>|
-  +--------------------------------------------------------------------+
-
-  +--------------------------------------------------------------------+
-  |                                            v1 |                 v2 |
-  | <span class="stres">                                      DimYear </span>| <span class="stres">      InstTypeList </span>|
-  |--------------------------------------------------------------------|
-  |                                    v3    |        v4    |    v5    |
-  |    <span class="stres">                          InstList    </span>|    <span class="stres">   Pct    </span>|    <span class="stres"> .    </span>|
-  +--------------------------------------------------------------------+
-
-  +--------------------------------------------------------------------+
-  |                                            v1 |                 v2 |
-  | <span class="stres">                                         2012 </span>| <span class="stres">Community Colleges </span>|
-  |--------------------------------------------------------------------|
-  |                                    v3    |        v4    |    v5    |
-  |    <span class="stres">Alamo CCD-Northwest Vista College     </span>|    <span class="stres">0.3869    </span>|    <span class="stres"> .    </span>|
-  +--------------------------------------------------------------------+
-
-  +--------------------------------------------------------------------+
-  |                                            v1 |                 v2 |
-  | <span class="stres">                                         2012 </span>| <span class="stres">Community Colleges </span>|
-  |--------------------------------------------------------------------|
-  |                                    v3    |        v4    |    v5    |
-  |    <span class="stres">       Alamo CCD-Palo Alto College    </span>|    <span class="stres">0.4073    </span>|    <span class="stres"> .    </span>|
-  +--------------------------------------------------------------------+
-
-  +--------------------------------------------------------------------+
-  |                                            v1 |                 v2 |
-  | <span class="stres">                                         2012 </span>| <span class="stres">Community Colleges </span>|
-  |--------------------------------------------------------------------|
-  |                                    v3    |        v4    |    v5    |
-  |    <span class="stres">     Alamo CCD-San Antonio College    </span>|    <span class="stres">0.3877    </span>|    <span class="stres"> .    </span>|
-  +--------------------------------------------------------------------+
-
-----------------------------------------------------------------------------------------------------
-FILE: /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data 
-&gt; and Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Contact_hou
-&gt; rs_for_Continuing_Education_Students.dta
-  rows=6241  vars=8
-
-  +----------------------------------------------------------------------------------------+
-  |                                                  v1      |                     v2      |
-  |     <span class="stres">Contact hours for Continuing Education Students      </span>|     <span class="stres">                        </span>|
-  |----------------------------------------------------------------------------------------|
-  |                                    v3 |                v4 |                         v5 |
-  | <span class="stres">                                      </span>| <span class="stres">                  </span>| <span class="stres">                           </span>|
-  |----------------------------------------------------------------------------------------|
-  |                    v6           |              v7            |           v8            |
-  |           <span class="stres">                      </span>|           <span class="stres">                 </span>|           <span class="stres"> .            </span>|
-  +----------------------------------------------------------------------------------------+
-
-  +----------------------------------------------------------------------------------------+
-  |                                                  v1      |                     v2      |
-  |     <span class="stres">                                        DimYear      </span>|     <span class="stres">      InstTypeList      </span>|
-  |----------------------------------------------------------------------------------------|
-  |                                    v3 |                v4 |                         v5 |
-  | <span class="stres">                             InstList </span>| <span class="stres">ClassLocationDesc </span>| <span class="stres">            CeFundTypeDesc </span>|
-  |----------------------------------------------------------------------------------------|
-  |                    v6           |              v7            |           v8            |
-  |           <span class="stres">QuarterDesc           </span>|           <span class="stres">Count            </span>|           <span class="stres"> .            </span>|
-  +----------------------------------------------------------------------------------------+
-
-  +----------------------------------------------------------------------------------------+
-  |                                                  v1      |                     v2      |
-  |     <span class="stres">                                           2015      </span>|     <span class="stres">Community Colleges      </span>|
-  |----------------------------------------------------------------------------------------|
-  |                                    v3 |                v4 |                         v5 |
-  | <span class="stres">Alamo CCD-Northeast Lakeview College  </span>| <span class="stres">      In-District </span>| <span class="stres">State Funded Contact Hours </span>|
-  |----------------------------------------------------------------------------------------|
-  |                    v6           |              v7            |           v8            |
-  |           <span class="stres">       Fall           </span>|           <span class="stres">2,680            </span>|           <span class="stres"> .            </span>|
-  +----------------------------------------------------------------------------------------+
-
-  +----------------------------------------------------------------------------------------+
-  |                                                  v1      |                     v2      |
-  |     <span class="stres">                                           2015      </span>|     <span class="stres">Community Colleges      </span>|
-  |----------------------------------------------------------------------------------------|
-  |                                    v3 |                v4 |                         v5 |
-  | <span class="stres">Alamo CCD-Northeast Lakeview College  </span>| <span class="stres">      In-District </span>| <span class="stres">State Funded Contact Hours </span>|
-  |----------------------------------------------------------------------------------------|
-  |                    v6           |              v7            |           v8            |
-  |           <span class="stres">     Spring           </span>|           <span class="stres">  552            </span>|           <span class="stres"> .            </span>|
-  +----------------------------------------------------------------------------------------+
-
-  +----------------------------------------------------------------------------------------+
-  |                                                  v1      |                     v2      |
-  |     <span class="stres">                                           2015      </span>|     <span class="stres">Community Colleges      </span>|
-  |----------------------------------------------------------------------------------------|
-  |                                    v3 |                v4 |                         v5 |
-  | <span class="stres">Alamo CCD-Northeast Lakeview College  </span>| <span class="stres">      In-District </span>| <span class="stres">State Funded Contact Hours </span>|
-  |----------------------------------------------------------------------------------------|
-  |                    v6           |              v7            |           v8            |
-  |           <span class="stres">     Summer           </span>|           <span class="stres">6,528            </span>|           <span class="stres"> .            </span>|
-  +----------------------------------------------------------------------------------------+
-
-----------------------------------------------------------------------------------------------------
-FILE: /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data 
-&gt; and Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Semester_C
-&gt; redit_Hours_in_Excess_of_Program_Requirements.dta
-  rows=718  vars=6
-
-  +-------------------------------------------------------------------------------+
-  |                                                      v1 |                  v2 |
-  | <span class="stres">Semester Credit Hours in Excess of Program Requirements </span>| <span class="stres">                    </span>|
-  |-------------------------------------------------------------------------------|
-  |                          v3    |               v4    |       v5    |    v6    |
-  |   <span class="stres">                             </span>|    <span class="stres">                 </span>|    <span class="stres">         </span>|    <span class="stres"> .    </span>|
-  +-------------------------------------------------------------------------------+
-
-  +-------------------------------------------------------------------------------+
-  |                                                      v1 |                  v2 |
-  | <span class="stres">                                                DimYear </span>| <span class="stres">       InstTypeList </span>|
-  |-------------------------------------------------------------------------------|
-  |                          v3    |               v4    |       v5    |    v6    |
-  |   <span class="stres">                 InstList    </span>|    <span class="stres">SameTotalDesc    </span>|    <span class="stres">Count    </span>|    <span class="stres"> .    </span>|
-  +-------------------------------------------------------------------------------+
-
-  +-------------------------------------------------------------------------------+
-  |                                                      v1 |                  v2 |
-  | <span class="stres">                                                   2015 </span>| <span class="stres">Public Universities </span>|
-  |-------------------------------------------------------------------------------|
-  |                          v3    |               v4    |       v5    |    v6    |
-  |   <span class="stres">  Angelo State University    </span>|    <span class="stres">        Other    </span>|    <span class="stres">   24    </span>|    <span class="stres"> .    </span>|
-  +-------------------------------------------------------------------------------+
-
-  +-------------------------------------------------------------------------------+
-  |                                                      v1 |                  v2 |
-  | <span class="stres">                                                   2015 </span>| <span class="stres">Public Universities </span>|
-  |-------------------------------------------------------------------------------|
-  |                          v3    |               v4    |       v5    |    v6    |
-  |   <span class="stres">  Angelo State University    </span>|    <span class="stres">         Same    </span>|    <span class="stres">   11    </span>|    <span class="stres"> .    </span>|
-  +-------------------------------------------------------------------------------+
-
-  +-------------------------------------------------------------------------------+
-  |                                                      v1 |                  v2 |
-  | <span class="stres">                                                   2015 </span>| <span class="stres">Public Universities </span>|
-  |-------------------------------------------------------------------------------|
-  |                          v3    |               v4    |       v5    |    v6    |
-  |   <span class="stres">East Texas A&amp;M University    </span>|    <span class="stres">        Other    </span>|    <span class="stres">   25    </span>|    <span class="stres"> .    </span>|
-  +-------------------------------------------------------------------------------+
-
-----------------------------------------------------------------------------------------------------
-FILE: /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data 
-&gt; and Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Enrollment
-&gt; _by_Semester_Credit_Hour__SCH__Load.dta
-  rows=8717  vars=7
-
-  +-----------------------------------------------------------------------------------------------+
-  |                                            v1 |                  v2 |                      v3 |
-  | <span class="stres">Enrollment by Semester Credit Hour (SCH) Load </span>| <span class="stres">                    </span>| <span class="stres">                        </span>|
-  |-----------------------------------------------------------------------------------------------|
-  |                  v4        |             v5        |           v6         |        v7         |
-  |        <span class="stres">                    </span>|        <span class="stres">               </span>|        <span class="stres">              </span>|        <span class="stres"> .         </span>|
-  +-----------------------------------------------------------------------------------------------+
-
-  +-----------------------------------------------------------------------------------------------+
-  |                                            v1 |                  v2 |                      v3 |
-  | <span class="stres">                                      DimYear </span>| <span class="stres">       InstTypeList </span>| <span class="stres">               InstList </span>|
-  |-----------------------------------------------------------------------------------------------|
-  |                  v4        |             v5        |           v6         |        v7         |
-  |        <span class="stres">SemesterDesc        </span>|        <span class="stres">SCHDesc        </span>|        <span class="stres">Count         </span>|        <span class="stres"> .         </span>|
-  +-----------------------------------------------------------------------------------------------+
-
-  +-----------------------------------------------------------------------------------------------+
-  |                                            v1 |                  v2 |                      v3 |
-  | <span class="stres">                                         2014 </span>| <span class="stres">Public Universities </span>| <span class="stres">Angelo State University </span>|
-  |-----------------------------------------------------------------------------------------------|
-  |                  v4        |             v5        |           v6         |        v7         |
-  |        <span class="stres">        Fall        </span>|        <span class="stres">  12-14        </span>|        <span class="stres">2,143         </span>|        <span class="stres"> .         </span>|
-  +-----------------------------------------------------------------------------------------------+
-
-  +-----------------------------------------------------------------------------------------------+
-  |                                            v1 |                  v2 |                      v3 |
-  | <span class="stres">                                         2014 </span>| <span class="stres">Public Universities </span>| <span class="stres">Angelo State University </span>|
-  |-----------------------------------------------------------------------------------------------|
-  |                  v4        |             v5        |           v6         |        v7         |
-  |        <span class="stres">        Fall        </span>|        <span class="stres">  15-17        </span>|        <span class="stres">2,224         </span>|        <span class="stres"> .         </span>|
-  +-----------------------------------------------------------------------------------------------+
-
-  +-----------------------------------------------------------------------------------------------+
-  |                                            v1 |                  v2 |                      v3 |
-  | <span class="stres">                                         2014 </span>| <span class="stres">Public Universities </span>| <span class="stres">Angelo State University </span>|
-  |-----------------------------------------------------------------------------------------------|
-  |                  v4        |             v5        |           v6         |        v7         |
-  |        <span class="stres">        Fall        </span>|        <span class="stres">    3-5        </span>|        <span class="stres">  584         </span>|        <span class="stres"> .         </span>|
-  +-----------------------------------------------------------------------------------------------+
-
-----------------------------------------------------------------------------------------------------
-FILE: /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data 
-&gt; and Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Graduation
-&gt; _Rate_Counts__OOS_Peers__Non_Texas___Career.dta
-  rows=1520  vars=8
-
-  +------------------------------------------------------------------------------------+
-  |                                v1 |                   v2 |                      v3 |
-  | <span class="stres">Graduation Rate Counts (OOS Peers </span>| <span class="stres"> Non-Texas &amp; Career) </span>| <span class="stres">                        </span>|
-  |------------------------------------------------------------------------------------|
-  |               v4   |                v5   |               v6   |      v7   |   v8   |
-  |   <span class="stres">                 </span>|   <span class="stres">                  </span>|   <span class="stres">                 </span>|   <span class="stres">        </span>|   <span class="stres"> .   </span>|
-  +------------------------------------------------------------------------------------+
-
-  +------------------------------------------------------------------------------------+
-  |                                v1 |                   v2 |                      v3 |
-  | <span class="stres">                          DimYear </span>| <span class="stres">        InstTypeList </span>| <span class="stres">               InstList </span>|
-  |------------------------------------------------------------------------------------|
-  |               v4   |                v5   |               v6   |      v7   |   v8   |
-  |   <span class="stres">CohortYearDesc   </span>|   <span class="stres"> GraduationDesc   </span>|   <span class="stres">CareerRateDesc   </span>|   <span class="stres">Count   </span>|   <span class="stres"> .   </span>|
-  +------------------------------------------------------------------------------------+
-
-  +------------------------------------------------------------------------------------+
-  |                                v1 |                   v2 |                      v3 |
-  | <span class="stres">                             2014 </span>| <span class="stres"> Public Universities </span>| <span class="stres">Angelo State University </span>|
-  |------------------------------------------------------------------------------------|
-  |               v4   |                v5   |               v6   |      v7   |   v8   |
-  |   <span class="stres">          2008   </span>|   <span class="stres">Graduation Rate   </span>|   <span class="stres"> 4-Year Cohort   </span>|   <span class="stres">  618   </span>|   <span class="stres"> .   </span>|
-  +------------------------------------------------------------------------------------+
-
-  +------------------------------------------------------------------------------------+
-  |                                v1 |                   v2 |                      v3 |
-  | <span class="stres">                             2014 </span>| <span class="stres"> Public Universities </span>| <span class="stres">Angelo State University </span>|
-  |------------------------------------------------------------------------------------|
-  |               v4   |                v5   |               v6   |      v7   |   v8   |
-  |   <span class="stres">          2008   </span>|   <span class="stres">Graduation Rate   </span>|   <span class="stres"> 5-Year Cohort   </span>|   <span class="stres">1,065   </span>|   <span class="stres"> .   </span>|
-  +------------------------------------------------------------------------------------+
-
-  +------------------------------------------------------------------------------------+
-  |                                v1 |                   v2 |                      v3 |
-  | <span class="stres">                             2014 </span>| <span class="stres"> Public Universities </span>| <span class="stres">Angelo State University </span>|
-  |------------------------------------------------------------------------------------|
-  |               v4   |                v5   |               v6   |      v7   |   v8   |
-  |   <span class="stres">          2008   </span>|   <span class="stres">Graduation Rate   </span>|   <span class="stres"> 6-Year Cohort   </span>|   <span class="stres">1,278   </span>|   <span class="stres"> .   </span>|
-  +------------------------------------------------------------------------------------+
-
-----------------------------------------------------------------------------------------------------
-FILE: /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data 
-&gt; and Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Enrollment_
-&gt; by_Tuition_Status.dta
-  rows=16974  vars=7
-
-  +-------------------------------------------------------------------------------------------+
-  |                           v1 |                 v2 |                                    v3 |
-  | <span class="stres">Enrollment by Tuition Status </span>| <span class="stres">                   </span>| <span class="stres">                                      </span>|
-  |-------------------------------------------------------------------------------------------|
-  |               v4     |                                v5     |        v6     |     v7     |
-  |     <span class="stres">                 </span>|     <span class="stres">                                  </span>|     <span class="stres">          </span>|     <span class="stres"> .     </span>|
-  +-------------------------------------------------------------------------------------------+
-
-  +-------------------------------------------------------------------------------------------+
-  |                           v1 |                 v2 |                                    v3 |
-  | <span class="stres">                     DimYear </span>| <span class="stres">      InstTypeList </span>| <span class="stres">                             InstList </span>|
-  |-------------------------------------------------------------------------------------------|
-  |               v4     |                                v5     |        v6     |     v7     |
-  |     <span class="stres">SemesterDesc     </span>|     <span class="stres">              TuitionStatDesc     </span>|     <span class="stres">Count     </span>|     <span class="stres"> .     </span>|
-  +-------------------------------------------------------------------------------------------+
-
-  +-------------------------------------------------------------------------------------------+
-  |                           v1 |                 v2 |                                    v3 |
-  | <span class="stres">                        2014 </span>| <span class="stres">Community Colleges </span>| <span class="stres">Alamo CCD-Northeast Lakeview College  </span>|
-  |-------------------------------------------------------------------------------------------|
-  |               v4     |                                v5     |        v6     |     v7     |
-  |     <span class="stres">        Fall     </span>|     <span class="stres">Applicant In-District Tuition     </span>|     <span class="stres">    1     </span>|     <span class="stres"> .     </span>|
-  +-------------------------------------------------------------------------------------------+
-
-  +-------------------------------------------------------------------------------------------+
-  |                           v1 |                 v2 |                                    v3 |
-  | <span class="stres">                        2014 </span>| <span class="stres">Community Colleges </span>| <span class="stres">Alamo CCD-Northeast Lakeview College  </span>|
-  |-------------------------------------------------------------------------------------------|
-  |               v4     |                                v5     |        v6     |     v7     |
-  |     <span class="stres">        Fall     </span>|     <span class="stres">                  In-District     </span>|     <span class="stres">1,638     </span>|     <span class="stres"> .     </span>|
-  +-------------------------------------------------------------------------------------------+
-
-  +-------------------------------------------------------------------------------------------+
-  |                           v1 |                 v2 |                                    v3 |
-  | <span class="stres">                        2014 </span>| <span class="stres">Community Colleges </span>| <span class="stres">Alamo CCD-Northeast Lakeview College  </span>|
-  |-------------------------------------------------------------------------------------------|
-  |               v4     |                                v5     |        v6     |     v7     |
-  |     <span class="stres">        Fall     </span>|     <span class="stres">                 Non-Resident     </span>|     <span class="stres">   73     </span>|     <span class="stres"> .     </span>|
-  +-------------------------------------------------------------------------------------------+
-
-----------------------------------------------------------------------------------------------------
-FILE: /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data 
-&gt; and Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Enrollment_
-&gt; by_Tuition_Status__Annual_Unduplicated.dta
-  rows=3220  vars=6
-
-  +---------------------------------------------------------------------------+
-  |                                                 v1  |                 v2  |
-  | <span class="stres">Enrollment by Tuition Status (Annual Unduplicated)  </span>| <span class="stres">                    </span>|
-  |---------------------------------------------------------------------------|
-  |                                    v3 |                   v4 |    v5 | v6 |
-  | <span class="stres">                                      </span>| <span class="stres">                     </span>| <span class="stres">      </span>| <span class="stres"> . </span>|
-  +---------------------------------------------------------------------------+
-
-  +---------------------------------------------------------------------------+
-  |                                                 v1  |                 v2  |
-  | <span class="stres">                                           DimYear  </span>| <span class="stres">      InstTypeList  </span>|
-  |---------------------------------------------------------------------------|
-  |                                    v3 |                   v4 |    v5 | v6 |
-  | <span class="stres">                             InstList </span>| <span class="stres">      CTCTuitionDesc </span>| <span class="stres">Count </span>| <span class="stres"> . </span>|
-  +---------------------------------------------------------------------------+
-
-  +---------------------------------------------------------------------------+
-  |                                                 v1  |                 v2  |
-  | <span class="stres">                                              2014  </span>| <span class="stres">Community Colleges  </span>|
-  |---------------------------------------------------------------------------|
-  |                                    v3 |                   v4 |    v5 | v6 |
-  | <span class="stres">Alamo CCD-Northeast Lakeview College  </span>| <span class="stres">Continuing Education </span>| <span class="stres">1,359 </span>| <span class="stres"> . </span>|
-  +---------------------------------------------------------------------------+
-
-  +---------------------------------------------------------------------------+
-  |                                                 v1  |                 v2  |
-  | <span class="stres">                                              2014  </span>| <span class="stres">Community Colleges  </span>|
-  |---------------------------------------------------------------------------|
-  |                                    v3 |                   v4 |    v5 | v6 |
-  | <span class="stres">Alamo CCD-Northeast Lakeview College  </span>| <span class="stres">         In-District </span>| <span class="stres">2,760 </span>| <span class="stres"> . </span>|
-  +---------------------------------------------------------------------------+
-
-  +---------------------------------------------------------------------------+
-  |                                                 v1  |                 v2  |
-  | <span class="stres">                                              2014  </span>| <span class="stres">Community Colleges  </span>|
-  |---------------------------------------------------------------------------|
-  |                                    v3 |                   v4 |    v5 | v6 |
-  | <span class="stres">Alamo CCD-Northeast Lakeview College  </span>| <span class="stres">     Out-of_District </span>| <span class="stres">  846 </span>| <span class="stres"> . </span>|
-  +---------------------------------------------------------------------------+
-
-----------------------------------------------------------------------------------------------------
-FILE: /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data 
-&gt; and Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Student_Fa
-&gt; culty_Ratio.dta
-  rows=411  vars=5
-
-  +-------------------------------------------------------------------------------------------+
-  | <span class="stres">                   v1                    v2                          v3           v4   v5 </span>|
-  |-------------------------------------------------------------------------------------------|
-  | <span class="stres">Student Faculty Ratio                                                                   . </span>|
-  | <span class="stres">              DimYear          InstTypeList                    InstList   RatioCount    . </span>|
-  | <span class="stres">                 2014   Public Universities     Angelo State University           19    . </span>|
-  | <span class="stres">                 2014   Public Universities   East Texas A&amp;M University           20    . </span>|
-  | <span class="stres">                 2014   Public Universities            Lamar University           21    . </span>|
-  +-------------------------------------------------------------------------------------------+
-
-----------------------------------------------------------------------------------------------------
-FILE: /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data 
-&gt; and Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Contact_Hou
-&gt; rs_Taught_by_FT_PT_Faculty.dta
-  rows=1462  vars=7
-
-  +----------------------------------------------------------------------------------------+
-  |                                           v1        |                        v2        |
-  |        <span class="stres">Contact Hours Taught by FT/PT Faculty        </span>|        <span class="stres">                          </span>|
-  |----------------------------------------------------------------------------------------|
-  |                                    v3 |           v4 |             v5 |        v6 | v7 |
-  | <span class="stres">                                      </span>| <span class="stres">             </span>| <span class="stres">               </span>| <span class="stres">          </span>| <span class="stres"> . </span>|
-  +----------------------------------------------------------------------------------------+
-
-  +----------------------------------------------------------------------------------------+
-  |                                           v1        |                        v2        |
-  |        <span class="stres">                              DimYear        </span>|        <span class="stres">      InstTypeList        </span>|
-  |----------------------------------------------------------------------------------------|
-  |                                    v3 |           v4 |             v5 |        v6 | v7 |
-  | <span class="stres">                             InstList </span>| <span class="stres">SemesterDesc </span>| <span class="stres">FTPTStatusDesc </span>| <span class="stres">    Count </span>| <span class="stres"> . </span>|
-  +----------------------------------------------------------------------------------------+
-
-  +----------------------------------------------------------------------------------------+
-  |                                           v1        |                        v2        |
-  |        <span class="stres">                                 2014        </span>|        <span class="stres">Community Colleges        </span>|
-  |----------------------------------------------------------------------------------------|
-  |                                    v3 |           v4 |             v5 |        v6 | v7 |
-  | <span class="stres">Alamo CCD-Northeast Lakeview College  </span>| <span class="stres">        Fall </span>| <span class="stres">     Full-time </span>| <span class="stres">   19,680 </span>| <span class="stres"> . </span>|
-  +----------------------------------------------------------------------------------------+
-
-  +----------------------------------------------------------------------------------------+
-  |                                           v1        |                        v2        |
-  |        <span class="stres">                                 2014        </span>|        <span class="stres">Community Colleges        </span>|
-  |----------------------------------------------------------------------------------------|
-  |                                    v3 |           v4 |             v5 |        v6 | v7 |
-  | <span class="stres">Alamo CCD-Northeast Lakeview College  </span>| <span class="stres">        Fall </span>| <span class="stres">     Part-time </span>| <span class="stres">  231,776 </span>| <span class="stres"> . </span>|
-  +----------------------------------------------------------------------------------------+
-
-  +----------------------------------------------------------------------------------------+
-  |                                           v1        |                        v2        |
-  |        <span class="stres">                                 2014        </span>|        <span class="stres">Community Colleges        </span>|
-  |----------------------------------------------------------------------------------------|
-  |                                    v3 |           v4 |             v5 |        v6 | v7 |
-  | <span class="stres">   Alamo CCD-Northwest Vista College  </span>| <span class="stres">        Fall </span>| <span class="stres">     Full-time </span>| <span class="stres">1,103,440 </span>| <span class="stres"> . </span>|
-  +----------------------------------------------------------------------------------------+
-
-----------------------------------------------------------------------------------------------------
-FILE: /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data 
-&gt; and Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Underprepa
-&gt; red_Prepared_Students_Completing_a_College_Level_Course.dta
-  rows=6604  vars=8
-
-  +--------------------------------------------------------------------------------------------+
-  |                                                                v1  |                   v2  |
-  | <span class="stres">Underprepared/Prepared Students Completing a College Level Course  </span>|  <span class="stres">                     </span>|
-  |--------------------------------------------------------------------------------------------|
-  |                      v3 |        v4 |                      v5 |            v6 |    v7 | v8 |
-  | <span class="stres">                        </span>| <span class="stres">          </span>| <span class="stres">                        </span>| <span class="stres">              </span>| <span class="stres">      </span>| <span class="stres"> . </span>|
-  +--------------------------------------------------------------------------------------------+
-
-  +--------------------------------------------------------------------------------------------+
-  |                                                                v1  |                   v2  |
-  | <span class="stres">                                                          DimYear  </span>|  <span class="stres">       InstTypeList  </span>|
-  |--------------------------------------------------------------------------------------------|
-  |                      v3 |        v4 |                      v5 |            v6 |    v7 | v8 |
-  | <span class="stres">               InstList </span>| <span class="stres">   DEDesc </span>| <span class="stres">             DePassDesc </span>| <span class="stres">  DEreadyDesc </span>| <span class="stres">Count </span>| <span class="stres"> . </span>|
-  +--------------------------------------------------------------------------------------------+
-
-  +--------------------------------------------------------------------------------------------+
-  |                                                                v1  |                   v2  |
-  | <span class="stres">                                                             2011  </span>|  <span class="stres">Public Universities  </span>|
-  |--------------------------------------------------------------------------------------------|
-  |                      v3 |        v4 |                      v5 |            v6 |    v7 | v8 |
-  | <span class="stres">Angelo State University </span>| <span class="stres">All Areas </span>| <span class="stres">       Completed Course </span>| <span class="stres">     Prepared </span>| <span class="stres">  575 </span>| <span class="stres"> . </span>|
-  +--------------------------------------------------------------------------------------------+
-
-  +--------------------------------------------------------------------------------------------+
-  |                                                                v1  |                   v2  |
-  | <span class="stres">                                                             2011  </span>|  <span class="stres">Public Universities  </span>|
-  |--------------------------------------------------------------------------------------------|
-  |                      v3 |        v4 |                      v5 |            v6 |    v7 | v8 |
-  | <span class="stres">Angelo State University </span>| <span class="stres">All Areas </span>| <span class="stres">       Completed Course </span>| <span class="stres">Underprepared </span>| <span class="stres">    4 </span>| <span class="stres"> . </span>|
-  +--------------------------------------------------------------------------------------------+
-
-  +--------------------------------------------------------------------------------------------+
-  |                                                                v1  |                   v2  |
-  | <span class="stres">                                                             2011  </span>|  <span class="stres">Public Universities  </span>|
-  |--------------------------------------------------------------------------------------------|
-  |                      v3 |        v4 |                      v5 |            v6 |    v7 | v8 |
-  | <span class="stres">Angelo State University </span>| <span class="stres">All Areas </span>| <span class="stres">Did Not Complete Course </span>| <span class="stres">     Prepared </span>| <span class="stres">  569 </span>| <span class="stres"> . </span>|
-  +--------------------------------------------------------------------------------------------+
-
-----------------------------------------------------------------------------------------------------
-FILE: /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data 
-&gt; and Research Team/_datashare/THECB_accountability/01_raw/_converted/Community_Colleges_Percent_of_
-&gt; attempted_SCH_completed_successfully_completed.dta
-  rows=1464  vars=6
-
-  +--------------------------------------------------------------------------------+
-  |                                                        v1 |                 v2 |
-  | <span class="stres">Percent of attempted SCH completed/successfully completed </span>| <span class="stres">                   </span>|
-  |--------------------------------------------------------------------------------|
-  |                                    v3 |                     v4 |     v5  | v6  |
-  | <span class="stres">                                      </span>| <span class="stres">                       </span>| <span class="stres">        </span>| <span class="stres"> .  </span>|
-  +--------------------------------------------------------------------------------+
-
-  +--------------------------------------------------------------------------------+
-  |                                                        v1 |                 v2 |
-  | <span class="stres">                                                  DimYear </span>| <span class="stres">      InstTypeList </span>|
-  |--------------------------------------------------------------------------------|
-  |                                    v3 |                     v4 |     v5  | v6  |
-  | <span class="stres">                             InstList </span>| <span class="stres">           CompSCHDesc </span>| <span class="stres">   Pct  </span>| <span class="stres"> .  </span>|
-  +--------------------------------------------------------------------------------+
-
-  +--------------------------------------------------------------------------------+
-  |                                                        v1 |                 v2 |
-  | <span class="stres">                                                     2014 </span>| <span class="stres">Community Colleges </span>|
-  |--------------------------------------------------------------------------------|
-  |                                    v3 |                     v4 |     v5  | v6  |
-  | <span class="stres">Alamo CCD-Northeast Lakeview College  </span>| <span class="stres">             Completed </span>| <span class="stres">0.9072  </span>| <span class="stres"> .  </span>|
-  +--------------------------------------------------------------------------------+
-
-  +--------------------------------------------------------------------------------+
-  |                                                        v1 |                 v2 |
-  | <span class="stres">                                                     2014 </span>| <span class="stres">Community Colleges </span>|
-  |--------------------------------------------------------------------------------|
-  |                                    v3 |                     v4 |     v5  | v6  |
-  | <span class="stres">Alamo CCD-Northeast Lakeview College  </span>| <span class="stres">Successfully completed </span>| <span class="stres">0.7939  </span>| <span class="stres"> .  </span>|
-  +--------------------------------------------------------------------------------+
-
-  +--------------------------------------------------------------------------------+
-  |                                                        v1 |                 v2 |
-  | <span class="stres">                                                     2014 </span>| <span class="stres">Community Colleges </span>|
-  |--------------------------------------------------------------------------------|
-  |                                    v3 |                     v4 |     v5  | v6  |
-  | <span class="stres">   Alamo CCD-Northwest Vista College  </span>| <span class="stres">             Completed </span>| <span class="stres">0.9084  </span>| <span class="stres"> .  </span>|
-  +--------------------------------------------------------------------------------+
-
-----------------------------------------------------------------------------------------------------
-FILE: /Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data 
-&gt; and Research Team/_datashare/THECB_accountability/01_raw/_converted/Public_Universities_Semester_C
-&gt; redit_Hours_by_Funding_Type.dta
-  rows=11674  vars=8
-
-  +---------------------------------------------------------------------------------------+
-  |                                    v1 |                  v2 |                      v3 |
-  | <span class="stres">Semester Credit Hours by Funding Type </span>| <span class="stres">                    </span>| <span class="stres">                        </span>|
-  |---------------------------------------------------------------------------------------|
-  |            v4  |               v5   |                        v6   |      v7   |  v8   |
-  |  <span class="stres">              </span>|  <span class="stres">                  </span>|  <span class="stres">                           </span>|  <span class="stres">         </span>|  <span class="stres"> .   </span>|
-  +---------------------------------------------------------------------------------------+
-
-  +---------------------------------------------------------------------------------------+
-  |                                    v1 |                  v2 |                      v3 |
-  | <span class="stres">                              DimYear </span>| <span class="stres">       InstTypeList </span>| <span class="stres">               InstList </span>|
-  |---------------------------------------------------------------------------------------|
-  |            v4  |               v5   |                        v6   |      v7   |  v8   |
-  |  <span class="stres">SemesterDesc  </span>|  <span class="stres">SCHTypeUnivDesc   </span>|  <span class="stres">             SCHModeDesc   </span>|  <span class="stres"> Count   </span>|  <span class="stres"> .   </span>|
-  +---------------------------------------------------------------------------------------+
-
-  +---------------------------------------------------------------------------------------+
-  |                                    v1 |                  v2 |                      v3 |
-  | <span class="stres">                                 2014 </span>| <span class="stres">Public Universities </span>| <span class="stres">Angelo State University </span>|
-  |---------------------------------------------------------------------------------------|
-  |            v4  |               v5   |                        v6   |      v7   |  v8   |
-  |  <span class="stres">        Fall  </span>|  <span class="stres">        All SCH   </span>|  <span class="stres">Fully Distance Education   </span>|  <span class="stres">10,789   </span>|  <span class="stres"> .   </span>|
-  +---------------------------------------------------------------------------------------+
-
-  +---------------------------------------------------------------------------------------+
-  |                                    v1 |                  v2 |                      v3 |
-  | <span class="stres">                                 2014 </span>| <span class="stres">Public Universities </span>| <span class="stres">Angelo State University </span>|
-  |---------------------------------------------------------------------------------------|
-  |            v4  |               v5   |                        v6   |      v7   |  v8   |
-  |  <span class="stres">        Fall  </span>|  <span class="stres">        All SCH   </span>|  <span class="stres">                  Hybrid   </span>|  <span class="stres">   378   </span>|  <span class="stres"> .   </span>|
-  +---------------------------------------------------------------------------------------+
-
-  +---------------------------------------------------------------------------------------+
-  |                                    v1 |                  v2 |                      v3 |
-  | <span class="stres">                                 2014 </span>| <span class="stres">Public Universities </span>| <span class="stres">Angelo State University </span>|
-  |---------------------------------------------------------------------------------------|
-  |            v4  |               v5   |                        v6   |      v7   |  v8   |
-  |  <span class="stres">        Fall  </span>|  <span class="stres">        All SCH   </span>|  <span class="stres">            State Funded   </span>|  <span class="stres">74,198   </span>|  <span class="stres"> .   </span>|
-  +---------------------------------------------------------------------------------------+
-
-<span class="stinp">. </span>
-<span class="stinp">. local subs : dir `"`TOPDIR'"' dirs "*"</span>
-
-<span class="stinp">. foreach d of local subs {</span>
-  2<span class="stinp">.     local files1 : dir `"`TOPDIR'/`d'"' files "*.dta"</span>
-  3<span class="stinp">.     foreach f of local files1 {</span>
-  4<span class="stinp">.         local ++k</span>
-  5<span class="stinp">.         if `k' &gt; `PART_A_MAX' continue</span>
-  6<span class="stinp">.         di as txt _n "{hline}"</span>
-  7<span class="stinp">.         di as txt "FILE: `TOPDIR'/`d'/`f'"</span>
-  8<span class="stinp">.         cap use `"`TOPDIR'/`d'/`f'"', clear</span>
-  9<span class="stinp">.         if _rc {</span>
- 10<span class="stinp">.             di as err "  (failed to load)"</span>
- 11<span class="stinp">.             continue</span>
- 12<span class="stinp">.         }</span>
- 13<span class="stinp">.         qui describe, short</span>
- 14<span class="stinp">.         di as txt "  rows=`=_N'  vars=`=c(k)'"</span>
- 15<span class="stinp">.         cap codebook, compact</span>
- 16<span class="stinp">.         if _N &gt; 0  list in 1/`=min(_N, 5)', abbreviate(15) noobs</span>
- 17<span class="stinp">.     }</span>
- 18<span class="stinp">. }</span>
-
-<span class="stinp">. </span>
-<span class="stinp">. if `k' &gt; `PART_A_MAX'  di as txt _n "... (`=`k' - `PART_A_MAX'' more files; raise PART_A_MAX in th
-&gt; is do-file to show)"</span>
-
-... (61 more files; raise PART_A_MAX in this do-file to show)
+<pre id="stlog-2" class="stlog"><samp><span class="stinp">. di as txt "Networks                                  : `: word count `nn''"</span>
+Networks                                  : 11
 
 
 </samp></pre>
-</div> </div> </div> </div> </div> <br>
-<h2 id="cleaned-analytic-tables">Cleaned analytic tables</h2>
-<p><em>No cleaned tables yet.  Run 200_data_management.do first.</em></p>
+<pre id="stlog-3" class="stlog"><samp><span class="stinp">. di as txt "Procedure codes present                   : `: word count `pc''"</span>
+Procedure codes present                   : 93
+
+<span class="stinp">. di as txt "NOTE run_date is the snapshot key; file_vintage is the source file's"</span>
+NOTE run_date is the snapshot key; file_vintage is the source file's
+
+<span class="stinp">. di as txt "     production date (provenance only — it varies within one pull)."</span>
+     production date (provenance only — it varies within one pull).
+
+
+</samp></pre>
+<h2 id="service-menu-coverage-which-procedures-appeared">Service-menu coverage (which procedures appeared)</h2>
+<p>Which of the policy team&#39;s 93 menu codes showed up this run. Missing codes are listed explicitly — they are NOT analyzable until a future run includes them.</p>
+<pre id="stlog-4" class="stlog"><samp><span class="stinp">. count if _merge==3</span>
+  <span class="stres">93</span>
+
+<span class="stinp">. di as txt "Menu codes FOUND in data : `r(N)'"</span>
+Menu codes FOUND in data : 93
+
+<span class="stinp">. count if _merge==2</span>
+  <span class="stres">0</span>
+
+<span class="stinp">. di as err "Menu codes NOT found     : `r(N)'  (cannot be analyzed this run)"</span>
+Menu codes NOT found     : 0  (cannot be analyzed this run)
+
+<span class="stinp">. list procedure_code short_label if _merge==2, noobs sep(0) abbreviate(28)</span>
+
+
+</samp></pre>
+<h2 id="rate-basis-composition-data-quality-profile">Rate-basis composition (data-quality profile)</h2>
+<p>The payer-MRF analogue of Texas 2036&#39;s hospital-file methodology audit. Only fee-for-service, dollar-denominated rates are comparable as unit prices; percentage-of-charge and per-diem are kept but flagged out of dollar comparisons.</p>
+<pre id="stlog-5" class="stlog"><samp><span class="stinp">. tabulate rate_basis provider_type, row</span>
+
++----------------+
+| Key            |
+|----------------|
+|   <i>frequency</i>    |
+| <i>row percentage</i> |
++----------------+
+
+    How to |
+      read |
+    amount |
+(negotiate |
+   d$, fee |
+ schedule, |     Professional
+percentage |     (clinician) /
+     , per |     institutional
+     diem, |   (facility) / both
+  derived) | institu..  profess.. |     Total
+-----------+----------------------+----------
+negotiated |<span class="stres">   424,155  1,478,055 </span>|<span class="stres"> 1,902,210 </span>
+<span class="stres">           </span>|<span class="stres">     22.30      77.70 </span>|<span class="stres">    100.00 </span>
+-----------+----------------------+----------
+  per diem |<span class="stres">    82,269          0 </span>|<span class="stres">    82,269 </span>
+<span class="stres">           </span>|<span class="stres">    100.00       0.00 </span>|<span class="stres">    100.00 </span>
+-----------+----------------------+----------
+percentage |<span class="stres">   106,850      6,235 </span>|<span class="stres">   113,085 </span>
+<span class="stres">           </span>|<span class="stres">     94.49       5.51 </span>|<span class="stres">    100.00 </span>
+-----------+----------------------+----------
+     Total |<span class="stres">   613,274  1,484,290 </span>|<span class="stres"> 2,097,564 </span>
+<span class="stres">           </span>|<span class="stres">     29.24      70.76 </span>|<span class="stres">    100.00 </span>
+
+<span class="stinp">. di as txt _n "Comparable dollar prices flag (dollar_ffs): 1 = ffs + negotiated/fee-schedule \$"</span>
+
+Comparable dollar prices flag (dollar_ffs): 1 = ffs + negotiated/fee-schedule $
+
+<span class="stinp">. tab dollar_ffs</span>
+
+ Comparable |
+ unit price |
+     (ffs + |
+     dollar |
+   basis) — |
+ filter for |
+ $ analysis |      Freq.     Percent        Cum.
+------------+-----------------------------------
+       0 No |<span class="stres">    195,354        9.31        9.31</span>
+      1 Yes |<span class="stres">  1,902,210       90.69      100.00</span>
+------------+-----------------------------------
+      Total |<span class="stres">  2,097,564      100.00</span>
+
+
+</samp></pre>
+<p><img src="../../03_output/p400_rate_basis.png" class="img-fluid" style="max-width:920px;border:1px solid #ddd" alt="figure"></p>
+<h2 id="professional-vs-institutional-and-care-setting">Professional vs institutional, and care setting</h2>
+<pre id="stlog-6" class="stlog"><samp><span class="stinp">. tabulate provider_type care_setting</span>
+
+ Professional |
+(clinician) / |     Care setting
+institutional |     (inpatient /
+ (facility) / |  outpatient / both)
+         both | inpatient  outpati.. |     Total
+--------------+----------------------+----------
+institutional |<span class="stres">   283,321    329,953 </span>|<span class="stres">   613,274 </span>
+ professional |<span class="stres">         0  1,484,290 </span>|<span class="stres"> 1,484,290 </span>
+--------------+----------------------+----------
+        Total |<span class="stres">   283,321  1,814,243 </span>|<span class="stres"> 2,097,564 </span>
+
+
+</samp></pre>
+<h2 id="place-of-service-why-office-vs-hopd-site-neutral-is-not-separable-here">Place-of-service: why office-vs-HOPD site-neutral is NOT separable here</h2>
+<p>IMPORTANT data limitation. In the BCBSTX professional file one negotiated price applies to a SET of place-of-service codes (e.g., "11;17;20;50;72;81"), not one POS. So an office (POS 11) vs hospital-outpatient (POS 22) "site-neutral" comparison is NOT separable within this payer&#39;s professional rates. The feasible site-of-care lens is PROFESSIONAL (physician) vs INSTITUTIONAL (facility) — done in 600.</p>
+<pre id="stlog-7" class="stlog"><samp><span class="stinp">. count if provider_type=="professional" &amp; strpos(place_of_service,";")&gt;0</span>
+  <span class="stres">1,484,290</span>
+
+<span class="stinp">. di as txt "Professional rows whose price spans MULTIPLE POS codes: `r(N)'"</span>
+Professional rows whose price spans MULTIPLE POS codes: 1484290
+
+
+</samp></pre>
+<pre id="stlog-8" class="stlog"><samp><span class="stinp">. count if provider_type=="professional" &amp; pos_has11 &amp; pos_has22</span>
+  <span class="stres">380,056</span>
+
+<span class="stinp">. di as txt "Professional prices covering BOTH office (POS 11) and HOPD (POS 22) in one row: `r(N)'"</span>
+Professional prices covering BOTH office (POS 11) and HOPD (POS 22) in one row: 380056
+
+<span class="stinp">. di as txt "  -&gt; confirms one rate, many settings (POS is not a price lever in this file)."</span>
+  -&gt; confirms one rate, many settings (POS is not a price lever in this file).
+
+
+</samp></pre>
+<h2 id="sanity-of-dollar-prices-fee-for-service-dollar-basis">Sanity of dollar prices (fee-for-service, dollar basis)</h2>
+<pre id="stlog-9" class="stlog"><samp><span class="stinp">. di as txt "Comparable dollar prices: `=_N'"</span>
+Comparable dollar prices: 1902210
+
+<span class="stinp">. summarize negotiated_amount, detail</span>
+
+            Negotiated price (US$; a percent when
+                   rate_basis=percentage)
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%    <span class="stres">        0              0</span>
+ 5%    <span class="stres">        0              0</span>
+10%    <span class="stres">        5              0       </span>Obs         <span class="stres">  1,902,210</span>
+25%    <span class="stres">    40.85              0       </span>Sum of wgt. <span class="stres">  1,902,210</span>
+
+50%    <span class="stres">   104.03                      </span>Mean          <span class="stres"> 714.5966</span>
+<span class="stres">                        </span>Largest       Std. dev.     <span class="stres"> 3345.016</span>
+75%    <span class="stres">   303.86       271524.4</span>
+90%    <span class="stres">  1108.24       271524.4       </span>Variance      <span class="stres"> 1.12e+07</span>
+95%    <span class="stres">  2180.96       271524.4       </span>Skewness      <span class="stres"> 15.37108</span>
+99%    <span class="stres"> 13945.08       271524.4       </span>Kurtosis      <span class="stres"> 478.5721</span>
+
+<span class="stinp">. count if negotiated_amount&lt;=0</span>
+  <span class="stres">173,940</span>
+
+<span class="stinp">. di as err "  prices &lt;= \$0 (suspect / placeholder): `r(N)'"</span>
+  prices &lt;= $0 (suspect / placeholder): 173940
+
+<span class="stinp">. count if negotiated_amount&gt;200000</span>
+  <span class="stres">9</span>
+
+<span class="stinp">. di as txt "  prices &gt; \$200,000 (verify; plausible for some inpatient DRGs): `r(N)'"</span>
+  prices &gt; $200,000 (verify; plausible for some inpatient DRGs): 9
+
+
+</samp></pre>
+<h2 id="price-summary-by-service-category-medians-professional-vs-facility">Price summary by service category (medians; professional vs facility)</h2>
+<p>Median, p10, p90 of the comparable dollar price by service category and provider type — the category-level orientation before the service-level deep dives in 600.</p>
+<pre id="stlog-10" class="stlog"><samp><span class="stinp">. di as txt "Median, p10, p90 of the comparable dollar price, by service category and provider type:"</span>
+Median, p10, p90 of the comparable dollar price, by service category and provider type:
+
+<span class="stinp">. list service_category provider_type median p10 p90 n, noobs sep(0) abbreviate(24)</span>
+
+  +-------------------------------------------------------------------------+
+  | <span class="stres">    service_category   provider_type   median     p10      p90        n </span>|
+  |-------------------------------------------------------------------------|
+  | <span class="stres">          Cardiology   institutional       75      11      419     6985 </span>|
+  | <span class="stres">          Cardiology    professional       67      12      241    39462 </span>|
+  | <span class="stres">      E&amp;M outpatient   institutional      106      26      405    25310 </span>|
+  | <span class="stres">      E&amp;M outpatient    professional       82      35      164   304161 </span>|
+  | <span class="stres">           Emergency   institutional      384     105    2,580    17632 </span>|
+  | <span class="stres">           Emergency    professional       65      10      155    81226 </span>|
+  | <span class="stres">             Imaging   institutional      256      69    1,146    35027 </span>|
+  | <span class="stres">             Imaging    professional       85      27      270   260218 </span>|
+  | <span class="stres">       Inpatient DRG   institutional        0       0    9,750   137422 </span>|
+  | <span class="stres">   Inpatient surgery   institutional    6,219   1,628   22,572    33428 </span>|
+  | <span class="stres">   Inpatient surgery    professional    1,058     430    2,036    97848 </span>|
+  | <span class="stres">                 Lab   institutional       13       4       60    38729 </span>|
+  | <span class="stres">                 Lab    professional        6       4       29    70246 </span>|
+  | <span class="stres">           Maternity   institutional      971      93    5,077    23687 </span>|
+  | <span class="stres">           Maternity    professional      354      37    1,926   182952 </span>|
+  | <span class="stres">       Maternity DRG   institutional        0       0    6,174    41044 </span>|
+  | <span class="stres">Outpatient procedure   institutional      805       0    2,899    50626 </span>|
+  | <span class="stres">Outpatient procedure    professional      215      44      567   264265 </span>|
+  | <span class="stres">          Preventive   institutional      488     134    1,558    14265 </span>|
+  | <span class="stres">          Preventive    professional      108      69      276   177677 </span>|
+  +-------------------------------------------------------------------------+
+
+
+</samp></pre>
+<h2 id="explore-the-data-interactively-price-by-care-setting-and-code-system-sparkta">Explore the data interactively: price by care setting and code system (sparkta)</h2>
+<p>The static tables above answer fixed questions; this widget lets you ask your own. Built with the team&#39;s <code>sparkta</code>, it charts the median comparable price by <b>care setting</b> (inpatient vs outpatient) &mdash; a dimension the tables do not split &mdash; and re-draws live as you filter by <b>code system</b> (CPT / HCPCS / MS-DRG), provider type, and service category. <b>Why run it:</b> a fast way to PROFILE whether the data behaves sensibly across structural dimensions we filter on but rarely chart &mdash; inpatient prices should dwarf outpatient, and MS-DRG (whole-stay) prices should dwarf CPT line items &mdash; so an analyst can sanity-check the extract and spot a slice worth a closer look. The collapsible stats panel (N, median, spread) updates with every filter. (Representative ~40k-row sample of the comparable prices so the page stays light; the full data is in <code>02_cleaned/</code>.)</p>
+<p><iframe src="explore_care_setting.html" width="100%" height="640" style="border:1px solid #ddd;border-radius:6px" title="Interactive chart: price by care setting and code system"></iframe></p>
+<h2 id="multi-snapshot-readiness-time-trends">Multi-snapshot readiness (time trends)</h2>
+<p>These activate automatically once >=2 monthly pulls are stacked (append future runs, then re-run). With a single snapshot they are intentionally skipped.</p>
+<h2 id="provider-geography-coverage-public-health-region">Provider geography coverage (Public Health Region)</h2>
+<p>Each price is tagged with the Texas Public Health Region of its provider group (the modal region of the group Texas NPIs — see 600 section 6). A blank region means the provider is registered out of state, the ZIP did not map, or the group is TIN-only with no resolvable NPI.</p>
+<pre id="stlog-11" class="stlog"><samp><span class="stinp">. tab has_region</span>
+
+ has_region |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |<span class="stres">     15,186        0.72        0.72</span>
+          1 |<span class="stres">  2,082,378       99.28      100.00</span>
+------------+-----------------------------------
+      Total |<span class="stres">  2,097,564      100.00</span>
+
+<span class="stinp">. tab region if region!=""</span>
+
+     region |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          1 |<span class="stres">    179,063        8.60        8.60</span>
+         11 |<span class="stres">    142,595        6.85       15.45</span>
+        2/3 |<span class="stres">    500,879       24.05       39.50</span>
+       4/5N |<span class="stres">    255,055       12.25       51.75</span>
+       6/5S |<span class="stres">    290,795       13.96       65.71</span>
+          7 |<span class="stres">    293,113       14.08       79.79</span>
+          8 |<span class="stres">    253,967       12.20       91.98</span>
+       9/10 |<span class="stres">    166,911        8.02      100.00</span>
+------------+-----------------------------------
+      Total |<span class="stres">  2,082,378      100.00</span>
+
+
+</samp></pre>
+<h2 id="what-this-dataset-cannot-profile-be-explicit">What this dataset CANNOT profile (be explicit)</h2>
+<p>Two former gaps are now CLOSED in this run — percent of Medicare (600, section 5) and Public Health Region geography (600, section 6). The following remain not possible with the current data:</p>
+<ul class="wd-list-dashed">
+<li>Cross-payer comparison — needs additional insurers (UnitedHealthcare, Aetna, Cigna) run through the same pipeline (one config file each).</li>
+<li>Volume / spending weighting and market concentration (HHI) — the files carry no utilization, so spending is not recoverable from negotiated rates alone (600 lists external-data options).</li>
+<li>Texas Senate / House legislative district — needs point geocoding, because ZIP codes cross district lines.</li>
+<li>A Clinical Lab Fee Schedule percent-of-Medicare for lab codes — the CLFS file URL still needs confirming, so the 8 lab codes currently lack a Medicare benchmark.</li>
+</ul>
 </body>
 </html>

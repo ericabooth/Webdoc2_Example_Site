@@ -385,7 +385,7 @@ document.addEventListener('DOMContentLoaded', function () {
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-3">
 <div class="container-fluid">
-<a class="navbar-brand" href="index.html" title="THECB_accountability">Documentation</a>
+<a class="navbar-brand" href="index.html" title="Insurance_PriceTransparency_BCBSTX">Documentation</a>
 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
 <div class="collapse navbar-collapse" id="mainNavbar">
 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
@@ -400,85 +400,151 @@ document.addEventListener('DOMContentLoaded', function () {
 </ul>
 <span class="navbar-text ms-3" title="Texas 2036"><img src="tx2036_logo.png" alt="Texas 2036" height="18" style="opacity:0.55;vertical-align:middle;" onerror="this.style.display='none'"></span>
 </div></div></nav>
-<h1 id="300-variable-value-labels-characteristics-notes">300. Variable + value labels, characteristics, notes</h1>
-<p>Canonical labels for every analytic table.</p>
+<style>pre,.stlog,samp{white-space:pre !important;overflow-x:auto;display:block;font-size:0.8rem;line-height:1.25}table.tbl{font-size:0.85rem}</style>
+<h1 id="300-labels">300. Labels</h1>
+<p>Plain-English labels for every variable in the three analytic tables. Same wording as <code>_documentation/data_dictionary.csv</code>.</p>
 <div id="wd-toc" class="wd-toc-wrap" data-wd-depth="2"><strong class="wd-toc-title">Contents</strong></div>
-<h2 id="conventions">Conventions</h2>
-<ul class="wd-list-dashed">
-<li>Variable labels: terse, sentence case, &lt; 80 chars, no trailing period.</li>
-<li>Value labels: lowercase snake_case for the label name (e.g. `yn_lbl`).</li>
-<li>Notes: prefix every note with a date — e.g. `note: 2026-05 EAB — derived from raw column "X"`.</li>
-<li>Characteristics: store source URL and download date in `char _dta[]`.</li>
+<h2 id="what-this-step-does-and-why">What this step does (and why)</h2>
+<p>A Stata variable can carry a human-readable LABEL (and dataset NOTES) so the file explains itself to the next analyst. This step attaches a plain-English label to every variable and writes a few dataset-level notes; it does NOT change any data values. Example: the bare variable name <code>negotiated_amount</code> gains the label "Negotiated price (US dollars; a percent when rate_basis=percentage)". A couple of numeric flags also get VALUE labels (e.g., <code>is_evergreen</code> shows "1 Yes" / "0 No" instead of 1/0).</p>
+<p>The same wording is kept in <code>_documentation/data_dictionary.csv</code> so the data, the labels, and the dictionary always agree. After this step runs, a few examples of what each variable then means:</p>
+<ul class="small">
+<li><code>negotiated_amount</code> &rarr; "Negotiated price (US dollars; a percent when rate_basis=percentage)"</li>
+<li><code>rate_basis</code> &rarr; "How to read the amount (negotiated / fee schedule / percentage / per diem)"</li>
+<li><code>provider_type</code> &rarr; "Professional (clinician) / institutional (facility) / both"</li>
+<li><code>region</code> &rarr; "Texas Public Health Region (from provider practice location)"</li>
 </ul>
-<h2 id="reusable-value-label-definitions">Reusable value-label definitions</h2>
-<p>Define value labels here once so every cleaned table can reuse them.</p>
-<div class="mb-4"> <div class="accordion" id="accordionExample"> <div class="accordion-item"> <h2 class="accordion-header"> <button class="accordion-button collapsed text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse10" aria-expanded="false" aria-controls="collapse10"> <small>Click to view code</small> </button></h2> <div id="collapse10" class="accordion-collapse collapse" data-bs-parent="#accordionExample"><div class="accordion-body">
-<pre id="stlog-1" class="stlog"><samp><span class="stinp">. <span class="stcmt">* Example</span></span>
-<span class="stinp">. <span class="stcmt">* label define yn_lbl 0 "No" 1 "Yes"</span></span>
-<span class="stinp">. <span class="stcmt">* label define edu_lbl 1 "No HS" 2 "HS" 3 "Some college" 4 "BA+"</span></span>
-<span class="stinp">. di as txt "TODO: define value labels"</span>
-TODO: define value labels
+<h2 id="medical-prices-table">Medical prices table</h2>
+<p>Result — every variable in the medical prices table now carries a plain-English label (and the dataset carries the scope notes above). Click to see the labeled variable list.</p>
+<div class="mb-4"> <div class="accordion" id="accordionExample"> <div class="accordion-item"> <h2 class="accordion-header"> <button class="accordion-button collapsed text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse7" aria-expanded="false" aria-controls="collapse7"> <small>Click to view code</small> </button></h2> <div id="collapse7" class="accordion-collapse collapse" data-bs-parent="#accordionExample"><div class="accordion-body">
+<pre id="stlog-1" class="stlog"><samp><span class="stinp">.     describe</span>
+
+Contains data from <span class="stres">/Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and Res</span>
+<span class="stres">&gt; earch Team/_datashare/Insurance_PriceTransparency/BCBSTX/02_cleaned/bcbstx_prices.dta</span>
+ Observations:<span class="stres">     2,097,564                  BCBS Texas negotiated prices (1 row = 1 distinct price). See</span>
+<span class="stres">                                                300_labels.do.</span>
+    Variables:<span class="stres">            33                  31 May 2026 18:55</span>
+<span class="stres">                                              (_dta has notes)</span>
+------------------------------------------------------------------------------------------------------------------------
+Variable      Storage   Display    Value
+    name         type    format    label      Variable label
+------------------------------------------------------------------------------------------------------------------------
+<span class="stres">source_file    </span> str94   %94s                  <span class="stres">Source machine-readable filename</span>
+<span class="stres">network_name   </span> str28   %28s                  <span class="stres">Provider network the price applies to (e.g., Blue Choice PPO)</span>
+<span class="stres">market_segment </span> str13   %13s                  <span class="stres">Coverage segment served (fully-insured / self-funded / both)</span>
+<span class="stres">county_fips    </span> str5    %9s                   
+<span class="stres">run_date       </span> str10   %10s                  <span class="stres">Monthly-snapshot key: date Texas 2036 pulled the data (text)</span>
+<span class="stres">payer_name     </span> str35   %35s                  <span class="stres">Insurer that published the price (here: BCBS Texas)</span>
+<span class="stres">payer_type     </span> str23   %23s                  <span class="stres">Reporting entity type (issuer=fully-insured; TPA=self-funded)</span>
+<span class="stres">schema_version </span> str5    %9s                   <span class="stres">CMS data-format version of the source file</span>
+<span class="stres">file_vintage   </span> str10   %10s                  <span class="stres">Source file production date (provenance; text)</span>
+<span class="stres">code_system    </span> str7    %9s                   <span class="stres">Medical code system (CPT, HCPCS, MS-DRG, ...)</span>
+<span class="stres">code_system_ver</span> str4    %9s                   <span class="stres">Code system version/edition (often a year)</span>
+<span class="stres">procedure_code </span> str5    %9s                   <span class="stres">Procedure / service / item code being priced</span>
+<span class="stres">procedure_desc </span> str107  %107s                 <span class="stres">Insurer free-text description (not standardized)</span>
+<span class="stres">arrangement    </span> str3    %9s                   <span class="stres">Payment arrangement (ffs=fee-for-service, bundle, capitation)</span>
+<span class="stres">rate_basis     </span> str10   %10s                  <span class="stres">How to read amount (negotiated$, fee schedule, percentage, per diem,</span>
+                                                <span class="stres">derived)</span>
+<span class="stres">negotiated_am~t</span> double  %10.0g                <span class="stres">Negotiated price (US$; a percent when rate_basis=percentage)</span>
+<span class="stres">provider_type  </span> str13   %13s                  <span class="stres">Professional (clinician) / institutional (facility) / both</span>
+<span class="stres">care_setting   </span> str10   %10s                  <span class="stres">Care setting (inpatient / outpatient / both)</span>
+<span class="stres">place_of_serv~e</span> str53   %53s                  <span class="stres">Place-of-service code(s); a price often spans a SET of POS codes</span>
+<span class="stres">code_modifier  </span> str1    %9s                   <span class="stres">Procedure-code modifier(s), if any</span>
+<span class="stres">rate_expiration</span> str10   %10s                  <span class="stres">Date the price expires (9999-12-31 = no expiration)</span>
+<span class="stres">is_evergreen   </span> byte    %10.0g     yesno      <span class="stres">Price has no real expiration date</span>
+<span class="stres">n_provider_gr~s</span> int     %10.0g                <span class="stres">Provider groups paid this exact price</span>
+<span class="stres">n_npi_members~s</span> long    %10.0g                <span class="stres">Provider-NPI memberships paid this price (breadth; double-counts)</span>
+<span class="stres">n_tax_ids      </span> int     %10.0g                <span class="stres">Distinct organizations (tax IDs) paid this price</span>
+<span class="stres">file_vintage_d </span> int     %td                   <span class="stres">Source file production date (Stata date)</span>
+<span class="stres">run_date_d     </span> int     %td                   <span class="stres">Monthly-snapshot key (Stata date) — stack months on this</span>
+<span class="stres">service_label  </span> str52   %52s                  <span class="stres">Texas 2036 short label for the procedure (our menu)</span>
+<span class="stres">service_categ~y</span> str20   %20s                  <span class="stres">Texas 2036 service grouping (our menu)</span>
+<span class="stres">county_name    </span> str13   %13s                  
+<span class="stres">region         </span> str4    %9s                   
+<span class="stres">region_id      </span> byte    %11.0g     reglbl     
+<span class="stres">dollar_ffs     </span> byte    %8.0g      yesno      <span class="stres">Comparable unit price (ffs + dollar basis) — filter for $ analysis</span>
+------------------------------------------------------------------------------------------------------------------------
+Sorted by: 
+
+<span class="stinp">.     di as txt _n "Dataset notes:"</span>
+
+Dataset notes:
+
+<span class="stinp">.     notes _dta</span>
+
+<span class="stres">_dta:</span>
+  1.  Source — BCBS Texas Transparency-in-Coverage MRFs (https://www.bcbstx.com/member/machine-readable-files).
+  2.  Unit = one DISTINCT negotiated price for a procedure in a network (same price shared by many providers = ONE row,
+      with provider counts).
+  3.  Texas scope = providers with NPPES practice state TX; TIN-only (npi 0) and out-of-state dropped.
+  4.  For dollar price analysis keep if dollar_ffs==1 (excludes percentage-of-charge and per-diem). Never pool
+      professional + institutional.
 
 
 </samp></pre>
 </div> </div> </div> </div> </div> <br>
-<h2 id="apply-labels-table-by-table">Apply labels — table by table</h2>
-<p>Each cleaned table gets its own block.  Pattern:</p>
-<div class="mb-4"> <div class="accordion" id="accordionExample"> <div class="accordion-item"> <h2 class="accordion-header"> <button class="accordion-button collapsed text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse11" aria-expanded="false" aria-controls="collapse11"> <small>Click to view code</small> </button></h2> <div id="collapse11" class="accordion-collapse collapse" data-bs-parent="#accordionExample"><div class="accordion-body">
-<pre id="stlog-2" class="stlog"><samp><span class="stinp">. <span class="stcmt">* ── Example pattern (one block per cleaned table) ─────────────────────</span></span>
-<span class="stinp">. <span class="stcmt">*    use "${clean}/THECB_accountability_clean.dta", clear</span></span>
-<span class="stinp">. <span class="stcmt">*    label variable year      "Calendar year of observation"</span></span>
-<span class="stinp">. <span class="stcmt">*    label variable agency_id "Source agency identifier"</span></span>
-<span class="stinp">. <span class="stcmt">*    label values is_active   yn_lbl</span></span>
-<span class="stinp">. <span class="stcmt">*    notes: 2026-05 EAB — pulled from ${ds_source_url}</span></span>
-<span class="stinp">. <span class="stcmt">*    char _dta[source_url]    "${ds_source_url}"</span></span>
-<span class="stinp">. <span class="stcmt">*    char _dta[fetched_on]    "${ds_scaffold_date}"</span></span>
-<span class="stinp">. <span class="stcmt">*    save "${clean}/THECB_accountability_clean.dta", replace</span></span>
-<span class="stinp">. <span class="stcmt">* ──────────────────────────────────────────────────────────────────────</span></span>
-<span class="stinp">. di as txt "TODO: apply labels"</span>
-TODO: apply labels
+<h2 id="prescription-drug-prices-table">Prescription-drug prices table</h2>
+<p>Result — the prescription-drug table, labeled. Click to view.</p>
+<div class="mb-4"> <div class="accordion" id="accordionExample"> <div class="accordion-item"> <h2 class="accordion-header"> <button class="accordion-button collapsed text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse8" aria-expanded="false" aria-controls="collapse8"> <small>Click to view code</small> </button></h2> <div id="collapse8" class="accordion-collapse collapse" data-bs-parent="#accordionExample"><div class="accordion-body">
+<pre id="stlog-2" class="stlog"><samp><span class="stinp">.     describe</span>
+
+Contains data from <span class="stres">/Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and Res</span>
+<span class="stres">&gt; earch Team/_datashare/Insurance_PriceTransparency/BCBSTX/02_cleaned/bcbstx_rx_prices.dta</span>
+ Observations:<span class="stres">     1,198,555                  BCBS Texas prescription-drug negotiated prices (1 row = 1 distinct NDC</span>
+<span class="stres">                                                price).</span>
+    Variables:<span class="stres">            17                  31 May 2026 18:55</span>
+<span class="stres">                                              (_dta has notes)</span>
+------------------------------------------------------------------------------------------------------------------------
+Variable      Storage   Display    Value
+    name         type    format    label      Variable label
+------------------------------------------------------------------------------------------------------------------------
+<span class="stres">source_file    </span> str105  %105s                 <span class="stres">Source Rx filename</span>
+<span class="stres">run_date       </span> str10   %10s                  <span class="stres">Monthly-snapshot key (text)</span>
+<span class="stres">payer_name     </span> str35   %35s                  <span class="stres">Insurer (BCBS Texas)</span>
+<span class="stres">payer_type     </span> str23   %23s                  <span class="stres">Reporting entity type</span>
+<span class="stres">drug_name      </span> str70   %70s                  <span class="stres">Drug name (as published)</span>
+<span class="stres">drug_type      </span> str7    %9s                   <span class="stres">Drug type (brand / generic / specialty)</span>
+<span class="stres">ndc            </span> str11   %11s                  <span class="stres">National Drug Code</span>
+<span class="stres">negotiated_rate</span> double  %10.0g                <span class="stres">Negotiated drug price (US$)</span>
+<span class="stres">dispensing_fee </span> double  %10.0g                <span class="stres">Dispensing fee (US$)</span>
+<span class="stres">administrativ~e</span> byte    %10.0g                <span class="stres">Administrative fee (US$)</span>
+<span class="stres">transaction_fee</span> byte    %10.0g                <span class="stres">Transaction fee (US$)</span>
+<span class="stres">historical_ne~e</span> double  %10.0g                <span class="stres">Historical net price (US$)</span>
+<span class="stres">service_code   </span> str2    %9s                   <span class="stres">Pharmacy service/setting code</span>
+<span class="stres">n_price_records</span> int     %10.0g                <span class="stres">Raw price records collapsed into this row</span>
+<span class="stres">n_pharmacy_tins</span> int     %10.0g                <span class="stres">Distinct pharmacy tax IDs at this price</span>
+<span class="stres">n_pharmacy_id~s</span> int     %10.0g                <span class="stres">Pharmacy-ID memberships at this price</span>
+<span class="stres">run_date_d     </span> int     %td                   <span class="stres">Monthly-snapshot key (Stata date)</span>
+------------------------------------------------------------------------------------------------------------------------
+Sorted by: 
 
 
 </samp></pre>
 </div> </div> </div> </div> </div> <br>
-<h2 id="verify">Verify</h2>
-<p>Confirm every analytic variable has a label and every coded value carries a value label.</p>
-<div class="mb-4"> <div class="accordion" id="accordionExample"> <div class="accordion-item"> <h2 class="accordion-header"> <button class="accordion-button collapsed text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse12" aria-expanded="false" aria-controls="collapse12"> <small>Click to view code</small> </button></h2> <div id="collapse12" class="accordion-collapse collapse" data-bs-parent="#accordionExample"><div class="accordion-body">
-<pre id="stlog-3" class="stlog"><samp><span class="stinp">. local cl : dir "${clean}" files "*.dta"</span>
+<h2 id="provider-organization-directory">Provider organization directory</h2>
+<p>Result — the provider-organization directory, labeled. Click to view.</p>
+<div class="mb-4"> <div class="accordion" id="accordionExample"> <div class="accordion-item"> <h2 class="accordion-header"> <button class="accordion-button collapsed text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse9" aria-expanded="false" aria-controls="collapse9"> <small>Click to view code</small> </button></h2> <div id="collapse9" class="accordion-collapse collapse" data-bs-parent="#accordionExample"><div class="accordion-body">
+<pre id="stlog-3" class="stlog"><samp><span class="stinp">.     describe</span>
 
-<span class="stinp">. foreach f of local cl {</span>
-  2<span class="stinp">.     use "${clean}/`f'", clear</span>
-  3<span class="stinp">.     di as txt _n "{hline}"</span>
-  4<span class="stinp">.     di as txt "FILE: `f'"</span>
-  5<span class="stinp">.     qui ds, has(varlabel)</span>
-  6<span class="stinp">.     local labelled "`r(varlist)'"</span>
-  7<span class="stinp">.     qui ds, not(varlabel)</span>
-  8<span class="stinp">.     local unlabelled "`r(varlist)'"</span>
-  9<span class="stinp">.     di as txt "  labelled  : " as res "`labelled'"</span>
- 10<span class="stinp">.     di as txt "  unlabelled: " as err "`unlabelled'"</span>
- 11<span class="stinp">.     qui notes</span>
- 12<span class="stinp">. }</span>
-
-
-</samp></pre>
-</div> </div> </div> </div> </div> <br>
-<h2 id="apply-project-metadata-as-dataset-notes">Apply project metadata as dataset notes</h2>
-<div class="mb-4"> <div class="accordion" id="accordionExample"> <div class="accordion-item"> <h2 class="accordion-header"> <button class="accordion-button collapsed text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse13" aria-expanded="false" aria-controls="collapse13"> <small>Click to view code</small> </button></h2> <div id="collapse13" class="accordion-collapse collapse" data-bs-parent="#accordionExample"><div class="accordion-body">
-<pre id="stlog-4" class="stlog"><samp><span class="stinp">. local clf : dir "${clean}" files "*.dta"</span>
-
-<span class="stinp">. foreach f of local clf {</span>
-  2<span class="stinp">.     use "${clean}/`f'", clear</span>
-  3<span class="stinp">.     if "${ds_topic}"        != ""   note: 2026-05 topic: ${ds_topic}</span>
-  4<span class="stinp">.     if "${ds_publicfacing}" != ""   note: 2026-05 public-facing: ${ds_publicfacing}</span>
-  5<span class="stinp">.     if "${ds_timeline}"     != ""   note: 2026-05 timeline: ${ds_timeline}</span>
-  6<span class="stinp">.     if "${ds_othernotes}"   != ""   note: 2026-05 othernotes: ${ds_othernotes}</span>
-  7<span class="stinp">.     qui save "${clean}/`f'", replace</span>
-  8<span class="stinp">. }</span>
+Contains data from <span class="stres">/Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and Res</span>
+<span class="stres">&gt; earch Team/_datashare/Insurance_PriceTransparency/BCBSTX/02_cleaned/bcbstx_provider_org_directory.dta</span>
+ Observations:<span class="stres">       192,438                  BCBS Texas — Texas organizations by network (network-membership</span>
+<span class="stres">                                                directory; raw).</span>
+    Variables:<span class="stres">             5                  31 May 2026 18:55</span>
+<span class="stres">                                              (_dta has notes)</span>
+------------------------------------------------------------------------------------------------------------------------
+Variable      Storage   Display    Value
+    name         type    format    label      Variable label
+------------------------------------------------------------------------------------------------------------------------
+<span class="stres">network_name   </span> str18   %18s                  <span class="stres">Provider network</span>
+<span class="stres">tax_id_type    </span> str3    %9s                   <span class="stres">Tax ID type (ein=employer ID; npi)</span>
+<span class="stres">tax_id         </span> str10   %10s                  <span class="stres">Provider/organization tax ID</span>
+<span class="stres">provider_org_~e</span> str82   %82s                  <span class="stres">Organization or individual name (as filed; raw/noisy)</span>
+<span class="stres">n_group_entries</span> int     %10.0g                <span class="stres">Provider-group entries for this tax ID in this network</span>
+------------------------------------------------------------------------------------------------------------------------
+Sorted by: 
 
 
 </samp></pre>
 </div> </div> </div> </div> </div> <br>
-<h2 id="codebook-export-descsave-excel">Codebook export (descsave → Excel)</h2>
-<p><em>Codebook export was not requested at scaffold time. Re-scaffold with <code>projectbuilder ..., descsave</code> or set <code>global ds_descsave "1"</code> in 000_controlfile.do.</em></p>
 </body>
 </html>

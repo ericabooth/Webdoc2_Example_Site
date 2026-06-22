@@ -385,7 +385,7 @@ document.addEventListener('DOMContentLoaded', function () {
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-3">
 <div class="container-fluid">
-<a class="navbar-brand" href="index.html" title="THECB_accountability">Documentation</a>
+<a class="navbar-brand" href="index.html" title="Insurance_PriceTransparency_BCBSTX">Documentation</a>
 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
 <div class="collapse navbar-collapse" id="mainNavbar">
 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
@@ -400,46 +400,472 @@ document.addEventListener('DOMContentLoaded', function () {
 </ul>
 <span class="navbar-text ms-3" title="Texas 2036"><img src="tx2036_logo.png" alt="Texas 2036" height="18" style="opacity:0.55;vertical-align:middle;" onerror="this.style.display='none'"></span>
 </div></div></nav>
+<style>pre,.stlog,samp{white-space:pre !important;overflow-x:auto;display:block;font-size:0.8rem;line-height:1.25}table.tbl{font-size:0.85rem}</style>
 <h1 id="600-analysis">600. Analysis</h1>
-<p>Headline analysis for <b>THECB_accountability</b>.  Deeper question-specific work lives in <code>_projects/</code>, not here.</p>
+<p>Price-variation analyses for shoppable services, in the Texas 2036 framing. Descriptive of negotiated prices (not utilization or spending). All dollar figures restricted to comparable fee-for-service rates.</p>
 <div id="wd-toc" class="wd-toc-wrap" data-wd-depth="2"><strong class="wd-toc-title">Contents</strong></div>
-<h2 id="setup">Setup</h2>
-<p>Edit this block to load the analytic table(s) for the figures and tables below.</p>
-<div class="mb-4"> <div class="accordion" id="accordionExample"> <div class="accordion-item"> <h2 class="accordion-header"> <button class="accordion-button collapsed text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse17" aria-expanded="false" aria-controls="collapse17"> <small>Click to view code</small> </button></h2> <div id="collapse17" class="accordion-collapse collapse" data-bs-parent="#accordionExample"><div class="accordion-body">
-<pre id="stlog-1" class="stlog"><samp><span class="stinp">. <span class="stcmt">* use "${clean}/THECB_accountability_county_year.dta", clear</span></span>
-<span class="stinp">. di as txt "TODO: load analytic table"</span>
-TODO: load analytic table
+<h2 id="before-the-numbers-what-a-ghost-rate-is">Before the numbers: what a "ghost rate" is</h2>
+<p>Insurers must publish a negotiated price for EVERY provider-and-service pair in their contracts — including pairs that essentially never happen. Example: a pediatric clinic with a listed price for a hip replacement, or a low placeholder rate a provider would never actually bill. These are called <b>ghost rates</b> (sometimes "zombie rates"). They are not data errors — they are genuine contract terms — but no patient is treated at them. Peer-reviewed work estimates that <b>70-92% of all the prices in these files are ghost rates</b>. Because there are so many, they distort simple averages and medians (often a mass of low placeholder values drags the figure down). We cannot flag them precisely without claims/utilization data, so throughout this file we (1) report the MEDIAN rather than the mean (more robust to these outliers), (2) keep only comparable fee-for-service dollar rates, and (3) describe results as prices that are PUBLISHED, not prices actually PAID. Keep this in mind reading section 5: the finding that professional rates often sit below Medicare is partly a ghost-rate effect — the professional files carry many low, never-billed listings that pull the median down.</p>
+<h2 id="1-which-shoppable-services-vary-the-most-price-dispersion-ranking">1. Which shoppable services vary the most? (price dispersion ranking)</h2>
+<p>For each professional service with enough distinct prices, the p90/p10 ratio — how many times more the 90th-percentile price is than the 10th. This is the foundational Texas 2036 message: identical, shoppable services carry wildly different negotiated prices.</p>
+<pre id="stlog-1" class="stlog"><samp><span class="stinp">.     list service_label p50 p10 p90 p9010 n in 1/`=min(_N,20)', noobs sep(0) abbreviate(26)</span>
+
+  +--------------------------------------------------------------------------------------+
+  | <span class="stres">                        service_label       p50     p10       p90      p9010       n </span>|
+  |--------------------------------------------------------------------------------------|
+  | <span class="stres">            CT head/brain wo contrast     80.61   30.46     326.6   10.72226   24258 </span>|
+  | <span class="stres">          Polysomnography sleep study    337.83   94.28    863.57   9.159631   27628 </span>|
+  | <span class="stres">MRI lower extremity joint wo contrast    147.22   48.48    329.64   6.799505   22939 </span>|
+  | <span class="stres">         MRI lumbar spine wo contrast       144   53.05     347.9   6.557964   25938 </span>|
+  | <span class="stres">         CT abdomen/pelvis w contrast    223.17   65.42     369.2   5.643534   24924 </span>|
+  | <span class="stres">              Total knee arthroplasty   1220.05   369.2   1973.94   5.346533   12870 </span>|
+  | <span class="stres">        CT abdomen/pelvis wo contrast    140.53   62.18     326.6   5.252493   24136 </span>|
+  | <span class="stres">    Echocardiogram complete w Doppler    113.65   54.69    277.84   5.080271   25744 </span>|
+  | <span class="stres">      Screening mammography bilateral     89.74   27.25    126.24    4.63266   23751 </span>|
+  | <span class="stres">                           Cystoscopy    159.87   64.94    300.22   4.623037   20271 </span>|
+  | <span class="stres">       Upper GI endoscopy with biopsy     265.2   111.4    490.78   4.405566   25929 </span>|
+  | <span class="stres">    Diagnostic mammography unilateral     87.87   28.76    123.62   4.298331   21652 </span>|
+  | <span class="stres">       Lumbar spinal fusion posterior   1553.77   583.2   2459.27   4.216855   10973 </span>|
+  | <span class="stres">                  Chest x-ray 2 views     23.46    7.86     33.12    4.21374   24191 </span>|
+  | <span class="stres">           Ultrasound pelvic complete     73.18   24.59    103.27   4.199675   21815 </span>|
+  | <span class="stres">        Upper GI endoscopy diagnostic    229.38   99.17     397.8   4.011294   23547 </span>|
+  | <span class="stres">            Cataract surgery with IOL    491.64   209.1    826.02   3.950359   10694 </span>|
+  | <span class="stres">          Ultrasound abdomen complete     80.64   28.93    113.67   3.929139   21911 </span>|
+  | <span class="stres">              MRI brain w/wo contrast    225.57   82.15    319.36   3.887523   23537 </span>|
+  | <span class="stres">    Epidural steroid injection lumbar     177.1   90.48    344.19   3.804045   22960 </span>|
+  +--------------------------------------------------------------------------------------+
 
 
 </samp></pre>
-</div> </div> </div> </div> </div> <br>
-<h2 id="headline-figures">Headline figures</h2>
-<div class="mb-4"> <div class="accordion" id="accordionExample"> <div class="accordion-item"> <h2 class="accordion-header"> <button class="accordion-button collapsed text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse18" aria-expanded="false" aria-controls="collapse18"> <small>Click to view </small> </button></h2> <div id="collapse18" class="accordion-collapse collapse" data-bs-parent="#accordionExample"><div class="accordion-body">
-<pre id="stlog-2" class="stlog"><samp><span class="stinp">. <span class="stcmt">* twoway (line n_events year), by(county) ///</span>
-&gt; *     ytitle("Events per year") xtitle("Year")             <span class="stcmt">///</span>
-&gt; *     title("THECB_accountability — events per year by county")</span>
-<span class="stinp">. <span class="stcmt">* qui graph export "${out}/THECB_accountability_events_by_county.png", replace width(1600)</span></span>
-<span class="stinp">. <span class="stcmt">* wgraph, width(900)</span></span>
-<span class="stinp">. di as txt "TODO: build figures"</span>
-TODO: build figures
+<p><img src="../../03_output/p600_dispersion_rank_professional.png" class="img-fluid" style="max-width:920px;border:1px solid #ddd" alt="figure"></p>
+<h2 id="1a-where-do-the-most-variable-services-vary-by-region">1a. Where do the most-variable services vary? (by region)</h2>
+<p>The ranking above shows WHICH services vary; this shows WHERE. For the six most price-dispersed professional services, each small panel is one service, with the median negotiated price in each of the 8 Public Health Regions. Bars of different lengths within a panel mean the same service is priced differently across Texas — a concrete map of where the dispersion lives.</p>
+<p><img src="../../03_output/p600_dispersion_by_region.png" class="img-fluid" style="max-width:980px;border:1px solid #ddd" alt="Median price by region for the most price-dispersed professional services"></p>
+<h2 id="1b-interactive-price-table-searchable-and-sortable">1b. Interactive price table (searchable and sortable)</h2>
+<p>The per-service price summary as a searchable, sortable table, built with the team&#39;s <code>statashiny</code> (Bootstrap 5 + DataTables) and embedded below. Click a column header to sort; type in the box to filter. Read every figure with the ghost-rate caveat (see the box above).</p>
+<p><iframe src="price_table.html" width="100%" height="660" style="border:1px solid #ddd;border-radius:6px" title="Interactive price table"></iframe></p>
+<h2 id="1c-explore-the-prices-yourself-interactive-sparkta">1c. Explore the prices yourself (interactive, sparkta)</h2>
+<p>The ranking and the searchable table say WHICH services vary and WHAT they cost. This widget lets the policy team slice the comparable prices on demand: the bars show the median negotiated price by service category, and the dropdown filters re-draw it live for any combination of provider type (professional vs facility), BCBS Texas network, Public Health Region, and coverage segment (fully-insured / self-funded). <b>Why run it:</b> most follow-up questions in a briefing are &#39;&hellip;but what about in MY region / network / segment?&#39; &mdash; this answers them without a new Stata run, and the built-in stats panel (N, median, spread) updates with every filter. A range slider on the number of provider groups behind each price lets you focus on widely-shared prices &mdash; a rough way to down-weight rarely-used ghost rates. Example: pick Region 7 and compare imaging medians across networks, then slide up the minimum provider count. (On a representative ~40k-row sample of the comparable fee-for-service prices; full data in <code>02_cleaned/</code>. Read with the ghost-rate caveat above.)</p>
+<p><iframe src="explore_prices.html" width="100%" height="660" style="border:1px solid #ddd;border-radius:6px" title="Interactive price explorer"></iframe></p>
+<h2 id="2-shoppable-case-studies-the-texas-2036-signature-services">2. Shoppable case studies (the Texas 2036 signature services)</h2>
+<p>Distribution of negotiated prices for headline shoppable services, echoing Texas 2036&#39;s childbirth and knee-arthroscopy examples. Median with the min and max, then a box plot.</p>
+<pre id="stlog-2" class="stlog"><samp><span class="stinp">.     tabstat negotiated_amount, by(service_label) statistics(p50 min max n) format(%9.0fc) nototal</span>
+
+Summary for variables: negotiated_amount
+Group variable: service_label (Texas 2036 short label for the procedure (our menu))
+
+   service_label |       p50       Min       Max         N
+-----------------+----------------------------------------
+Cataract surgery | <span class="stres">      492       144     3,589    10,694</span>
+Colonoscopy diag | <span class="stres">      267       108     2,089    25,240</span>
+Knee arthroscopy | <span class="stres">      528       156     3,348    11,529</span>
+MRI lumbar spine | <span class="stres">      144        31     1,950    25,938</span>
+Office visit est | <span class="stres">       85        43       627    38,555</span>
+Vaginal delivery | <span class="stres">    2,136     1,439    14,737     9,122</span>
+----------------------------------------------------------
 
 
 </samp></pre>
-</div> </div> </div> </div> </div> <br>
-<h2 id="headline-tables">Headline tables</h2>
-<div class="mb-4"> <div class="accordion" id="accordionExample"> <div class="accordion-item"> <h2 class="accordion-header"> <button class="accordion-button collapsed text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse19" aria-expanded="false" aria-controls="collapse19"> <small>Click to view code</small> </button></h2> <div id="collapse19" class="accordion-collapse collapse" data-bs-parent="#accordionExample"><div class="accordion-body">
-<pre id="stlog-3" class="stlog"><samp><span class="stinp">. <span class="stcmt">* tabstat n_events, by(year) statistics(sum mean p50)</span></span>
-<span class="stinp">. di as txt "TODO: build tables"</span>
-TODO: build tables
+<p><img src="../../03_output/p600_case_professional.png" class="img-fluid" style="max-width:920px;border:1px solid #ddd" alt="figure"></p>
+<pre id="stlog-3" class="stlog"><samp><span class="stinp">.     tabstat negotiated_amount, by(service_label) statistics(p50 min max n) format(%9.0fc) nototal</span>
+
+Summary for variables: negotiated_amount
+Group variable: service_label (Texas 2036 short label for the procedure (our menu))
+
+   service_label |       p50       Min       Max         N
+-----------------+----------------------------------------
+Cesarean deliver | <span class="stres">    4,032       101    83,546     1,681</span>
+Heart failure &amp;  | <span class="stres">   13,748     4,024    94,514     1,583</span>
+Major hip/knee j | <span class="stres">   20,784     6,439   156,625     1,534</span>
+Septicemia wo MV | <span class="stres">   19,751     5,552   142,127     1,532</span>
+Total hip arthro | <span class="stres">   12,540       814    99,442     3,558</span>
+Total knee arthr | <span class="stres">   13,160       814    99,442     3,549</span>
+----------------------------------------------------------
 
 
 </samp></pre>
-</div> </div> </div> </div> </div> <br>
-<h2 id="caveats-next-steps">Caveats + next steps</h2>
+<p><img src="../../03_output/p600_case_facility.png" class="img-fluid" style="max-width:920px;border:1px solid #ddd" alt="Facility service prices: median with p10 to p90 range"></p>
+<h2 id="3-professional-vs-facility-where-the-money-and-the-variation-are">3. Professional vs facility — where the money and the variation are</h2>
+<p>For procedures billed under BOTH a professional and an institutional rate, the median price and the dispersion (CV) of each. Field evidence: facility prices are higher and far more dispersed than professional. (This is the feasible "site of care" lens; a within-payer office-vs-HOPD split is NOT separable — see 400.)</p>
+<p><img src="../../03_output/p600_prof_vs_facility.png" class="img-fluid" style="max-width:920px;border:1px solid #ddd" alt="figure"></p>
+<pre id="stlog-4" class="stlog"><samp><span class="stinp">.     di as txt "Coefficient of variation, professional vs facility (selected):"</span>
+Coefficient of variation, professional vs facility (selected):
+
+<span class="stinp">.     table service_label provider_type, statistic(mean cv) nformat(%5.2f)</span>
+
+---------------------------------------------------------------------------------------------------------------------
+                                                    |    Professional (clinician) / institutional (facility) / both  
+                                                    |           institutional            professional           Total
+----------------------------------------------------+----------------------------------------------------------------
+Texas 2036 short label for the procedure (our menu) |                                                                
+  Antepartum care 4-6 visits                        |                    <span class="stres">1.44</span>                    <span class="stres">0.43</span>            <span class="stres">0.94</span>
+  Antepartum care 7+ visits                         |                    <span class="stres">1.13</span>                    <span class="stres">0.42</span>            <span class="stres">0.78</span>
+  Basic metabolic panel                             |                    <span class="stres">1.01</span>                    <span class="stres">0.32</span>            <span class="stres">0.66</span>
+  CT abdomen/pelvis w contrast                      |                    <span class="stres">1.05</span>                    <span class="stres">0.78</span>            <span class="stres">0.92</span>
+  CT abdomen/pelvis wo contrast                     |                    <span class="stres">0.99</span>                    <span class="stres">0.82</span>            <span class="stres">0.90</span>
+  CT head/brain wo contrast                         |                    <span class="stres">0.99</span>                    <span class="stres">1.18</span>            <span class="stres">1.08</span>
+  Cataract surgery with IOL                         |                    <span class="stres">0.66</span>                    <span class="stres">0.66</span>            <span class="stres">0.66</span>
+  Cesarean delivery global                          |                    <span class="stres">1.39</span>                    <span class="stres">0.48</span>            <span class="stres">0.93</span>
+  Cesarean delivery only                            |                    <span class="stres">1.34</span>                    <span class="stres">0.56</span>            <span class="stres">0.95</span>
+  Cesarean delivery w postpartum care               |                    <span class="stres">1.39</span>                    <span class="stres">0.44</span>            <span class="stres">0.92</span>
+  Chest x-ray 2 views                               |                    <span class="stres">0.78</span>                    <span class="stres">0.75</span>            <span class="stres">0.77</span>
+  Colonoscopy diagnostic                            |                    <span class="stres">0.68</span>                    <span class="stres">0.53</span>            <span class="stres">0.60</span>
+  Colonoscopy with biopsy                           |                    <span class="stres">0.66</span>                    <span class="stres">0.59</span>            <span class="stres">0.63</span>
+  Colonoscopy with polyp removal                    |                    <span class="stres">0.67</span>                    <span class="stres">0.55</span>            <span class="stres">0.61</span>
+  Complete blood count w diff                       |                    <span class="stres">0.97</span>                    <span class="stres">0.28</span>            <span class="stres">0.63</span>
+  Comprehensive metabolic panel                     |                    <span class="stres">0.96</span>                    <span class="stres">0.85</span>            <span class="stres">0.91</span>
+  Cystoscopy                                        |                    <span class="stres">1.04</span>                    <span class="stres">0.66</span>            <span class="stres">0.85</span>
+  Diagnostic mammography unilateral                 |                    <span class="stres">0.65</span>                    <span class="stres">0.79</span>            <span class="stres">0.72</span>
+  ED visit level 1                                  |                    <span class="stres">1.03</span>                    <span class="stres">0.87</span>            <span class="stres">0.95</span>
+  ED visit level 2                                  |                    <span class="stres">1.48</span>                    <span class="stres">0.51</span>            <span class="stres">0.99</span>
+  ED visit level 3                                  |                    <span class="stres">1.60</span>                    <span class="stres">0.49</span>            <span class="stres">1.05</span>
+  ED visit level 4                                  |                    <span class="stres">1.92</span>                    <span class="stres">0.52</span>            <span class="stres">1.22</span>
+  ED visit level 5                                  |                    <span class="stres">1.21</span>                    <span class="stres">0.50</span>            <span class="stres">0.86</span>
+  Echocardiogram complete w Doppler                 |                    <span class="stres">0.87</span>                    <span class="stres">0.72</span>            <span class="stres">0.79</span>
+  Electrocardiogram complete                        |                    <span class="stres">0.77</span>                    <span class="stres">0.50</span>            <span class="stres">0.63</span>
+  Epidural steroid injection lumbar                 |                    <span class="stres">0.69</span>                    <span class="stres">0.58</span>            <span class="stres">0.64</span>
+  Hemoglobin A1c                                    |                    <span class="stres">0.86</span>                    <span class="stres">0.40</span>            <span class="stres">0.63</span>
+  Inguinal hernia repair                            |                    <span class="stres">0.68</span>                    <span class="stres">0.50</span>            <span class="stres">0.59</span>
+  Knee arthroscopy with meniscectomy                |                    <span class="stres">0.68</span>                    <span class="stres">0.51</span>            <span class="stres">0.60</span>
+  Laparoscopic cholecystectomy                      |                    <span class="stres">0.68</span>                    <span class="stres">0.51</span>            <span class="stres">0.60</span>
+  Laparoscopic gastric bypass                       |                    <span class="stres">1.42</span>                    <span class="stres">0.47</span>            <span class="stres">0.95</span>
+  Laparoscopic total hysterectomy                   |                    <span class="stres">0.72</span>                    <span class="stres">0.54</span>            <span class="stres">0.63</span>
+  Lipid panel                                       |                    <span class="stres">0.87</span>                    <span class="stres">0.48</span>            <span class="stres">0.67</span>
+  Lumbar spinal fusion posterior                    |                    <span class="stres">0.68</span>                    <span class="stres">0.56</span>            <span class="stres">0.62</span>
+  MRI brain w/wo contrast                           |                    <span class="stres">0.86</span>                    <span class="stres">0.84</span>            <span class="stres">0.85</span>
+  MRI lower extremity joint wo contrast             |                    <span class="stres">0.83</span>                    <span class="stres">0.95</span>            <span class="stres">0.89</span>
+  MRI lumbar spine wo contrast                      |                    <span class="stres">0.80</span>                    <span class="stres">0.89</span>            <span class="stres">0.85</span>
+  Major joint injection/aspiration                  |                    <span class="stres">3.34</span>                    <span class="stres">0.50</span>            <span class="stres">1.92</span>
+  OB ultrasound &lt;14wk                               |                    <span class="stres">0.62</span>                    <span class="stres">0.71</span>            <span class="stres">0.67</span>
+  OB ultrasound &gt;=14wk                              |                    <span class="stres">0.59</span>                    <span class="stres">0.75</span>            <span class="stres">0.67</span>
+  OB ultrasound detailed                            |                    <span class="stres">0.62</span>                    <span class="stres">0.65</span>            <span class="stres">0.63</span>
+  OB ultrasound transvaginal                        |                    <span class="stres">0.74</span>                    <span class="stres">0.73</span>            <span class="stres">0.74</span>
+  Office visit est pt 10-19min                      |                    <span class="stres">0.88</span>                    <span class="stres">0.52</span>            <span class="stres">0.70</span>
+  Office visit est pt 20-29min                      |                    <span class="stres">0.80</span>                    <span class="stres">0.48</span>            <span class="stres">0.64</span>
+  Office visit est pt 30-39min                      |                    <span class="stres">0.78</span>                    <span class="stres">0.46</span>            <span class="stres">0.62</span>
+  Office visit est pt 40-54min                      |                    <span class="stres">0.62</span>                    <span class="stres">0.46</span>            <span class="stres">0.54</span>
+  Office visit new pt 15-29min                      |                    <span class="stres">0.80</span>                    <span class="stres">0.54</span>            <span class="stres">0.67</span>
+  Office visit new pt 30-44min                      |                    <span class="stres">0.64</span>                    <span class="stres">0.48</span>            <span class="stres">0.56</span>
+  Office visit new pt 45-59min                      |                    <span class="stres">0.78</span>                    <span class="stres">0.48</span>            <span class="stres">0.63</span>
+  Office visit new pt 60-74min                      |                    <span class="stres">0.60</span>                    <span class="stres">0.45</span>            <span class="stres">0.53</span>
+  Physical therapy therapeutic exercise             |                    <span class="stres">0.83</span>                    <span class="stres">0.62</span>            <span class="stres">0.73</span>
+  Polysomnography sleep study                       |                    <span class="stres">0.62</span>                    <span class="stres">0.87</span>            <span class="stres">0.74</span>
+  Preventive visit est 18-39                        |                    <span class="stres">0.53</span>                    <span class="stres">0.48</span>            <span class="stres">0.51</span>
+  Preventive visit est 40-64                        |                    <span class="stres">0.58</span>                    <span class="stres">0.48</span>            <span class="stres">0.53</span>
+  Preventive visit new 18-39                        |                    <span class="stres">0.51</span>                    <span class="stres">0.49</span>            <span class="stres">0.50</span>
+  Preventive visit new 40-64                        |                    <span class="stres">0.55</span>                    <span class="stres">0.48</span>            <span class="stres">0.51</span>
+  Screening colonoscopy high risk                   |                    <span class="stres">0.69</span>                    <span class="stres">0.55</span>            <span class="stres">0.62</span>
+  Screening colonoscopy not high risk               |                    <span class="stres">0.68</span>                    <span class="stres">0.43</span>            <span class="stres">0.56</span>
+  Screening mammography bilateral                   |                    <span class="stres">0.66</span>                    <span class="stres">0.79</span>            <span class="stres">0.72</span>
+  TURP prostate resection                           |                    <span class="stres">0.69</span>                    <span class="stres">0.48</span>            <span class="stres">0.59</span>
+  Thyroid stimulating hormone                       |                    <span class="stres">0.83</span>                    <span class="stres">0.51</span>            <span class="stres">0.67</span>
+  Tissue exam by pathologist                        |                    <span class="stres">0.83</span>                    <span class="stres">1.00</span>            <span class="stres">0.91</span>
+  Total hip arthroplasty                            |                    <span class="stres">0.85</span>                    <span class="stres">0.49</span>            <span class="stres">0.67</span>
+  Total knee arthroplasty                           |                    <span class="stres">0.80</span>                    <span class="stres">0.62</span>            <span class="stres">0.71</span>
+  Total shoulder arthroplasty                       |                    <span class="stres">1.35</span>                    <span class="stres">0.47</span>            <span class="stres">0.91</span>
+  Ultrasound abdomen complete                       |                    <span class="stres">0.65</span>                    <span class="stres">0.77</span>            <span class="stres">0.71</span>
+  Ultrasound pelvic complete                        |                    <span class="stres">0.81</span>                    <span class="stres">0.80</span>            <span class="stres">0.81</span>
+  Upper GI endoscopy diagnostic                     |                    <span class="stres">0.68</span>                    <span class="stres">0.58</span>            <span class="stres">0.63</span>
+  Upper GI endoscopy with biopsy                    |                    <span class="stres">0.70</span>                    <span class="stres">0.63</span>            <span class="stres">0.66</span>
+  Urinalysis automated w scope                      |                    <span class="stres">1.32</span>                    <span class="stres">0.43</span>            <span class="stres">0.87</span>
+  Urine culture                                     |                    <span class="stres">0.95</span>                    <span class="stres">0.37</span>            <span class="stres">0.66</span>
+  Vaginal delivery global                           |                    <span class="stres">1.47</span>                    <span class="stres">0.47</span>            <span class="stres">0.97</span>
+  Vaginal delivery only                             |                    <span class="stres">0.55</span>                    <span class="stres">0.46</span>            <span class="stres">0.51</span>
+  Vaginal delivery w postpartum care                |                    <span class="stres">1.38</span>                    <span class="stres">0.46</span>            <span class="stres">0.92</span>
+  Total                                             |                    <span class="stres">0.92</span>                    <span class="stres">0.59</span>            <span class="stres">0.75</span>
+---------------------------------------------------------------------------------------------------------------------
+
+
+</samp></pre>
+<h2 id="4-cross-network-and-fully-insured-vs-self-funded">4. Cross-network and fully-insured vs self-funded</h2>
+<p>Whether the same service is priced differently across BCBSTX&#39;s Texas networks and between coverage segments. Texas 2036 wants payer/plan-level comparison; payer MRFs supply it natively (hospital MRFs do not).</p>
+<pre id="stlog-5" class="stlog"><samp><span class="stinp">.     di as txt "Colonoscopy (45378), professional — median by network:"</span>
+Colonoscopy (45378), professional — median by network:
+
+<span class="stinp">.     tabstat negotiated_amount, by(network_name) statistics(p50 min max n) format(%9.0fc) nototal</span>
+
+Summary for variables: negotiated_amount
+Group variable: network_name (Provider network the price applies to (e.g., Blue Choice PPO))
+
+    network_name |       p50       Min       Max         N
+-----------------+----------------------------------------
+Blue Advantage H | <span class="stres">      239       108     1,934     3,527</span>
+ Blue Choice PPO | <span class="stres">      275       121     2,089     3,722</span>
+Blue Choice PPO  | <span class="stres">      275       121     2,089     3,719</span>
+Blue Choice PPO  | <span class="stres">      236       147       437        29</span>
+ Blue Essentials | <span class="stres">      271       121     2,089     3,667</span>
+Blue Essentials  | <span class="stres">      271       121     2,089     3,662</span>
+Blue Essentials  | <span class="stres">      229       164       566        20</span>
+Blue Essentials  | <span class="stres">      229       164       566        20</span>
+    Blue Premier | <span class="stres">      271       129     2,089     2,031</span>
+MyBlue Health HM | <span class="stres">      238       108     1,934     1,691</span>
+         ParPlan | <span class="stres">      275       129     2,089     3,152</span>
+----------------------------------------------------------
+
+<span class="stinp">.     di as txt _n "By coverage segment:"</span>
+
+By coverage segment:
+
+<span class="stinp">.     tabstat negotiated_amount, by(market_segment) statistics(p50 n) format(%9.0fc) nototal</span>
+
+Summary for variables: negotiated_amount
+Group variable: market_segment (Coverage segment served (fully-insured / self-funded / both))
+
+market_segment |       p50         N
+---------------+--------------------
+          both | <span class="stres">      267    14,068</span>
+ fully-insured | <span class="stres">      256     7,424</span>
+   self-funded | <span class="stres">      275     3,748</span>
+------------------------------------
+
+
+</samp></pre>
+<p><img src="../../03_output/p600_colonoscopy_by_network.png" class="img-fluid" style="max-width:920px;border:1px solid #ddd" alt="figure"></p>
+<h2 id="5-negotiated-price-as-a-percent-of-medicare-rand-style-benchmark">5. Negotiated price as a PERCENT OF MEDICARE (RAND-style benchmark)</h2>
+<p>Each negotiated price divided by the national Medicare allowed amount for the same service (Medicare = 100%). This standardizes for how resource-intensive a service is and gives one interpretable yardstick. Benchmark by how the service is billed: professional -&gt; Medicare Physician Fee Schedule; outpatient facility -&gt; Hospital Outpatient PPS; inpatient -&gt; Inpatient PPS (MS-DRG weight x base). National figures, all geographic indices = 1.0 (first-pass simplification). NOTE this is the negotiated PRICE relative to Medicare, NOT spending.</p>
+<pre id="stlog-6" class="stlog"><samp><span class="stinp">. di as txt "Prices with a Medicare benchmark match: `nmatch' of `ntot'"</span>
+Prices with a Medicare benchmark match: 1437200 of 1728270
+
+<span class="stinp">. di as txt _n "Median % of Medicare (100 = Medicare), with p25/p75, by service category and provider type:"</span>
+
+Median % of Medicare (100 = Medicare), with p25/p75, by service category and provider type:
+
+<span class="stinp">. frame _pom: list service_category provider_type median p25 p75 n, noobs sep(0) abbreviate(24)</span>
+
+  +--------------------------------------------------------------------+
+  | <span class="stres">    service_category   provider_type   median   p25   p75        n </span>|
+  |--------------------------------------------------------------------|
+  | <span class="stres">          Cardiology   institutional       27    24    64     3735 </span>|
+  | <span class="stres">          Cardiology    professional       80    46   115    39238 </span>|
+  | <span class="stres">      E&amp;M outpatient    professional       64    51    78   303518 </span>|
+  | <span class="stres">           Emergency   institutional      127    85   375    17216 </span>|
+  | <span class="stres">           Emergency    professional       87    78    99    80788 </span>|
+  | <span class="stres">             Imaging   institutional      155    96   365    28406 </span>|
+  | <span class="stres">             Imaging    professional       72    28    86   259052 </span>|
+  | <span class="stres">       Inpatient DRG   institutional      146   102   199    20259 </span>|
+  | <span class="stres">   Inpatient surgery   institutional       85    53   135    29191 </span>|
+  | <span class="stres">   Inpatient surgery    professional      109    88   141    97077 </span>|
+  | <span class="stres">                 Lab   institutional      102    84   279     3833 </span>|
+  | <span class="stres">                 Lab    professional       47    27    56    11906 </span>|
+  | <span class="stres">           Maternity   institutional      130    85   242    11369 </span>|
+  | <span class="stres">           Maternity    professional       83    61   107   182247 </span>|
+  | <span class="stres">       Maternity DRG   institutional      130    92   186     5570 </span>|
+  | <span class="stres">Outpatient procedure   institutional       90    63   148    39295 </span>|
+  | <span class="stres">Outpatient procedure    professional       72    46   101   257501 </span>|
+  | <span class="stres">          Preventive   institutional       94    69   149     7009 </span>|
+  | <span class="stres">          Preventive    professional       69    48    87    39990 </span>|
+  +--------------------------------------------------------------------+
+
+
+</samp></pre>
+<h2 id="explore-of-medicare-yourself-interactive-sparkta">Explore % of Medicare yourself (interactive, sparkta)</h2>
+<p>Same idea applied to the Medicare benchmark: bars show the median price as a percent of Medicare (100 = Medicare) by service category, with a reference line at 100, re-drawn live as you filter by provider type and Public Health Region. <b>Why run it:</b> the headline pattern (professional below, facility above Medicare) hides category- and region-level exceptions &mdash; this surfaces them, e.g. &#39;which services run above Medicare for facilities in Region 6/5S?&#39; The bars use the median (robust to the ghost-rate skew; see 5b). (Representative ~40k-row sample.)</p>
+<p><iframe src="explore_pct_medicare.html" width="100%" height="640" style="border:1px solid #ddd;border-radius:6px" title="Interactive % of Medicare explorer"></iframe></p>
+<h2 id="5b-heuristic-ghost-rate-check-how-much-do-placeholders-move-the-result">5b. Heuristic ghost-rate check (how much do placeholders move the result?)</h2>
+<p>Where a Medicare benchmark exists, we flag prices below 25% of Medicare as likely ghost/placeholder rates and show how the median moves when they are excluded. This makes the ghost-rate distortion visible; it is a rough heuristic, not the taxonomy-based gold standard (see the guide).</p>
+<pre id="stlog-7" class="stlog"><samp><span class="stinp">. count if likely_ghost</span>
+  <span class="stres">63,017</span>
+
+<span class="stinp">. di as txt "Prices flagged implausibly low (&lt;25% of Medicare): `r(N)'"</span>
+Prices flagged implausibly low (&lt;25% of Medicare): 63017
+
+<span class="stinp">. preserve</span>
+
+<span class="stinp">.     keep if provider_type=="professional" &amp; !missing(pct_of_medicare)</span>
+(456,953 observations deleted)
+
+<span class="stinp">.     di as txt "Professional % of Medicare — median including ALL prices:"</span>
+Professional % of Medicare — median including ALL prices:
+
+<span class="stinp">.     summarize pct_of_medicare, detail</span>
+
+     Negotiated price as % of Medicare (100 = Medicare)
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%    <span class="stres"> 20.75083       7.492949</span>
+ 5%    <span class="stres">  25.6207       7.492949</span>
+10%    <span class="stres"> 30.09686       9.162832       </span>Obs         <span class="stres">  1,271,317</span>
+25%    <span class="stres"> 48.24082       9.162832       </span>Sum of wgt. <span class="stres">  1,271,317</span>
+
+50%    <span class="stres"> 75.30528                      </span>Mean          <span class="stres"> 81.04896</span>
+<span class="stres">                        </span>Largest       Std. dev.     <span class="stres"> 55.67103</span>
+75%    <span class="stres"> 95.03719       1220.084</span>
+90%    <span class="stres"> 131.2908       1267.011       </span>Variance      <span class="stres"> 3099.263</span>
+95%    <span class="stres"> 159.2426       1267.011       </span>Skewness      <span class="stres"> 4.167001</span>
+99%    <span class="stres"> 321.1187       1267.011       </span>Kurtosis      <span class="stres"> 35.72982</span>
+
+<span class="stinp">.     local m_all = r(p50)</span>
+
+<span class="stinp">.     di as txt "Professional % of Medicare — median EXCLUDING likely-ghost prices:"</span>
+Professional % of Medicare — median EXCLUDING likely-ghost prices:
+
+<span class="stinp">.     summarize pct_of_medicare if !likely_ghost, detail</span>
+
+     Negotiated price as % of Medicare (100 = Medicare)
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%    <span class="stres"> 25.90058       25.00083</span>
+ 5%    <span class="stres"> 29.21877       25.00083</span>
+10%    <span class="stres"> 34.30012       25.00396       </span>Obs         <span class="stres">  1,215,914</span>
+25%    <span class="stres"> 52.82027       25.00396       </span>Sum of wgt. <span class="stres">  1,215,914</span>
+
+50%    <span class="stres"> 76.87997                      </span>Mean          <span class="stres"> 83.75688</span>
+<span class="stres">                        </span>Largest       Std. dev.     <span class="stres"> 55.42285</span>
+75%    <span class="stres"> 96.96527       1220.084</span>
+90%    <span class="stres"> 133.3009       1267.011       </span>Variance      <span class="stres"> 3071.693</span>
+95%    <span class="stres"> 160.8513       1267.011       </span>Skewness      <span class="stres"> 4.325711</span>
+99%    <span class="stres"> 326.5134       1267.011       </span>Kurtosis      <span class="stres"> 37.11026</span>
+
+<span class="stinp">.     di as txt _n "  median % of Medicare:  all = " %4.0f `m_all' "%   vs   ex-ghost = " %4.0f r(p50) "%"</span>
+
+  median % of Medicare:  all =   75%   vs   ex-ghost =   77%
+
+<span class="stinp">.     di as txt "  (the gap is the rough size of the ghost-rate drag on the professional figure)"</span>
+  (the gap is the rough size of the ghost-rate drag on the professional figure)
+
+<span class="stinp">. restore</span>
+
+
+</samp></pre>
+<p><img src="../../03_output/p600_pct_of_medicare.png" class="img-fluid" style="max-width:920px;border:1px solid #ddd" alt="figure"></p>
+<h2 id="6-geographic-price-variation-by-texas-county-and-public-health-region">6. Geographic price variation — by Texas county and Public Health Region</h2>
+<p>Each price is tagged with the county (and its DSHS Public Health Region) of the provider group&#39;s practice location (NPPES practice ZIP -&gt; county -&gt; region). Prices with no county/region (provider registered out of state, unmapped ZIP, or a TIN-only group with no resolvable NPI) are excluded from this section.</p>
+<h2 id="by-region-table">By region (table)</h2>
+<pre id="stlog-8" class="stlog"><samp><span class="stinp">. preserve</span>
+
+<span class="stinp">.     keep if procedure_code=="45378" &amp; provider_type=="professional"</span>
+(1,689,483 observations deleted)
+
+<span class="stinp">.     tabstat negotiated_amount, by(region_id) statistics(p50 p10 p90 n) format(%9.0f) nototal</span>
+
+Summary for variables: negotiated_amount
+Group variable: region_id 
+
+  region_id |       p50       p10       p90         N
+------------+----------------------------------------
+   Region 1 | <span class="stres">      273       149       502      2052</span>
+ Region 2/3 | <span class="stres">      272       152       493      5695</span>
+Region 4/5N | <span class="stres">      268       149       501      2929</span>
+Region 6/5S | <span class="stres">      262       149       450      3440</span>
+   Region 7 | <span class="stres">      272       149       493      4062</span>
+   Region 8 | <span class="stres">      246       149       399      3036</span>
+Region 9/10 | <span class="stres">      267       149       493      2035</span>
+  Region 11 | <span class="stres">      234       149       388      1723</span>
+-----------------------------------------------------
+
+<span class="stinp">. restore</span>
+
+
+</samp></pre>
+<p><img src="../../03_output/p600_region_colonoscopy.png" class="img-fluid" style="max-width:920px;border:1px solid #ddd" alt="figure"></p>
+<h2 id="county-map-choropleth">County map (choropleth)</h2>
+<p>Median negotiated price for an established-patient office visit (CPT 99214, professional) by county. Counties with fewer than 5 distinct prices are left unshaded. Built with <code>spmap</code> on the Census county shapefile (see <code>03_mapping/</code>).</p>
+<p><img src="../../03_output/p600_map_county_99214.png" class="img-fluid" style="max-width:980px;border:1px solid #ddd" alt="county price map (median CPT 99214 professional negotiated price, BCBS Texas)"></p>
+<h2 id="public-health-region-map">Public Health Region map</h2>
+<p>The same metric collapsed to the 8 DSHS Public Health Regions (each county shaded by its region&#39;s median), the Texas 2036 signature geographic cut.</p>
+<p><img src="../../03_output/p600_map_region_99214.png" class="img-fluid" style="max-width:980px;border:1px solid #ddd" alt="Public Health Region price map (median CPT 99214 professional, BCBS Texas)"></p>
+<h2 id="map-office-visit-price-by-legislative-district-approximate">Map: office-visit price by legislative district (approximate)</h2>
+<p>Median office-visit price (CPT 99214, professional) by Texas State Senate and House district. IMPORTANT — this is APPROXIMATE: published prices are keyed to COUNTY, and districts cross county lines, so we assign each provider its county median, then average within district (weighted by how many of the district&#39;s providers sit in each county). An exact version needs a district-keyed re-extraction of the raw files. Read it for broad geographic patterns, not precise district figures.</p>
+<p><img src="../../03_output/p600_map_senate_price.png" class="img-fluid" style="max-width:980px;border:1px solid #ddd" alt="Approximate office-visit price by Texas State Senate district (31)"></p>
+<p><img src="../../03_output/p600_map_house_price.png" class="img-fluid" style="max-width:980px;border:1px solid #ddd" alt="Approximate office-visit price by Texas State House district (150)"></p>
+<h2 id="map-provider-supply-by-texas-state-senate-district">Map: provider supply by Texas State Senate district</h2>
+<p>Count of Texas provider NPIs (from the NPPES registry) whose practice location falls inside each of the 31 Texas State Senate districts, assigned by point-in-polygon geocoding of the provider ZIP. This shows where providers are concentrated. IMPORTANT: this is provider SUPPLY (a count), not price. The approximate district PRICE map is above; an EXACT price-by-district map would need a district-keyed re-extraction, since the price table is keyed on county, not district.</p>
+<p><img src="../../03_output/p600_map_senate_supply.png" class="img-fluid" style="max-width:980px;border:1px solid #ddd" alt="Texas provider supply by State Senate district"></p>
+<h2 id="map-provider-supply-by-zip-code">Map: provider supply by ZIP code</h2>
+<p>The finest geography we map. Each Texas ZIP code is one point (its Census 2020 ZCTA centroid), shaded by the number of NPPES provider NPIs practicing there. Like the district map this is provider SUPPLY (a count), NOT price: prices are collapsed at the county level, so there is no ZIP-level price to map without a ZIP-keyed re-extraction. The metros (Dallas&ndash;Fort Worth, Houston, San Antonio, Austin, El Paso, the Rio Grande Valley) light up as expected.</p>
+<p><img src="../../03_output/p600_map_zip_supply.png" class="img-fluid" style="max-width:980px;border:1px solid #ddd" alt="Texas in-network provider supply by ZIP code (point map)"></p>
+<h2 id="7-prescription-drugs-brand-vs-generic-dispensing-fees-same-drug-spread">7. Prescription drugs — brand vs generic, dispensing fees, same-drug spread</h2>
+<p>From the separate Rx table: brand vs generic price levels, the dispensing-fee distribution, and same-NDC price dispersion across the pharmacy network.</p>
+<pre id="stlog-9" class="stlog"><samp><span class="stinp">.     di as txt "Negotiated drug price by type (brand vs generic):"</span>
+Negotiated drug price by type (brand vs generic):
+
+<span class="stinp">.     tabstat negotiated_rate, by(drug_type) statistics(p50 p90 mean n) format(%9.2fc) nototal</span>
+
+Summary for variables: negotiated_rate
+Group variable: drug_type (Drug type (brand / generic / specialty))
+
+drug_type |       p50       p90      Mean         N
+----------+----------------------------------------
+    Brand | <span class="stres">    20.29  1,538.58 36,367.97 686346.00</span>
+  Generic | <span class="stres">     0.36      9.24     11.69 507305.00</span>
+---------------------------------------------------
+
+<span class="stinp">.     di as txt _n "Dispensing fee distribution:"</span>
+
+Dispensing fee distribution:
+
+<span class="stinp">.     summarize dispensing_fee, detail</span>
+
+                    Dispensing fee (US$)
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%    <span class="stres">        0              0</span>
+ 5%    <span class="stres">        0              0</span>
+10%    <span class="stres">        0              0       </span>Obs         <span class="stres">  1,193,651</span>
+25%    <span class="stres">        0              0       </span>Sum of wgt. <span class="stres">  1,193,651</span>
+
+50%    <span class="stres">       .2                      </span>Mean          <span class="stres"> .3063055</span>
+<span class="stres">                        </span>Largest       Std. dev.     <span class="stres"> .5723852</span>
+75%    <span class="stres">      .35           3.75</span>
+90%    <span class="stres">       .6           3.75       </span>Variance      <span class="stres"> .3276249</span>
+95%    <span class="stres">      1.5           3.75       </span>Skewness      <span class="stres"> 4.290039</span>
+99%    <span class="stres">     3.75           3.75       </span>Kurtosis      <span class="stres"> 24.50975</span>
+
+
+</samp></pre>
+<p><img src="../../03_output/p600_rx_brand_generic.png" class="img-fluid" style="max-width:920px;border:1px solid #ddd" alt="figure"></p>
+<pre id="stlog-10" class="stlog"><samp><span class="stinp">.     di as txt _n "NDCs with the widest same-drug price spread (max/min), n-prices&gt;=10:"</span>
+
+NDCs with the widest same-drug price spread (max/min), n-prices&gt;=10:
+
+
+</samp></pre>
+<pre id="stlog-11" class="stlog"><samp><span class="stinp">.     list drug_name ndc rxmin rxmax rxspread if _one &amp; _np&gt;=10 in 1/`=min(_N,12)', noobs sep(0) abbreviate(24)</span>
+
+  +----------------------------------------------------+
+  | <span class="stres">drug_name           ndc   rxmin   rxmax   rxspread </span>|
+  |----------------------------------------------------|
+  | <span class="stres">ISONIAZID   00555006602     .01    2.18        218 </span>|
+  +----------------------------------------------------+
+
+
+</samp></pre>
+<h2 id="8-time-trend-convergence-activates-with-multiple-snapshots">8. Time trend / convergence (activates with multiple snapshots)</h2>
+<p>Whether disclosure compresses the price distribution over time (Turquoise convergence method: percent change by price quartile across monthly snapshots). With a single snapshot this is intentionally skipped.</p>
+<h2 id="9-feasibility-matrix-what-we-can-and-cannot-do-with-the-current-data">9. Feasibility matrix — what we can and cannot do with the current data</h2>
+<p>This is our standing, plain-English scorecard: for each standard price-transparency analysis, can we do it with the data we have right now? The <code>status</code> column is one of three things:</p>
 <ul class="wd-list-dashed">
-<li>(replace this) Headline caveat re: missingness, coverage, or sampling</li>
-<li>(replace this) Question this analysis cannot yet answer</li>
-<li>(replace this) Linked _projects/ folders that build on this source</li>
+<li><b>Feasible now</b> — we run it with this dataset (e.g., price dispersion, professional-vs-facility, percent of Medicare, the county and Public Health Region maps).</li>
+<li><b>Needs addition</b> — not possible today, but ONE specific, named add-on would unlock it (named in the last column). Example: cross-payer comparison needs us to also run UnitedHealthcare / Aetna / Cigna through the same pipeline (one config file each).</li>
+<li><b>Not feasible</b> — cannot be done from insurer negotiated-rate files at all, no matter what we add, because the files lack the needed information. Example: total spending or market-concentration measures need utilization (how often each service happens), which these files simply do not contain.</li>
+</ul>
+<p>The last column (<code>unlock_or_note</code>) gives the specific next step or caveat for each row. The table is also written to <code>03_output/feasibility_matrix.csv</code> so it travels with the data.</p>
+<table class="table table-sm table-striped table-hover" style="font-size:0.9rem"><thead><tr><th>Analysis</th><th>Status</th><th>Unlock / note</th></tr></thead><tbody>
+<tr><td>Price dispersion (shoppable services)</td><td>Feasible now</td><td>core analysis; this run</td></tr>
+<tr><td>Professional vs facility decomposition</td><td>Feasible now</td><td>this run</td></tr>
+<tr><td>Cross-network / fully-insured vs self-funded</td><td>Feasible now</td><td>this run</td></tr>
+<tr><td>Rx brand-vs-generic, dispensing fees</td><td>Feasible now</td><td>this run</td></tr>
+<tr><td>Site-of-care: office (POS11) vs HOPD (POS22)</td><td>Not separable</td><td>BCBSTX prof rate spans a POS set; use prof-vs-facility instead</td></tr>
+<tr><td>Commercial-to-Medicare ratio (RAND-style)</td><td>Feasible now</td><td>MPFS/OPPS/IPPS joined, national GPCI=1.0; this run (labs lack a CLFS amount)</td></tr>
+<tr><td>Geographic variation (county / region)</td><td>Feasible now</td><td>NPPES ZIP->county->region; county + Public Health Region price maps this run</td></tr>
+<tr><td>Price by legislative district</td><td>Feasible now</td><td>APPROX (county->district) done this run; EXACT needs a district-keyed re-extraction</td></tr>
+<tr><td>Provider supply by district / ZIP</td><td>Feasible now</td><td>Senate-district and ZIP point-supply maps this run</td></tr>
+<tr><td>Cross-payer benchmarking</td><td>Needs addition</td><td>run UHC/Aetna/Cigna through the same pipeline (new payer config)</td></tr>
+<tr><td>Time trends / price convergence</td><td>Needs >=2 snapshots</td><td>stack future monthly pulls, then re-run</td></tr>
+<tr><td>Volume-weighted spending / utilization</td><td>Not feasible</td><td>MRFs carry no volume (inherent limitation)</td></tr>
+<tr><td>Market concentration (HHI) vs price</td><td>Not feasible</td><td>needs clean hospital identity (CCN) + volume-based market shares</td></tr>
+<tr><td>Price vs quality value scatter</td><td>Needs addition</td><td>join CMS Hospital Compare star ratings</td></tr>
+</tbody></table>
+<h2 id="10-opportunities-to-expand-the-analysis-for-a-fresh-data-run">10. Opportunities to expand the analysis (for a fresh data run)</h2>
+<p>Two expansions were ADDED in this run and now appear above: the Medicare benchmark (section 5) and Public Health Region geography (section 6). The items below remain future opportunities; the first is highest-leverage.</p>
+<ul class="wd-list-dashed">
+<li><b>DONE this run — Medicare benchmark</b> (CMS MPFS/OPPS/IPPS). Powers section 5 ("% of Medicare"). To improve: add locality GPCI/wage-index adjustment, and a Clinical Lab Fee Schedule amount for lab codes (the CLFS file URL still needs confirming).</li>
+<li><b>DONE this run — Texas geography</b> (NPPES practice ZIP to county to region). Powers section 6: county, region, ZIP-supply, Senate-supply, and approximate district-price maps. To improve: an EXACT price-by-district map (needs a district-keyed re-extraction) and locality-adjusted Medicare.</li>
+<li><b>Add more payers</b> (UnitedHealthcare, Aetna, Cigna, one payer config file each). Unlocks payer-vs-payer benchmarking and market-power analysis.</li>
+<li><b>Expand / finalize the procedure menu</b> with the policy team (e.g., add chemo/infusion J-codes, behavioral health, more imaging and surgery codes). Each added code becomes analyzable next run.</li>
+<li><b>Add the out-of-network (allowed-amount) module</b> for in- vs out-of-network gap analysis (sparse due to the &lt;20-claim suppression rule, but informative).</li>
+<li><b>Build the named-provider attribution file</b> (run with --emit-group) plus an NPI-&gt;hospital-CCN/system crosswalk, to name specific systems and study consolidation.</li>
+<li><b>Stack monthly snapshots</b> to activate all time-trend and price-convergence analyses ("is transparency working?").</li>
 </ul>
 </body>
 </html>
