@@ -437,10 +437,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 </samp></pre>
-<p><img src="../../03_output/p600_dispersion_rank_professional.png" class="img-fluid" style="max-width:920px;border:1px solid #ddd" alt="figure"></p>
+<p><img src="03_output/p600_dispersion_rank_professional.png" class="img-fluid" style="max-width:920px;border:1px solid #ddd" alt="figure"></p>
 <h2 id="1a-where-do-the-most-variable-services-vary-by-region">1a. Where do the most-variable services vary? (by region)</h2>
 <p>The ranking above shows WHICH services vary; this shows WHERE. For the six most price-dispersed professional services, each small panel is one service, with the median negotiated price in each of the 8 Public Health Regions. Bars of different lengths within a panel mean the same service is priced differently across Texas — a concrete map of where the dispersion lives.</p>
-<p><img src="../../03_output/p600_dispersion_by_region.png" class="img-fluid" style="max-width:980px;border:1px solid #ddd" alt="Median price by region for the most price-dispersed professional services"></p>
+<p><img src="03_output/p600_dispersion_by_region.png" class="img-fluid" style="max-width:980px;border:1px solid #ddd" alt="Median price by region for the most price-dispersed professional services"></p>
 <h2 id="1b-interactive-price-table-searchable-and-sortable">1b. Interactive price table (searchable and sortable)</h2>
 <p>The per-service price summary as a searchable, sortable table, built with the team&#39;s <code>statashiny</code> (Bootstrap 5 + DataTables) and embedded below. Click a column header to sort; type in the box to filter. Read every figure with the ghost-rate caveat (see the box above).</p>
 <p><iframe src="price_table.html" width="100%" height="660" style="border:1px solid #ddd;border-radius:6px" title="Interactive price table"></iframe></p>
@@ -466,7 +466,7 @@ Vaginal delivery | <span class="stres">    2,136     1,439    14,737     9,122</
 
 
 </samp></pre>
-<p><img src="../../03_output/p600_case_professional.png" class="img-fluid" style="max-width:920px;border:1px solid #ddd" alt="figure"></p>
+<p><img src="03_output/p600_case_professional.png" class="img-fluid" style="max-width:920px;border:1px solid #ddd" alt="figure"></p>
 <pre id="stlog-3" class="stlog"><samp><span class="stinp">.     tabstat negotiated_amount, by(service_label) statistics(p50 min max n) format(%9.0fc) nototal</span>
 
 Summary for variables: negotiated_amount
@@ -484,10 +484,10 @@ Total knee arthr | <span class="stres">   13,160       814    99,442     3,549</
 
 
 </samp></pre>
-<p><img src="../../03_output/p600_case_facility.png" class="img-fluid" style="max-width:920px;border:1px solid #ddd" alt="Facility service prices: median with p10 to p90 range"></p>
+<p><img src="03_output/p600_case_facility.png" class="img-fluid" style="max-width:920px;border:1px solid #ddd" alt="Facility service prices: median with p10 to p90 range"></p>
 <h2 id="3-professional-vs-facility-where-the-money-and-the-variation-are">3. Professional vs facility — where the money and the variation are</h2>
 <p>For procedures billed under BOTH a professional and an institutional rate, the median price and the dispersion (CV) of each. Field evidence: facility prices are higher and far more dispersed than professional. (This is the feasible "site of care" lens; a within-payer office-vs-HOPD split is NOT separable — see 400.)</p>
-<p><img src="../../03_output/p600_prof_vs_facility.png" class="img-fluid" style="max-width:920px;border:1px solid #ddd" alt="figure"></p>
+<p><img src="03_output/p600_prof_vs_facility.png" class="img-fluid" style="max-width:920px;border:1px solid #ddd" alt="figure"></p>
 <pre id="stlog-4" class="stlog"><samp><span class="stinp">.     di as txt "Coefficient of variation, professional vs facility (selected):"</span>
 Coefficient of variation, professional vs facility (selected):
 
@@ -620,7 +620,7 @@ market_segment |       p50         N
 
 
 </samp></pre>
-<p><img src="../../03_output/p600_colonoscopy_by_network.png" class="img-fluid" style="max-width:920px;border:1px solid #ddd" alt="figure"></p>
+<p><img src="03_output/p600_colonoscopy_by_network.png" class="img-fluid" style="max-width:920px;border:1px solid #ddd" alt="figure"></p>
 <h2 id="5-negotiated-price-as-a-percent-of-medicare-rand-style-benchmark">5. Negotiated price as a PERCENT OF MEDICARE (RAND-style benchmark)</h2>
 <p>Each negotiated price divided by the national Medicare allowed amount for the same service (Medicare = 100%). This standardizes for how resource-intensive a service is and gives one interpretable yardstick. Benchmark by how the service is billed: professional -&gt; Medicare Physician Fee Schedule; outpatient facility -&gt; Hospital Outpatient PPS; inpatient -&gt; Inpatient PPS (MS-DRG weight x base). National figures, all geographic indices = 1.0 (first-pass simplification). NOTE this is the negotiated PRICE relative to Medicare, NOT spending.</p>
 <pre id="stlog-6" class="stlog"><samp><span class="stinp">. di as txt "Prices with a Medicare benchmark match: `nmatch' of `ntot'"</span>
@@ -727,7 +727,7 @@ Professional % of Medicare — median EXCLUDING likely-ghost prices:
 
 
 </samp></pre>
-<p><img src="../../03_output/p600_pct_of_medicare.png" class="img-fluid" style="max-width:920px;border:1px solid #ddd" alt="figure"></p>
+<p><img src="03_output/p600_pct_of_medicare.png" class="img-fluid" style="max-width:920px;border:1px solid #ddd" alt="figure"></p>
 <h2 id="6-geographic-price-variation-by-texas-county-and-public-health-region">6. Geographic price variation — by Texas county and Public Health Region</h2>
 <p>Each price is tagged with the county (and its DSHS Public Health Region) of the provider group&#39;s practice location (NPPES practice ZIP -&gt; county -&gt; region). Prices with no county/region (provider registered out of state, unmapped ZIP, or a TIN-only group with no resolvable NPI) are excluded from this section.</p>
 <h2 id="by-region-table">By region (table)</h2>
@@ -757,23 +757,23 @@ Region 9/10 | <span class="stres">      267       149       493      2035</span>
 
 
 </samp></pre>
-<p><img src="../../03_output/p600_region_colonoscopy.png" class="img-fluid" style="max-width:920px;border:1px solid #ddd" alt="figure"></p>
+<p><img src="03_output/p600_region_colonoscopy.png" class="img-fluid" style="max-width:920px;border:1px solid #ddd" alt="figure"></p>
 <h2 id="county-map-choropleth">County map (choropleth)</h2>
 <p>Median negotiated price for an established-patient office visit (CPT 99214, professional) by county. Counties with fewer than 5 distinct prices are left unshaded. Built with <code>spmap</code> on the Census county shapefile (see <code>03_mapping/</code>).</p>
-<p><img src="../../03_output/p600_map_county_99214.png" class="img-fluid" style="max-width:980px;border:1px solid #ddd" alt="county price map (median CPT 99214 professional negotiated price, BCBS Texas)"></p>
+<p><img src="03_output/p600_map_county_99214.png" class="img-fluid" style="max-width:980px;border:1px solid #ddd" alt="county price map (median CPT 99214 professional negotiated price, BCBS Texas)"></p>
 <h2 id="public-health-region-map">Public Health Region map</h2>
 <p>The same metric collapsed to the 8 DSHS Public Health Regions (each county shaded by its region&#39;s median), the Texas 2036 signature geographic cut.</p>
-<p><img src="../../03_output/p600_map_region_99214.png" class="img-fluid" style="max-width:980px;border:1px solid #ddd" alt="Public Health Region price map (median CPT 99214 professional, BCBS Texas)"></p>
+<p><img src="03_output/p600_map_region_99214.png" class="img-fluid" style="max-width:980px;border:1px solid #ddd" alt="Public Health Region price map (median CPT 99214 professional, BCBS Texas)"></p>
 <h2 id="map-office-visit-price-by-legislative-district-approximate">Map: office-visit price by legislative district (approximate)</h2>
 <p>Median office-visit price (CPT 99214, professional) by Texas State Senate and House district. IMPORTANT — this is APPROXIMATE: published prices are keyed to COUNTY, and districts cross county lines, so we assign each provider its county median, then average within district (weighted by how many of the district&#39;s providers sit in each county). An exact version needs a district-keyed re-extraction of the raw files. Read it for broad geographic patterns, not precise district figures.</p>
-<p><img src="../../03_output/p600_map_senate_price.png" class="img-fluid" style="max-width:980px;border:1px solid #ddd" alt="Approximate office-visit price by Texas State Senate district (31)"></p>
-<p><img src="../../03_output/p600_map_house_price.png" class="img-fluid" style="max-width:980px;border:1px solid #ddd" alt="Approximate office-visit price by Texas State House district (150)"></p>
+<p><img src="03_output/p600_map_senate_price.png" class="img-fluid" style="max-width:980px;border:1px solid #ddd" alt="Approximate office-visit price by Texas State Senate district (31)"></p>
+<p><img src="03_output/p600_map_house_price.png" class="img-fluid" style="max-width:980px;border:1px solid #ddd" alt="Approximate office-visit price by Texas State House district (150)"></p>
 <h2 id="map-provider-supply-by-texas-state-senate-district">Map: provider supply by Texas State Senate district</h2>
 <p>Count of Texas provider NPIs (from the NPPES registry) whose practice location falls inside each of the 31 Texas State Senate districts, assigned by point-in-polygon geocoding of the provider ZIP. This shows where providers are concentrated. IMPORTANT: this is provider SUPPLY (a count), not price. The approximate district PRICE map is above; an EXACT price-by-district map would need a district-keyed re-extraction, since the price table is keyed on county, not district.</p>
-<p><img src="../../03_output/p600_map_senate_supply.png" class="img-fluid" style="max-width:980px;border:1px solid #ddd" alt="Texas provider supply by State Senate district"></p>
+<p><img src="03_output/p600_map_senate_supply.png" class="img-fluid" style="max-width:980px;border:1px solid #ddd" alt="Texas provider supply by State Senate district"></p>
 <h2 id="map-provider-supply-by-zip-code">Map: provider supply by ZIP code</h2>
 <p>The finest geography we map. Each Texas ZIP code is one point (its Census 2020 ZCTA centroid), shaded by the number of NPPES provider NPIs practicing there. Like the district map this is provider SUPPLY (a count), NOT price: prices are collapsed at the county level, so there is no ZIP-level price to map without a ZIP-keyed re-extraction. The metros (Dallas&ndash;Fort Worth, Houston, San Antonio, Austin, El Paso, the Rio Grande Valley) light up as expected.</p>
-<p><img src="../../03_output/p600_map_zip_supply.png" class="img-fluid" style="max-width:980px;border:1px solid #ddd" alt="Texas in-network provider supply by ZIP code (point map)"></p>
+<p><img src="03_output/p600_map_zip_supply.png" class="img-fluid" style="max-width:980px;border:1px solid #ddd" alt="Texas in-network provider supply by ZIP code (point map)"></p>
 <h2 id="7-prescription-drugs-brand-vs-generic-dispensing-fees-same-drug-spread">7. Prescription drugs — brand vs generic, dispensing fees, same-drug spread</h2>
 <p>From the separate Rx table: brand vs generic price levels, the dispensing-fee distribution, and same-NDC price dispersion across the pharmacy network.</p>
 <pre id="stlog-9" class="stlog"><samp><span class="stinp">.     di as txt "Negotiated drug price by type (brand vs generic):"</span>
@@ -813,7 +813,7 @@ Dispensing fee distribution:
 
 
 </samp></pre>
-<p><img src="../../03_output/p600_rx_brand_generic.png" class="img-fluid" style="max-width:920px;border:1px solid #ddd" alt="figure"></p>
+<p><img src="03_output/p600_rx_brand_generic.png" class="img-fluid" style="max-width:920px;border:1px solid #ddd" alt="figure"></p>
 <pre id="stlog-10" class="stlog"><samp><span class="stinp">.     di as txt _n "NDCs with the widest same-drug price spread (max/min), n-prices&gt;=10:"</span>
 
 NDCs with the widest same-drug price spread (max/min), n-prices&gt;=10:

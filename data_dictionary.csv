@@ -1,0 +1,53 @@
+dataset,variable,type,label,plain_english_description,value_labels,source_mrf_field
+rates,payer_name,string,Insurer that published the price,"The insurance company / plan administrator that published the data. Here it is always Blue Cross and Blue Shield of Texas.",,reporting_entity_name
+rates,payer_type,string,Type of reporting entity,"Whether the publisher is acting as a health insurance issuer (the insurer of a fully-insured plan) or a third-party administrator (the administrator of an employer's self-funded/ASO plan).","health insurance issuer; third-party administrator",reporting_entity_type
+rates,network_name,string,Provider network,"The named provider network the price applies to (for example Blue Choice PPO, Blue Essentials, Blue Advantage HMO). Prices are published per network.",,(from Table-of-Contents file description)
+rates,market_segment,string,Coverage segment served,"Which coverage segment the network serves: fully-insured, self-funded (ASO), or both. IMPORTANT: a negotiated price is published at the NETWORK level, not the segment level — the same network price is used by both fully-insured and self-funded plans, so most rows are 'both'.","fully-insured; self-funded; both",(derived from which route/index referenced the file)
+rates,file_vintage,string (YYYY-MM-DD),Monthly snapshot date,"The 'last updated' date stamped on the source file. This is the monthly snapshot the price belongs to; use it as the time dimension when stacking months.",,last_updated_on
+rates,run_date,string (YYYY-MM-DD),Texas 2036 extraction date,"The date Texas 2036 downloaded and extracted this record. Lets you tell apart re-runs of the same monthly snapshot.",,(added by our pipeline)
+rates,schema_version,string,Source data-format version,"The CMS machine-readable-file format version of the source file. Guards against silent format changes month to month.",,version
+rates,source_file,string,Source filename,"The filename of the source machine-readable file this price came from. Part of the key that links to the provider crosswalk.",,(filename)
+rates,code_system,string,Medical code system,"The medical coding system the procedure code belongs to. Different systems can reuse the same number, so this must be read together with procedure_code.","CPT; HCPCS; MS-DRG; APR-DRG; etc.",billing_code_type
+rates,code_system_ver,string,Code system version,"The version or edition (often a year) of the coding system, e.g. CPT 2026. Needed for clean year-over-year comparisons.",,billing_code_type_version
+rates,procedure_code,string,Procedure code,"The procedure, service, or item code being priced (for example CPT 27447 = total knee replacement).",,billing_code
+rates,procedure_desc,string,Insurer's description,"The insurer's own free-text description of the service. Helpful for reading the data, but NOT standardized — do not group on it.",,name / description
+rates,service_label,string,Texas 2036 short label,"A short, consistent label for the procedure, from the Texas 2036 service menu (config/target_codes.csv). Use this for readable tables.",,(joined from our code menu)
+rates,service_category,string,Texas 2036 service group,"The Texas 2036 service grouping for the procedure (for example Imaging, Maternity, Inpatient stay). Use this for category-level breakdowns.","Evaluation & management; Imaging; Lab; Maternity; Inpatient stay; etc.",(joined from our code menu)
+rates,arrangement,string,Payment arrangement,"How the service is paid for: fee-for-service (a price per service), a bundle (one price covering several services), or capitation (a per-member payment). Only fee-for-service prices are directly comparable as unit prices.","ffs = fee-for-service; bundle; capitation",negotiation_arrangement
+rates,rate_basis,string,How to read the amount,"How to interpret negotiated_amount: a plain negotiated dollar price; a fee-schedule amount; a percentage of billed charges; a per-diem (per-day) amount; or a derived amount. You MUST read this before using the amount.","negotiated; fee schedule; percentage; per diem; derived",negotiated_type
+rates,negotiated_amount,double,Negotiated price,"The negotiated price. U.S. dollars for every basis EXCEPT 'percentage', where it is a percent (for example 40.5 means 40.5% of billed charges).",,negotiated_rate
+rates,provider_type,string,Professional vs facility,"Whether the price is for a professional (clinician) service, an institutional (facility) service, or both. Professional and facility prices are different markets and should not be averaged together.","professional; institutional; both",billing_class
+rates,care_setting,string,Care setting,"The care setting the price applies to.","inpatient; outpatient; both",setting
+rates,place_of_service,string,Place-of-service code(s),"One or more CMS place-of-service codes where the price applies (semicolon-separated). For example 11 = office, 21 = inpatient hospital, 23 = emergency room.",,service_code
+rates,code_modifier,string,Procedure modifier(s),"Any procedure-code modifiers attached to the price (semicolon-separated), e.g. a modifier marking the professional component of an imaging study.",,billing_code_modifier
+rates,rate_expiration,string (YYYY-MM-DD),Price expiration date,"The date the negotiated price expires.",,expiration_date
+rates,is_evergreen,byte,No-expiration flag,"1 = the price has no real expiration date (the source uses the placeholder 9999-12-31); 0 = it expires on rate_expiration.","0 = expires; 1 = evergreen (no expiration)",(derived from expiration_date)
+rates,provider_group_id,long,Link to provider crosswalk,"A number that links this price to a set of providers. It is unique ONLY within source_file, so always join to the provider crosswalk on BOTH source_file AND provider_group_id.",,provider_references / provider_group_id
+providers,source_file,string,Source filename,"The source file the provider group came from. Part of the key linking back to the rates table.",,(filename)
+providers,provider_group_id,long,Provider-group number,"The provider-group number. Unique only within source_file. Join to the rates table on source_file + provider_group_id.",,provider_group_id
+providers,n_tx_npis,long,Texas NPIs in the group,"How many Texas NPIs (NPPES practice state = TX) are in this provider group. Individual NPI lists are not stored here (they explode the file); only the count is kept. For full NPI lists re-run with the optional per-NPI output.",,(count of kept npi[])
+providers,tax_id_type,string,Tax ID type,"The type of the provider group's tax identifier.","ein = employer ID number; npi",tin.type
+providers,tax_id,string,Tax ID number,"The provider group's tax identification number.",,tin.value
+providers,provider_org_name,string,Organization name,"The organization / business name of the provider group (present when the tax ID is an employer ID number).",,tin.business_name
+providers,network_name,string,Network(s),"The provider network(s) this group is listed under in the source file.",,network_name
+org_directory,network_name,string,Provider network,"The named provider network.",,network_name
+org_directory,tax_id_type,string,Tax ID type,"ein = employer ID number; npi.","ein; npi",tin.type
+org_directory,tax_id,string,Tax ID number,"The organization's (or individual's) tax identification number.",,tin.value
+org_directory,provider_org_name,string,Organization name,"Organization or individual name as filed by the insurer (raw and inconsistent; individual clinicians sometimes appear as their own tax ID).",,tin.business_name
+org_directory,n_group_entries,long,Appearance count,"How many provider-group entries reference this tax ID in this network. An appearance count, NOT a clean provider headcount.",,(derived)
+rx,source_file,string,Source filename,"The prescription-drug source file this price came from.",,(filename)
+rx,run_date,string (YYYY-MM-DD),Texas 2036 extraction date,"Date Texas 2036 extracted this record.",,(added by pipeline)
+rx,payer_name,string,Insurer,"Insurer that published the price (BCBS Texas).",,reporting_entity_name
+rx,payer_type,string,Reporting entity type,"e.g., health insurance issuer.",,reporting_entity_type
+rx,drug_name,string,Drug name,"The drug name as published by the insurer.",,drug_name
+rx,drug_type,string,Drug type,"Generic / brand / specialty grouping as published.",,drug_type
+rx,ndc,string,National Drug Code,"The National Drug Code identifying the drug product.",,ndc
+rx,negotiated_rate,double,Negotiated drug price,"The negotiated price for the drug (US$).",,negotiated_rate
+rx,dispensing_fee,double,Dispensing fee,"Pharmacy dispensing fee (US$).",,dispensing_fee
+rx,administrative_fee,double,Administrative fee,"Administrative fee (US$).",,administrative_fee
+rx,transaction_fee,double,Transaction fee,"Transaction fee (US$).",,transaction_fee
+rx,historical_net_price,double,Historical net price,"Historical net price reported for the drug (US$).",,historical_net_price
+rx,service_code,string,Pharmacy service code,"Pharmacy service/setting code (e.g., retail, mail order).",,service_code
+rx,n_price_records,long,Collapsed price records,"How many raw price records collapsed into this distinct drug-price row.",,(derived)
+rx,n_pharmacy_tins,long,Distinct pharmacy tax IDs,"Distinct pharmacy-group tax IDs paid this drug price.",,(derived)
+rx,n_pharmacy_id_memberships,long,Pharmacy-ID memberships,"Pharmacy-ID memberships paid this price (breadth; double-counts across groups).",,(derived)

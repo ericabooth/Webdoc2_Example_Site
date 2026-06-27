@@ -1,0 +1,15 @@
+analysis,status,unlock_or_note
+Price dispersion (shoppable services),Feasible now,core analysis; this run
+Professional vs facility decomposition,Feasible now,this run
+Cross-network / fully-insured vs self-funded,Feasible now,this run
+"Rx brand-vs-generic, dispensing fees",Feasible now,this run
+Site-of-care: office (POS11) vs HOPD (POS22),Not separable,BCBSTX prof rate spans a POS set; use prof-vs-facility instead
+Commercial-to-Medicare ratio (RAND-style),Feasible now,"MPFS/OPPS/IPPS joined, national GPCI=1.0; this run (labs lack a CLFS amount)"
+Geographic variation (county / region),Feasible now,NPPES ZIP->county->region; county + Public Health Region price maps this run
+Price by legislative district,Feasible now,APPROX (county->district) done this run; EXACT needs a district-keyed re-extraction
+Provider supply by district / ZIP,Feasible now,Senate-district and ZIP point-supply maps this run
+Cross-payer benchmarking,Needs addition,run UHC/Aetna/Cigna through the same pipeline (new payer config)
+Time trends / price convergence,Needs >=2 snapshots,"stack future monthly pulls, then re-run"
+Volume-weighted spending / utilization,Not feasible,MRFs carry no volume (inherent limitation)
+Market concentration (HHI) vs price,Not feasible,needs clean hospital identity (CCN) + volume-based market shares
+Price vs quality value scatter,Needs addition,join CMS Hospital Compare star ratings
