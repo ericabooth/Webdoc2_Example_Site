@@ -456,10 +456,10 @@ document.addEventListener('DOMContentLoaded', function () {
 </tbody></table></div>
 <h2 id="rebuilding-everything">Rebuilding everything</h2>
 <p>After editing any do-file, rebuild the website with:</p>
-<pre class="stlog"><span class="stinp">. do "/Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and Research Team/_datashare/Insurance_PriceTransparency/BCBSTX/_documentation/_runall.do"</span></pre>
+<pre class="stlog"><span class="stinp">. do "_datashare/Insurance_PriceTransparency/BCBSTX/_documentation/_runall.do"</span></pre>
 <p><code>_runall.do</code> calls <code>webdoc2 file.do, replace cleanup</code> for every numbered file, then builds <code>index.html</code> and <code>help.html</code> last. On Mac it opens <code>index.html</code> at the end.</p>
 <p>To rebuild ONE page only:</p>
-<pre class="stlog"><span class="stinp">. webdoc2 "/Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and Research Team/_datashare/Insurance_PriceTransparency/BCBSTX/_code/400_data_profiler.do", replace cleanup open</span></pre>
+<pre class="stlog"><span class="stinp">. webdoc2 "_datashare/Insurance_PriceTransparency/BCBSTX/_code/400_data_profiler.do", replace cleanup open</span></pre>
 <h2 id="file-naming-conventions-cheatsheet">File-naming conventions (cheatsheet)</h2>
 <ul class="wd-list-dashed">
 <li>Folder names are <b>source agencies</b> — <code>TEA_AEIS</code>, <code>THECB</code>, <code>TDI</code> — not topics or dates.</li>
@@ -486,15 +486,15 @@ document.addEventListener('DOMContentLoaded', function () {
 <h2 id="path-globals-set-by-000-controlfile-do">Path globals (set by 000_controlfile.do)</h2>
 <div class="table-responsive"><table class="table table-sm">
 <thead><tr><th>Global</th><th>Resolves to</th></tr></thead><tbody>
-<tr><td><code>/Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and Research Team</code></td><td>Google Drive root (Shared drives/Data and Research Team)</td></tr>
-<tr><td><code>/Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and Research Team/_codeshare</code></td><td>Shared drives/Data and Research Team/_codeshare</td></tr>
-<tr><td><code>/Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and Research Team/_datashare</code></td><td>Shared drives/Data and Research Team/_datashare</td></tr>
-<tr><td><code>/Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and Research Team/_datashare/Insurance_PriceTransparency/BCBSTX</code></td><td>this project folder</td></tr>
-<tr><td><code>/Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and Research Team/_datashare/Insurance_PriceTransparency/BCBSTX/01_raw</code> / <code>/Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and Research Team/_datashare/Insurance_PriceTransparency/BCBSTX/01_raw/_converted</code></td><td>raw files / machine-converted copies</td></tr>
-<tr><td><code>/Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and Research Team/_datashare/Insurance_PriceTransparency/BCBSTX/02_cleaned</code></td><td>cleaned analytic tables</td></tr>
-<tr><td><code>/Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and Research Team/_datashare/Insurance_PriceTransparency/BCBSTX/03_output</code></td><td>output deliverables</td></tr>
-<tr><td><code>/Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and Research Team/_datashare/Insurance_PriceTransparency/BCBSTX/_code</code></td><td>do-files</td></tr>
-<tr><td><code>/Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and Research Team/_datashare/Insurance_PriceTransparency/BCBSTX/_documentation</code> / <code>/Users/ericbooth/Library/CloudStorage/GoogleDrive-eric.booth@texas2036.org/Shared drives/Data and Research Team/_datashare/Insurance_PriceTransparency/BCBSTX/_documentation/website</code></td><td>documentation / built website</td></tr>
+<tr><td><code>Shared drives/Data and Research Team</code></td><td>Google Drive root (Shared drives/Data and Research Team)</td></tr>
+<tr><td><code>_codeshare</code></td><td>Shared drives/Data and Research Team/_codeshare</td></tr>
+<tr><td><code>Shared drives/Data and Research Team/_datashare</code></td><td>Shared drives/Data and Research Team/_datashare</td></tr>
+<tr><td><code>_datashare/Insurance_PriceTransparency/BCBSTX</code></td><td>this project folder</td></tr>
+<tr><td><code>_datashare/Insurance_PriceTransparency/BCBSTX/01_raw</code> / <code>_datashare/Insurance_PriceTransparency/BCBSTX/01_raw/_converted</code></td><td>raw files / machine-converted copies</td></tr>
+<tr><td><code>_datashare/Insurance_PriceTransparency/BCBSTX/02_cleaned</code></td><td>cleaned analytic tables</td></tr>
+<tr><td><code>_datashare/Insurance_PriceTransparency/BCBSTX/03_output</code></td><td>output deliverables</td></tr>
+<tr><td><code>_datashare/Insurance_PriceTransparency/BCBSTX/_code</code></td><td>do-files</td></tr>
+<tr><td><code>_datashare/Insurance_PriceTransparency/BCBSTX/_documentation</code> / <code>_datashare/Insurance_PriceTransparency/BCBSTX/_documentation/website</code></td><td>documentation / built website</td></tr>
 </tbody></table></div>
 <h2 id="creating-a-new-datashare-project">Creating a new datashare project</h2>
 <p>From any Stata session:</p>
